@@ -1,0 +1,4 @@
+../../weights_and_bias_trained/LayerID=0____layer_type=input______LayerDimension=_2D___weights_and_bias.txt
+../../weights_and_bias_trained/LayerID=1____layer_type=cnn______LayerDimension=_2D___weights_and_bias.txt
+../../weights_and_bias_trained/LayerID=2____layer_type=cnn______LayerDimension=_2D___weights_and_bias.txt
+../../weights_and_bias_trained/LayerID=3____layer_type=output______LayerDimension=_1D___weights_and_bias.txt

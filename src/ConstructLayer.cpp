@@ -49,6 +49,7 @@ ConstructLayer::ConstructLayer(LayerParameterList p_list)
     __regularizationParameter = p_list._gRegularizationParameter;
     __neuron_actuation_func_type = p_list._gActuationFuncType;
     __trainingType = p_list._gTrainingType;
+    __use_batch_normalization = p_list._gUseBatchNormalization;
 
     // parameters dependent on layer type
     if(__type == LayerType::input)

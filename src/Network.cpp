@@ -56,7 +56,7 @@ void Network::ConstructLayers(TrainingType training_type)
 
     // 3) input layer   ID=0
     LayerParameterList p_list0(LayerType::input, LayerDimension::_2D, data_interface, 0, 0, 
-	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0, Regularization::Undefined, 0, ActuationFuncType::Undefined, resume_or_new_training);
+	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0, Regularization::Undefined, 0, ActuationFuncType::Undefined, resume_or_new_training, false);
     Layer* layer_input = new ConstructLayer(p_list0);
     // NOTE: a data_interface class pointer must be passed to input layer before calling input_layer->Init() function
     //       because Initialization rely on data_interface
@@ -65,23 +65,23 @@ void Network::ConstructLayers(TrainingType training_type)
 
     // 4) middle layer 3 : cnn layer ID=1
     LayerParameterList p_list1(LayerType::cnn, LayerDimension::_2D, data_interface, 0, 1, 
-	    std::pair<size_t, size_t>(4, 4), learning_rate, false, 0, 0.5, Regularization::L2, regularization_factor, ActuationFuncType::Sigmoid, resume_or_new_training);
+	    std::pair<size_t, size_t>(4, 4), learning_rate, false, 0, 0.5, Regularization::L2, regularization_factor, ActuationFuncType::Sigmoid, resume_or_new_training, false);
     Layer *l1 = new ConstructLayer(p_list1);
     l1->SetPrevLayer(layer_input);
     l1->Init();
 
      // 4) middle layer 3 : cnn layer ID=3
     LayerParameterList p_list3(LayerType::cnn, LayerDimension::_2D, data_interface, 0, 1, 
-	    std::pair<size_t, size_t>(4, 4), learning_rate, false, 0, 0.5, Regularization::L2, regularization_factor, ActuationFuncType::Sigmoid, resume_or_new_training);
+	    std::pair<size_t, size_t>(4, 4), learning_rate, false, 0, 0.5, Regularization::L2, regularization_factor, ActuationFuncType::Sigmoid, resume_or_new_training, false);
     Layer *l3 = new ConstructLayer(p_list3);
     l3->SetPrevLayer(l1);
     l3->Init();
 
      // 5) output layer ID = 6
     LayerParameterList p_list6(LayerType::output, LayerDimension::_1D, data_interface, 2, 0, 
-	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0., Regularization::L2, regularization_factor, ActuationFuncType::SoftMax, resume_or_new_training);
+	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0., Regularization::L2, regularization_factor, ActuationFuncType::SoftMax, resume_or_new_training, false);
     //LayerParameterList p_list6(LayerType::output, LayerDimension::_1D, data_interface, 2, 0, 
-//	    std::pair<size_t, size_t>(0, 0), 0., false, 0, 0., Regularization::L2, 0., ActuationFuncType::SoftMax, resume_or_new_training);
+//	    std::pair<size_t, size_t>(0, 0), 0., false, 0, 0., Regularization::L2, 0., ActuationFuncType::SoftMax, resume_or_new_training, false);
     Layer* layer_output = new ConstructLayer(p_list6);
     layer_output -> SetPrevLayer(l3);
     layer_output -> Init();
@@ -120,12 +120,13 @@ void Network::ConstructLayers(TrainingType training_type)
     //TrainingType resume_or_new_training = training_type;
     //TrainingType resume_or_new_training = TrainingType::ResumeTraining;
     TrainingType resume_or_new_training = TrainingType::NewTraining;
-    double learning_rate = 0.01; //0.06;
+    //double learning_rate = 0.01; //0.06;
+    double learning_rate = 0.06; //0.06; // if use batch normalization, one can use relatively large learning rate
     double regularization_factor = 0.005;
 
     // 3) input layer   ID=0
     LayerParameterList p_list0(LayerType::input, LayerDimension::_2D, data_interface, 0, 0, 
-	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0, Regularization::Undefined, 0, ActuationFuncType::Undefined, resume_or_new_training);
+	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0, Regularization::Undefined, 0, ActuationFuncType::Undefined, resume_or_new_training, false);
     Layer* layer_input = new ConstructLayer(p_list0);
     // NOTE: a data_interface class pointer must be passed to input layer before calling input_layer->Init() function
     //       because Initialization rely on data_interface
@@ -134,42 +135,42 @@ void Network::ConstructLayers(TrainingType training_type)
 
     // 4) middle layer 3 : cnn layer ID=1
     LayerParameterList p_list1(LayerType::cnn, LayerDimension::_2D, data_interface, 0, 3, 
-	    std::pair<size_t, size_t>(3, 3), learning_rate, false, 0, 0.5, Regularization::L2, regularization_factor, ActuationFuncType::Relu, resume_or_new_training);
+	    std::pair<size_t, size_t>(3, 3), learning_rate, false, 0, 0.5, Regularization::L2, regularization_factor, ActuationFuncType::Relu, resume_or_new_training, true);
     Layer *l1 = new ConstructLayer(p_list1);
     l1->SetPrevLayer(layer_input);
     l1->Init();
   
     // 4) middle layer 2 : pooling layer ID=2
     LayerParameterList p_list2(LayerType::pooling, LayerDimension::_2D, data_interface, 0, 3, 
-	    std::pair<size_t, size_t>(3, 3), learning_rate, false, 0, 0., Regularization::L2, regularization_factor, ActuationFuncType::Relu, resume_or_new_training);
+	    std::pair<size_t, size_t>(3, 3), learning_rate, false, 0, 0., Regularization::L2, regularization_factor, ActuationFuncType::Relu, resume_or_new_training, false);
     Layer *l2 = new ConstructLayer(p_list2);
     l2->SetPrevLayer(l1);
     l2->Init();
  
     // 4) middle layer 3 : cnn layer ID=3
     LayerParameterList p_list3(LayerType::cnn, LayerDimension::_2D, data_interface, 0, 3, 
-	    std::pair<size_t, size_t>(3, 3), learning_rate, false, 0, 0.5, Regularization::L2, regularization_factor, ActuationFuncType::Relu, resume_or_new_training);
+	    std::pair<size_t, size_t>(3, 3), learning_rate, false, 0, 0.5, Regularization::L2, regularization_factor, ActuationFuncType::Relu, resume_or_new_training, true);
     Layer *l3 = new ConstructLayer(p_list3);
     l3->SetPrevLayer(l2);
     l3->Init();
   
     // 4) middle layer 2 : pooling layer ID=4
     LayerParameterList p_list4(LayerType::pooling, LayerDimension::_2D, data_interface, 0, 3, 
-	    std::pair<size_t, size_t>(3, 3), learning_rate, false, 0, 0., Regularization::L2, regularization_factor, ActuationFuncType::Relu, resume_or_new_training);
+	    std::pair<size_t, size_t>(3, 3), learning_rate, false, 0, 0., Regularization::L2, regularization_factor, ActuationFuncType::Relu, resume_or_new_training, false);
     Layer *l4 = new ConstructLayer(p_list4);
     l4->SetPrevLayer(l3);
     l4->Init();
 
     // 4) middle layer 1 : fc layer ID=5
     LayerParameterList p_list5(LayerType::fullyConnected, LayerDimension::_1D, data_interface, 7, 0, 
-	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0.5, Regularization::L2, regularization_factor, ActuationFuncType::Relu, resume_or_new_training);
+	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0.5, Regularization::L2, regularization_factor, ActuationFuncType::Relu, resume_or_new_training, true);
     Layer *l5 = new ConstructLayer(p_list5);
     l5->SetPrevLayer(l4);
     l5->Init();
 
     // 5) output layer ID = 6
     LayerParameterList p_list6(LayerType::output, LayerDimension::_1D, data_interface, 2, 0, 
-	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0., Regularization::L2, regularization_factor, ActuationFuncType::SoftMax, resume_or_new_training);
+	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0., Regularization::L2, regularization_factor, ActuationFuncType::SoftMax, resume_or_new_training, false);
     Layer* layer_output = new ConstructLayer(p_list6);
     layer_output -> SetPrevLayer(l5);
     layer_output -> Init();
@@ -210,7 +211,7 @@ void Network::ConstructLayers(TrainingType _training_type) // test purelly fully
 
     // 3) input layer   ID=0
     LayerParameterList p_list0(LayerType::input, LayerDimension::_1D, data_interface, 0, 0, 
-	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0, Regularization::Undefined, 0, ActuationFuncType::Undefined, training_type);
+	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0, Regularization::Undefined, 0, ActuationFuncType::Undefined, training_type, false);
     Layer* layer_input = new ConstructLayer(p_list0);
     // NOTE: a data_interface class pointer must be passed to input layer before calling input_layer->Init() function
     //       because Initialization rely on data_interface
@@ -218,14 +219,14 @@ void Network::ConstructLayers(TrainingType _training_type) // test purelly fully
 
     // 4) middle layer 1 : fc layer ID=6
     LayerParameterList p_list3(LayerType::fullyConnected, LayerDimension::_1D, data_interface, 10, 0, 
-	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 2, 0.5, Regularization::L2, 0.1, ActuationFuncType::Relu, training_type);
+	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 2, 0.5, Regularization::L2, 0.1, ActuationFuncType::Relu, training_type, false);
     Layer *l3 = new ConstructLayer(p_list3);
     l3->SetPrevLayer(layer_input);
     l3->Init();
 
     // 5) output layer ID = 7
     LayerParameterList p_list_output(LayerType::output, LayerDimension::_1D, data_interface, 2, 0, 
-	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0., Regularization::L2, 0.1, ActuationFuncType::SoftMax, training_type);
+	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0., Regularization::L2, 0.1, ActuationFuncType::SoftMax, training_type, false);
     Layer* layer_output = new ConstructLayer(p_list_output);
     layer_output -> SetPrevLayer(l3);
     layer_output -> Init();
@@ -264,7 +265,7 @@ void Network::ConstructLayers(TrainingType trtp) // test fully connected + cnn
 
     // 3) input layer   ID=0
     LayerParameterList p_list0(LayerType::input, LayerDimension::_2D, data_interface, 0, 0, 
-	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0, Regularization::Undefined, 0, ActuationFuncType::Undefined, training_type);
+	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0, Regularization::Undefined, 0, ActuationFuncType::Undefined, training_type, false);
     Layer* layer_input = new ConstructLayer(p_list0);
     // NOTE: a data_interface class pointer must be passed to input layer before calling input_layer->Init() function
     //       because Initialization rely on data_interface
@@ -272,21 +273,21 @@ void Network::ConstructLayers(TrainingType trtp) // test fully connected + cnn
 
     // 4) middle layer 1 : cnn layer ID=1
     LayerParameterList p_list1(LayerType::cnn, LayerDimension::_2D, data_interface, 0, 3, 
-	    std::pair<size_t, size_t>(3, 3), learning_rate, false, 3, 0.5, Regularization::L2, 0.1, ActuationFuncType::Relu, training_type);
+	    std::pair<size_t, size_t>(3, 3), learning_rate, false, 3, 0.5, Regularization::L2, 0.1, ActuationFuncType::Relu, training_type, false);
     Layer *l1 = new ConstructLayer(p_list1);
     l1->SetPrevLayer(layer_input);
     l1->Init();
 
     // 4) middle layer 1 : fc layer ID=6
     LayerParameterList p_list6(LayerType::fullyConnected, LayerDimension::_1D, data_interface, 14, 0, 
-	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 3, 0.5, Regularization::L2, 0.1, ActuationFuncType::Relu, training_type);
+	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 3, 0.5, Regularization::L2, 0.1, ActuationFuncType::Relu, training_type, false);
     Layer *l6 = new ConstructLayer(p_list6);
     l6->SetPrevLayer(l1);
     l6->Init();
 
     // 5) output layer ID = 7
     LayerParameterList p_list_output(LayerType::output, LayerDimension::_1D, data_interface, 2, 0, 
-	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0., Regularization::L2, 0.1, ActuationFuncType::SoftMax, training_type);
+	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0., Regularization::L2, 0.1, ActuationFuncType::SoftMax, training_type, false);
     Layer* layer_output = new ConstructLayer(p_list_output);
     layer_output -> SetPrevLayer(l6);
     layer_output -> Init();

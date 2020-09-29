@@ -410,23 +410,25 @@ struct LayerParameterList
 
     TrainingType _gTrainingType;        // for all layers,
 
+    bool _gUseBatchNormalization;       // for batch normalization
+
     // default constructor
     LayerParameterList():
 	_gLayerType(LayerType::Undefined), _gLayerDimension(LayerDimension::Undefined), 
 	_pDataInterface(nullptr), _nNeuronsFC(0), _nKernels(0), _gDimKernel(std::pair<size_t, size_t>(0, 0)),
 	_gLearningRate(0), _gUseDropout(false), _gdropoutBranches(0), _gDropoutFactor(0), _gRegularization(Regularization::Undefined),
-	_gRegularizationParameter(0), _gActuationFuncType(ActuationFuncType::Sigmoid), _gTrainingType(TrainingType::NewTraining)
+	_gRegularizationParameter(0), _gActuationFuncType(ActuationFuncType::Sigmoid), _gTrainingType(TrainingType::NewTraining), _gUseBatchNormalization(false)
     {
     }
 
     LayerParameterList(LayerType layer_type, LayerDimension layer_dimension, DataInterface *data_interface, 
 	    size_t n_neurons, size_t n_kernels, std::pair<size_t, size_t> dimension_kernel, double learning_rate,
 	    bool use_dropout, int dropout_branches, double dropout_factor, Regularization regu, double regu_parameter, 
-	    ActuationFuncType neuron_act_f_type, TrainingType training_type):
+	    ActuationFuncType neuron_act_f_type, TrainingType training_type, bool batch_normalization):
 	_gLayerType(layer_type), _gLayerDimension(layer_dimension), 
 	_pDataInterface(data_interface), _nNeuronsFC(n_neurons), _nKernels(n_kernels), _gDimKernel(dimension_kernel),
 	_gLearningRate(learning_rate), _gUseDropout(use_dropout), _gdropoutBranches(dropout_branches), _gDropoutFactor(dropout_factor), _gRegularization(regu),
-	_gRegularizationParameter(regu_parameter), _gActuationFuncType(neuron_act_f_type), _gTrainingType(training_type)
+	_gRegularizationParameter(regu_parameter), _gActuationFuncType(neuron_act_f_type), _gTrainingType(training_type), _gUseBatchNormalization(batch_normalization)
     {
     }
 };

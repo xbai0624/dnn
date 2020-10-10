@@ -170,7 +170,7 @@ void Network::ConstructLayers(TrainingType training_type)
 
     // 5) output layer ID = 6
     LayerParameterList p_list6(LayerType::output, LayerDimension::_1D, data_interface, 2, 0, 
-	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0., Regularization::L2, regularization_factor, ActuationFuncType::SoftMax, resume_or_new_training, false);
+	    std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0., Regularization::L2, regularization_factor, ActuationFuncType::SoftMax, resume_or_new_training, true);
     Layer* layer_output = new ConstructLayer(p_list6);
     layer_output -> SetPrevLayer(l5);
     layer_output -> Init();

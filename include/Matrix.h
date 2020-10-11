@@ -153,6 +153,7 @@ public:
     static Matrix ConcatenateMatrixByI(Matrix &, Matrix &);
     // concatenate a vector of matrix in i direction / vertically
     static Matrix ConcatenateMatrixByI(std::vector<Matrix> &);
+    static Matrix ConcatenateMatrixByI(std::vector<Matrix> *);
     // concatenate two matrix in j direction / horizontally
     static Matrix ConcatenateMatrixByJ(Matrix &, Matrix &);
     // concatenate a vector of matrix in j direction / horizontally

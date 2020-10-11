@@ -12,16 +12,16 @@ class Network
 public:
     Network();
     template<typename T>
-	Network(T l)
-	{
-	    __middleAndOutputLayers.push_back(dynamic_cast<Layer*>(l));
-	}
+        Network(T l)
+        {
+            __middleAndOutputLayers.push_back(dynamic_cast<Layer*>(l));
+        }
 
     template<typename T, typename... Args>
-	Network(T l, Args... pars)
-	{
-	    Network(pars...);
-	}
+        Network(T l, Args... pars)
+        {
+            Network(pars...);
+        }
     ~Network();
 
     // inits

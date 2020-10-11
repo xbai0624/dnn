@@ -102,7 +102,7 @@ std::vector<Matrix>& DataInterface::GetNewBatchLabel()
     if(gLabelIndex + 1 != gDataIndex) // this is to make sure one access data first, then label
     {
         cout<<"Error: DataInterface data & label are not aligned."<<endl;
-	exit(0);
+        exit(0);
     }
     gLabelIndex++;
 
@@ -112,7 +112,7 @@ std::vector<Matrix>& DataInterface::GetNewBatchLabel()
 std::vector<Images>& DataInterface::GetNewBatchDataImage()
 {
     // return data in Images form
-    
+
     // 1) update batch
     UpdateBatch(__data, __label);
     assert(__data.size() == __label.size());
@@ -122,12 +122,12 @@ std::vector<Images>& DataInterface::GetNewBatchDataImage()
     {
         // reform it in Images format
         Images _image;
-	_image.OutputImageFromKernel.push_back(__data[i]);
-	__data_image.push_back(_image);
+        _image.OutputImageFromKernel.push_back(__data[i]);
+        __data_image.push_back(_image);
 
-	Images _image_label;
-	_image_label.OutputImageFromKernel.push_back(__label[i]);
-	__label_image.push_back(_image_label);
+        Images _image_label;
+        _image_label.OutputImageFromKernel.push_back(__label[i]);
+        __label_image.push_back(_image_label);
     }
 
     return __data_image;
@@ -138,7 +138,7 @@ std::vector<Images>& DataInterface::GetNewBatchLabelImage()
     if(gLabelIndex + 1 != gDataIndex) // this is to make sure one access data first, then label
     {
         cout<<"Error: DataInterface data & label are not aligned."<<endl;
-	exit(0);
+        exit(0);
     }
     gLabelIndex++;
 
@@ -165,39 +165,39 @@ void DataInterface::UpdateBatch(vector<Matrix> &data, vector<Matrix> &label)
     {
         // data signal
         Matrix M;	
-	if(__gLayerDimension == LayerDimension::_1D)
-	{
-	    // if input layer is 1D, then reshape images into a collum vector
-	    M = test_training_signal[offset+i].Reshape(total_elements, 1);
-	}
-	else
-	{
-	    M = test_training_signal[offset+i];
-	}
+        if(__gLayerDimension == LayerDimension::_1D)
+        {
+            // if input layer is 1D, then reshape images into a collum vector
+            M = test_training_signal[offset+i].Reshape(total_elements, 1);
+        }
+        else
+        {
+            M = test_training_signal[offset+i];
+        }
         data.push_back(M);
 
         // label
-	Matrix signal_label_m(2, 1, 0); // signal label
-	signal_label_m[0][0] = 1;
-	label.push_back(signal_label_m);
+        Matrix signal_label_m(2, 1, 0); // signal label
+        signal_label_m[0][0] = 1;
+        label.push_back(signal_label_m);
     }
     for(int i=0;i<batch_size;i++) // cosmic data
     {
         // data cosmic
-	Matrix M;
-	if(__gLayerDimension == LayerDimension::_1D)
-	{
-	    M = test_training_cosmic[offset+i].Reshape(total_elements, 1);
-	}
-	else
-	{
-	    M = test_training_cosmic[offset+i];
-	}
+        Matrix M;
+        if(__gLayerDimension == LayerDimension::_1D)
+        {
+            M = test_training_cosmic[offset+i].Reshape(total_elements, 1);
+        }
+        else
+        {
+            M = test_training_cosmic[offset+i];
+        }
         data.push_back(M);
 
-	// label
-	Matrix cosmic_label_m(2, 1, 0); // cosmic label
-	cosmic_label_m[1][0] = 1;
+        // label
+        Matrix cosmic_label_m(2, 1, 0); // cosmic label
+        cosmic_label_m[1][0] = 1;
         label.push_back(cosmic_label_m);
     }
 
@@ -226,47 +226,47 @@ void DataInterface::loadFile(const char* path, std::vector<Matrix> &contents)
     if(!f.is_open()) 
     {
         std::cout<<__func__<<" Error: Cannot open file: "<<path<<std::endl;
-	exit(0);
+        exit(0);
     }
 
     string line;
     while(getline(f, line))
     {
         istringstream iss(line);
-	string tmp;
-	vector<double> vec;
-	while(iss>>tmp)
-	{
-	    if(tmp.size() > 0) 
-	    {
-	        double a = stod(tmp);
-		vec.push_back(a);
-	    }
-	}
-	assert(vec.size() == 27);
+        string tmp;
+        vector<double> vec;
+        while(iss>>tmp)
+        {
+            if(tmp.size() > 0) 
+            {
+                double a = stod(tmp);
+                vec.push_back(a);
+            }
+        }
+        assert(vec.size() == 27);
 
-	size_t horizontal = 10;
-	size_t vertical = 10;
-	if(__dataDimensionFromParameter.first > 0)
-	{
-	    // if data dimension is set using the constructor parameter, then use it
-	    horizontal = sqrt((int)__dataDimensionFromParameter.first * (int)__dataDimensionFromParameter.second);
-	    vertical = horizontal;
-	}
-	Matrix m(horizontal, vertical); // 
-	for(size_t i=0;i<vec.size();i+=3)
-	{
-	    size_t ii = vec[i];
-	    size_t jj = vec[i+1];
-	    assert(ii<horizontal && jj < vertical);
-	    double val = vec[i+2];
+        size_t horizontal = 10;
+        size_t vertical = 10;
+        if(__dataDimensionFromParameter.first > 0)
+        {
+            // if data dimension is set using the constructor parameter, then use it
+            horizontal = sqrt((int)__dataDimensionFromParameter.first * (int)__dataDimensionFromParameter.second);
+            vertical = horizontal;
+        }
+        Matrix m(horizontal, vertical); // 
+        for(size_t i=0;i<vec.size();i+=3)
+        {
+            size_t ii = vec[i];
+            size_t jj = vec[i+1];
+            assert(ii<horizontal && jj < vertical);
+            double val = vec[i+2];
 
-	    m[ii][jj] = val;
-	}
+            m[ii][jj] = val;
+        }
 
         Matrix _mm = m.Reshape(__dataDimensionFromParameter.first, __dataDimensionFromParameter.second);
         //Matrix mm = _mm.Normalization();
-	contents.push_back(_mm);
+        contents.push_back(_mm);
     }
 
     // *** implement the image dimension
@@ -274,11 +274,11 @@ void DataInterface::loadFile(const char* path, std::vector<Matrix> &contents)
     auto dim = contents[0].Dimension();
     if(__gLayerDimension == LayerDimension::_1D)
     {
-	__dataDimension.second = 1;
-	__dataDimension.first = dim.first * dim.second;
+        __dataDimension.second = 1;
+        __dataDimension.first = dim.first * dim.second;
     }
     else 
     {
-	__dataDimension = dim;
+        __dataDimension = dim;
     }
 }

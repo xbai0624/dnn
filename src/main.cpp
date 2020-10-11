@@ -11,13 +11,12 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
+    feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
     Network *net_work = new Network();
     net_work->Init();
 
     net_work->Train();
     //net_work->Classify();
-
 
     // test
     //UnitTest *test = new UnitTest();

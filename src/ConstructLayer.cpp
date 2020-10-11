@@ -34,7 +34,7 @@ ConstructLayer::ConstructLayer(LayerParameterList p_list)
     if(p_list._gUseDropout)
     {
         EnableDropOut();
-	__dropOutBranches = p_list._gdropoutBranches;
+        __dropOutBranches = p_list._gdropoutBranches;
         SetDropOutFactor(p_list._gDropoutFactor);
     }
     else
@@ -63,12 +63,12 @@ ConstructLayer::ConstructLayer(LayerParameterList p_list)
     else if(__type == LayerType::cnn)
     {
         SetNumberOfKernelsCNN(p_list._nKernels);
-	SetKernelSizeCNN(p_list._gDimKernel);
+        SetKernelSizeCNN(p_list._gDimKernel);
     }
     else if(__type == LayerType::pooling)
     {
         SetNumberOfKernelsCNN(p_list._nKernels);
-	SetKernelSizeCNN(p_list._gDimKernel);
+        SetKernelSizeCNN(p_list._gDimKernel);
     }
     else if(__type == LayerType::output)
     {
@@ -76,9 +76,9 @@ ConstructLayer::ConstructLayer(LayerParameterList p_list)
     }
     else
     {
-	std::cout<<__func__<<" Error: trying to construct unsupported layer."
-	    <<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: trying to construct unsupported layer."
+            <<std::endl;
+        exit(0);
     }
 }
 
@@ -114,25 +114,25 @@ void ConstructLayer::Init()
 {
     if(__type == LayerType::input) 
     {
-	InitNeurons();
-	InitFilters(); // input layer need to init filters, make all neurons active
+        InitNeurons();
+        InitFilters(); // input layer need to init filters, make all neurons active
     }
     else if(__type == LayerType::output) // output layer, reserved
     {
-	InitNeurons();
-	InitWeightsAndBias();
+        InitNeurons();
+        InitWeightsAndBias();
     }
     else  // other layer
     {
-	InitNeurons();
-	InitWeightsAndBias();
+        InitNeurons();
+        InitWeightsAndBias();
     }
 
     // setup drop out pool
     InitFilters();
     if(__use_drop_out)
     {
-	SetupDropOutFilterPool();
+        SetupDropOutFilterPool();
     }
 
     // init batch normalization
@@ -178,14 +178,14 @@ void ConstructLayer::BatchInit()
     {
         // use different drop-out branches in a rolling sequence
         __dropOutBranchIndex++;
-	__dropOutBranchIndex = __dropOutBranchIndex%__dropOutBranches;
-	DropOut();
+        __dropOutBranchIndex = __dropOutBranchIndex%__dropOutBranches;
+        DropOut();
     }
 
     // only fc layer; cnn layer image won't change
     if(__type == LayerType::fullyConnected || __type == LayerType::output) 
     {
-	UpdateCoordsForActiveNeuronFC();
+        UpdateCoordsForActiveNeuronFC();
     }
 
     // prepare weights and bias
@@ -216,13 +216,13 @@ void ConstructLayer::BatchInit()
     for(auto &pixel_2d: __neurons)
     {
         auto dim = pixel_2d.Dimension();
-	for(size_t i=0;i<dim.first;i++)
-	{
-	    for(size_t j=0;j<dim.second;j++)
-	    {
-	        pixel_2d[i][j]->ClearPreviousBatch();
-	    }
-	}
+        for(size_t i=0;i<dim.first;i++)
+        {
+            for(size_t j=0;j<dim.second;j++)
+            {
+                pixel_2d[i][j]->ClearPreviousBatch();
+            }
+        }
     }
 
     // batch normalization
@@ -245,12 +245,12 @@ void ConstructLayer::ProcessSample()
 void  ConstructLayer::SetNumberOfNeuronsFC(size_t n)
 {
     if(__type == LayerType::fullyConnected || __type == LayerType::output) {
-	__n_neurons_fc = n;
+        __n_neurons_fc = n;
     }
     else {
-	std::cout<<"Error: needs to set layer type before setting number of neurons."
-	    <<std::endl;
-	exit(0);
+        std::cout<<"Error: needs to set layer type before setting number of neurons."
+            <<std::endl;
+        exit(0);
     }
 }
 
@@ -258,9 +258,9 @@ void  ConstructLayer::SetNumberOfKernelsCNN(size_t n)
 {
     if(__type != LayerType::cnn && __type != LayerType::pooling)
     {
-	std::cout<<"Error: needs to set layer type before setting number of kernels."
-	    <<std::endl;
-	exit(0);
+        std::cout<<"Error: needs to set layer type before setting number of kernels."
+            <<std::endl;
+        exit(0);
     }
     __n_kernels_cnn = n;
 }
@@ -270,9 +270,9 @@ void  ConstructLayer::SetKernelSizeCNN(std::pair<size_t, size_t> s)
     // pooling layer also borrowed this function
     if(__type != LayerType::cnn && __type != LayerType::pooling)
     {
-	std::cout<<__func__<<" Error: needs to set layer type before setting kernel size."
-	    <<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: needs to set layer type before setting kernel size."
+            <<std::endl;
+        exit(0);
     }
 
     __kernelDim.first = s.first;
@@ -292,19 +292,19 @@ void  ConstructLayer::SetNextLayer(Layer* layer)
 void ConstructLayer::InitNeurons()
 {
     if(__type == LayerType::cnn)
-	InitNeuronsCNN();
+        InitNeuronsCNN();
     else if(__type == LayerType::pooling)
         InitNeuronsPooling();
     else if(__type == LayerType::input)
-	InitNeuronsInputLayer();
+        InitNeuronsInputLayer();
     else if(__type == LayerType::fullyConnected)
-	InitNeuronsFC();
+        InitNeuronsFC();
     else if(__type == LayerType::output)
         InitNeuronsFC();
     else
     {
-	std::cout<<"Error: Init neurons, unrecognized layer type."<<std::endl;
-	exit(0);
+        std::cout<<"Error: Init neurons, unrecognized layer type."<<std::endl;
+        exit(0);
     }
     //std::cout<<"Debug: Layer:"<<GetID()<<" init neruons done."<<std::endl;
 
@@ -315,24 +315,24 @@ void ConstructLayer::InitNeurons()
     size_t j = 0;
     if(k > 0)
     {
-	i = __neurons[0].Dimension().first;
-	j = __neurons[0].Dimension().second;
+        i = __neurons[0].Dimension().first;
+        j = __neurons[0].Dimension().second;
 
-	__neuronDim.k = k;
-	__neuronDim.i = i;
-	__neuronDim.j = j;
+        __neuronDim.k = k;
+        __neuronDim.i = i;
+        __neuronDim.j = j;
     }
 
     // setup neuron layer information
     for(size_t kk=0;kk<k;kk++)
     {
-	for(size_t ii=0;ii<i;ii++)
-	    for(size_t jj=0;jj<j;jj++)
-	    {
-		__neurons[kk][ii][jj]->SetLayer(dynamic_cast<Layer*>(this));
-		//__neurons[kk][ii][jj]->SetPreviousLayer(__prevLayer); // obsolete
-		//__neurons[kk][ii][jj]->SetNextLayer(__nextLayer);     // obsolete
-	    }
+        for(size_t ii=0;ii<i;ii++)
+            for(size_t jj=0;jj<j;jj++)
+            {
+                __neurons[kk][ii][jj]->SetLayer(dynamic_cast<Layer*>(this));
+                //__neurons[kk][ii][jj]->SetPreviousLayer(__prevLayer); // obsolete
+                //__neurons[kk][ii][jj]->SetNextLayer(__nextLayer);     // obsolete
+            }
     }
 }
 
@@ -360,26 +360,26 @@ void ConstructLayer::InitNeuronsCNN()
 
     if(__cnnStride > 1)
     {
-	__outputImageSizeCNN.first = (int)__outputImageSizeCNN.first / (int) __cnnStride + 1;
-	__outputImageSizeCNN.second = (int)__outputImageSizeCNN.second / (int) __cnnStride + 1;
+        __outputImageSizeCNN.first = (int)__outputImageSizeCNN.first / (int) __cnnStride + 1;
+        __outputImageSizeCNN.second = (int)__outputImageSizeCNN.second / (int) __cnnStride + 1;
     }
     assert(__outputImageSizeCNN.first >=1);
     assert(__outputImageSizeCNN.second >=1);
 
     for(size_t k=0;k<__n_kernels_cnn;k++)
     {
-	Pixel2D<Neuron*> image(__outputImageSizeCNN.first, __outputImageSizeCNN.second);
-	for(size_t i=0;i<__outputImageSizeCNN.first;i++)
-	{
-	    for(size_t j=0;j<__outputImageSizeCNN.second;j++)
-	    {
-		Neuron *n = new Neuron();
-		n->SetCoord(i, j, k); // set neuron coord
-		n->SetActuationFuncType(__neuron_actuation_func_type);
-		image[i][j] = n;
-	    }
-	}
-	__neurons.push_back(image);
+        Pixel2D<Neuron*> image(__outputImageSizeCNN.first, __outputImageSizeCNN.second);
+        for(size_t i=0;i<__outputImageSizeCNN.first;i++)
+        {
+            for(size_t j=0;j<__outputImageSizeCNN.second;j++)
+            {
+                Neuron *n = new Neuron();
+                n->SetCoord(i, j, k); // set neuron coord
+                n->SetActuationFuncType(__neuron_actuation_func_type);
+                image[i][j] = n;
+            }
+        }
+        __neurons.push_back(image);
     }
 }
 
@@ -417,18 +417,18 @@ void ConstructLayer::InitNeuronsPooling()
 
     for(size_t k=0;k<__n_kernels_cnn;k++)
     {
-	Pixel2D<Neuron*> image(__outputImageSizeCNN.first, __outputImageSizeCNN.second);
-	for(size_t i=0;i<__outputImageSizeCNN.first;i++)
-	{
-	    for(size_t j=0;j<__outputImageSizeCNN.second;j++)
-	    {
-		Neuron *n = new Neuron();
-		n->SetCoord(i, j, k); // set neuron coord
-		n->SetActuationFuncType(__neuron_actuation_func_type);
-		image[i][j] = n;
-	    }
-	}
-	__neurons.push_back(image);
+        Pixel2D<Neuron*> image(__outputImageSizeCNN.first, __outputImageSizeCNN.second);
+        for(size_t i=0;i<__outputImageSizeCNN.first;i++)
+        {
+            for(size_t j=0;j<__outputImageSizeCNN.second;j++)
+            {
+                Neuron *n = new Neuron();
+                n->SetCoord(i, j, k); // set neuron coord
+                n->SetActuationFuncType(__neuron_actuation_func_type);
+                image[i][j] = n;
+            }
+        }
+        __neurons.push_back(image);
     }
 }
 
@@ -439,10 +439,10 @@ void ConstructLayer::InitNeuronsFC()
     Pixel2D<Neuron*> image(__n_neurons_fc, 1);
     for(size_t i=0;i<__n_neurons_fc;i++)
     {
-	Neuron *n = new Neuron();
-	n->SetCoord(i, 0, 0);
-	n->SetActuationFuncType(__neuron_actuation_func_type);
-	image[i][0] = n;
+        Neuron *n = new Neuron();
+        n->SetCoord(i, 0, 0);
+        n->SetActuationFuncType(__neuron_actuation_func_type);
+        image[i][0] = n;
     }
     __neurons.push_back(image);
 }
@@ -455,7 +455,7 @@ void ConstructLayer::InitNeuronsInputLayer()
     if(__p_data_interface == nullptr)
     {
         std::cout<<__func__<<" Error: must implement/pass DataInterface class before initializing neurons for input layer"
-	         <<std::endl;
+            <<std::endl;
         exit(0);
     }
 
@@ -468,20 +468,20 @@ void ConstructLayer::InitNeuronsInputLayer()
     //     its following layer to setup weight matrix dimension
     if(__layerDimension == LayerDimension::_1D)
     {
-	assert(dim.second == 1); // make sure matrix transformation has been done
-	//cout<<"Info::input layer dimension: "<<dim<<endl;
-	Pixel2D<Neuron*> image(dim.first, dim.second);
-	for(size_t i=0;i<dim.first;i++)
-	{
-	    for(size_t j=0;j<dim.second;j++)
-	    {
-		Neuron *n = new Neuron();
-		// n->SetCoord(i, j, k); // input layer neuron does not need coord
-		n->SetActuationFuncType(__neuron_actuation_func_type);
-		image[i][0] = n;
-	    }
-	}
-	__neurons.push_back(image);
+        assert(dim.second == 1); // make sure matrix transformation has been done
+        //cout<<"Info::input layer dimension: "<<dim<<endl;
+        Pixel2D<Neuron*> image(dim.first, dim.second);
+        for(size_t i=0;i<dim.first;i++)
+        {
+            for(size_t j=0;j<dim.second;j++)
+            {
+                Neuron *n = new Neuron();
+                // n->SetCoord(i, j, k); // input layer neuron does not need coord
+                n->SetActuationFuncType(__neuron_actuation_func_type);
+                image[i][0] = n;
+            }
+        }
+        __neurons.push_back(image);
     }
 
     // 2):
@@ -490,18 +490,18 @@ void ConstructLayer::InitNeuronsInputLayer()
     else if(__layerDimension == LayerDimension::_2D)
     {
         // 2D layers neurons number should equal to dim.first * dim.second
-	size_t total_neurons = dim.first * dim.second;
-	Pixel2D<Neuron*> image(total_neurons, 1);
-	for(size_t i=0;i<total_neurons;i++)
-	{
-	    for(size_t j=0;j<1;j++)
-	    {
-		Neuron *n = new Neuron();
-		// n->SetCoord(i, j, k); // input layer neuron does not need coord
-		image[i][0] = n;
-	    }
-	}
-	__neurons.push_back(image);
+        size_t total_neurons = dim.first * dim.second;
+        Pixel2D<Neuron*> image(total_neurons, 1);
+        for(size_t i=0;i<total_neurons;i++)
+        {
+            for(size_t j=0;j<1;j++)
+            {
+                Neuron *n = new Neuron();
+                // n->SetCoord(i, j, k); // input layer neuron does not need coord
+                image[i][0] = n;
+            }
+        }
+        __neurons.push_back(image);
     }
 }
 
@@ -515,49 +515,49 @@ void ConstructLayer::InitFilters()
     // init filter 2d matrix, fill true value to all elements
     if(__type == LayerType::input)
     {
-	if(__layerDimension == LayerDimension::_1D)
-	{
-	    assert(__neurons.size() == 1); // only one kernel
-	    auto dim = __neurons[0].Dimension();
-	    Filter2D f(dim.first, dim.second); // default to true
-	    __activeFlag.push_back(f);
-	}
-	else if(__layerDimension == LayerDimension::_2D)
-	{
-	    // 2D input layer need a fake filter with dimension (number_of_fake_neurons, 1), similar like 1D
-	    // this is just in case one directly connect a 2D input layer to a 1D fc layer
-	    //
-	    // since filters in 2D middle layers are not used, so it is safe to code like 1D case
-	    assert(__neurons.size() == 1); // only one kernel
-	    auto dim = __neurons[0].Dimension(); // for 2D layer, the fake neurons has also been initialized
-	    Filter2D f(dim.first, dim.second); // default to true
-	    __activeFlag.push_back(f);
-	}
+        if(__layerDimension == LayerDimension::_1D)
+        {
+            assert(__neurons.size() == 1); // only one kernel
+            auto dim = __neurons[0].Dimension();
+            Filter2D f(dim.first, dim.second); // default to true
+            __activeFlag.push_back(f);
+        }
+        else if(__layerDimension == LayerDimension::_2D)
+        {
+            // 2D input layer need a fake filter with dimension (number_of_fake_neurons, 1), similar like 1D
+            // this is just in case one directly connect a 2D input layer to a 1D fc layer
+            //
+            // since filters in 2D middle layers are not used, so it is safe to code like 1D case
+            assert(__neurons.size() == 1); // only one kernel
+            auto dim = __neurons[0].Dimension(); // for 2D layer, the fake neurons has also been initialized
+            Filter2D f(dim.first, dim.second); // default to true
+            __activeFlag.push_back(f);
+        }
     }
     else if(__type == LayerType::output)
     {
-	assert(__neurons.size() == 1); // only one kernel
-	auto dim = __neurons[0].Dimension();
-	assert(dim.second == 1); // only one collum
-	Filter2D f(dim.first, dim.second); // default to true
-	__activeFlag.push_back(f);
+        assert(__neurons.size() == 1); // only one kernel
+        auto dim = __neurons[0].Dimension();
+        assert(dim.second == 1); // only one collum
+        Filter2D f(dim.first, dim.second); // default to true
+        __activeFlag.push_back(f);
     }
     else if(__type == LayerType::fullyConnected)
     {
-	assert(__neurons.size() == 1);
-	auto dim = __neurons[0].Dimension();
-	Filter2D f(dim.first, dim.second); // default to true
-	__activeFlag.push_back(f);
+        assert(__neurons.size() == 1);
+        auto dim = __neurons[0].Dimension();
+        Filter2D f(dim.first, dim.second); // default to true
+        __activeFlag.push_back(f);
     }
     else if(__type == LayerType::cnn || __type == LayerType::pooling)
     {
-	size_t nKernels = __weightMatrix.size();
-	for(size_t i=0;i<nKernels;i++)
-	{
-	    auto dim = __weightMatrix[i].Dimension();
-	    Filter2D f(dim.first, dim.second); // default to true
-	    __activeFlag.push_back(f);
-	}
+        size_t nKernels = __weightMatrix.size();
+        for(size_t i=0;i<nKernels;i++)
+        {
+            auto dim = __weightMatrix[i].Dimension();
+            Filter2D f(dim.first, dim.second); // default to true
+            __activeFlag.push_back(f);
+        }
     }
 }
 
@@ -579,7 +579,7 @@ void  ConstructLayer::InitWeightsAndBias()
     if(__p_data_interface == nullptr)
     {
         std::cout<<__func__<<" error: layer Need DataInterface already set."
-	         <<std::endl;
+            <<std::endl;
         exit(0);
     }
     //int batch_size = __p_data_interface->GetBatchSize();
@@ -592,121 +592,121 @@ void  ConstructLayer::InitWeightsAndBias()
 
     if(__type == LayerType::fullyConnected || __type == LayerType::output) // output layer is also a fully connected layer
     {
-	int n_prev = 0;
-	int n_curr = GetNumberOfNeurons();
-	if(__prevLayer == nullptr) // input layer
-	{
-	    std::cout<<"ERROR WARNING: layer"<<GetID()
-		<<" has no prev layer, default 10 neruons for prev layer was used."
-		<<std::endl;
-	    n_prev = 10;
-	}
-	else 
-	    n_prev = __prevLayer->GetNumberOfNeurons();
+        int n_prev = 0;
+        int n_curr = GetNumberOfNeurons();
+        if(__prevLayer == nullptr) // input layer
+        {
+            std::cout<<"ERROR WARNING: layer"<<GetID()
+                <<" has no prev layer, default 10 neruons for prev layer was used."
+                <<std::endl;
+            n_prev = 10;
+        }
+        else 
+            n_prev = __prevLayer->GetNumberOfNeurons();
 
         // weight initialization
-	Matrix w(n_curr, n_prev);
-	if(GetNeuronActuationFuncType() != ActuationFuncType::Relu)
-	{
-	    // for non-ReLu actuation functions, use Xavier initialization
-	    // random with a normal distribution with sigma = 1/sqrt(number of fan-in neurons)
-	    w.RandomGaus(0., 1./sqrt((double)n_prev)); // (0, sqrt(n_neuron)) normal distribution
+        Matrix w(n_curr, n_prev);
+        if(GetNeuronActuationFuncType() != ActuationFuncType::Relu)
+        {
+            // for non-ReLu actuation functions, use Xavier initialization
+            // random with a normal distribution with sigma = 1/sqrt(number of fan-in neurons)
+            w.RandomGaus(0., 1./sqrt((double)n_prev)); // (0, sqrt(n_neuron)) normal distribution
 
-	    //w.RandomGaus(0., 1./sqrt((double)total_entries)); // (0, sqrt(n_neuron)) normal distribution
-	}
-	else
-	{
-	    // for ReLu actuation functions, use Kaiming He method: https://arxiv.org/pdf/1502.01852.pdf
-	    // step 1): initialize the matrix with a standard normal distribution
-	    w.RandomGaus(0., 1.);
+            //w.RandomGaus(0., 1./sqrt((double)total_entries)); // (0, sqrt(n_neuron)) normal distribution
+        }
+        else
+        {
+            // for ReLu actuation functions, use Kaiming He method: https://arxiv.org/pdf/1502.01852.pdf
+            // step 1): initialize the matrix with a standard normal distribution
+            w.RandomGaus(0., 1.);
 
-	    // step 2): then hadamard the weight matrix with a number sqrt(2/n)
-	    //          where n is the fan-in neurons (number of neurons in previous layer)
-	    w = w*sqrt(2./(double)n_prev);
-	}
-	__weightMatrix.push_back(w);
+            // step 2): then hadamard the weight matrix with a number sqrt(2/n)
+            //          where n is the fan-in neurons (number of neurons in previous layer)
+            w = w*sqrt(2./(double)n_prev);
+        }
+        __weightMatrix.push_back(w);
 
         // bias initialization
-	Matrix b(n_curr, 1);
-	if(GetNeuronActuationFuncType() != ActuationFuncType::Relu)
-	{
-	    // for non-ReLu neurons, use Xavier initialization, initialize it to 0
-	    b = b * 0.;
-	    //b.RandomGaus(0., 1.); // (0, 1) normal distribution
-	}
-	else if(__use_batch_normalization)
-	{
-	    // if use batch normalization, b = 0
-	    // b is combined into \beta
-	    b = b*0.;
-	}
-	else
-	{
-	    // for ReLu neurons, use Kaiming He method, initialize bias to 0
+        Matrix b(n_curr, 1);
+        if(GetNeuronActuationFuncType() != ActuationFuncType::Relu)
+        {
+            // for non-ReLu neurons, use Xavier initialization, initialize it to 0
+            b = b * 0.;
+            //b.RandomGaus(0., 1.); // (0, 1) normal distribution
+        }
+        else if(__use_batch_normalization)
+        {
+            // if use batch normalization, b = 0
+            // b is combined into \beta
             b = b*0.;
-	}
-	__biasVector.push_back(b);
+        }
+        else
+        {
+            // for ReLu neurons, use Kaiming He method, initialize bias to 0
+            b = b*0.;
+        }
+        __biasVector.push_back(b);
     }
     else if(__type == LayerType::cnn)
     {
-	//auto norm_factor = __p_data_interface->GetBatchSize();
-	for(size_t i=0;i<__n_kernels_cnn;i++)
-	{
-	    Matrix w(__kernelDim);
-	    // weight matrix initialization
-	    if(GetNeuronActuationFuncType() != ActuationFuncType::Relu)
-	    {
-	        // for non-ReLu neurons, use Xavier initialization
-		int fan_in_neurons = __prevLayer->GetNumberOfNeurons();
-		w.RandomGaus(0., 1./sqrt((double)fan_in_neurons));
-		//w.RandomGaus(0., 1./sqrt((double)total_entries));
-	    }
-	    else
-	    {
-	        // for ReLu neurons, use Kaiming He method
-		w.RandomGaus(0., 1.);
-		int fan_in_neurons = __prevLayer->GetNumberOfNeurons();
-		w = w * sqrt(2./ (double) fan_in_neurons);
-	    }
-	    __weightMatrix.push_back(w);
+        //auto norm_factor = __p_data_interface->GetBatchSize();
+        for(size_t i=0;i<__n_kernels_cnn;i++)
+        {
+            Matrix w(__kernelDim);
+            // weight matrix initialization
+            if(GetNeuronActuationFuncType() != ActuationFuncType::Relu)
+            {
+                // for non-ReLu neurons, use Xavier initialization
+                int fan_in_neurons = __prevLayer->GetNumberOfNeurons();
+                w.RandomGaus(0., 1./sqrt((double)fan_in_neurons));
+                //w.RandomGaus(0., 1./sqrt((double)total_entries));
+            }
+            else
+            {
+                // for ReLu neurons, use Kaiming He method
+                w.RandomGaus(0., 1.);
+                int fan_in_neurons = __prevLayer->GetNumberOfNeurons();
+                w = w * sqrt(2./ (double) fan_in_neurons);
+            }
+            __weightMatrix.push_back(w);
 
-	    Matrix b(1, 1);
-	    // bias matrix initialization
-	    if(GetNeuronActuationFuncType() != ActuationFuncType::Relu)
-	    {
-	        // for non-ReLu neurons, use Xavier initialization
-		// Xavier also require b to be initialized with 0
-		b = b * 0.;
-		//b.RandomGaus(0., 1.); // (0, 1) normal distribution
-	    }
-	    else if(__use_batch_normalization)
-	    {
-		// if use batch normalization, b = 0
-		// b is combined into \beta
-		b = b*0.;
-	    }
-	    else 
-	    {
-	        // for ReLu neurons, use Kaiming He method, set bias to 0.
-	        b = b * 0.;
-	    }
-	    __biasVector.push_back(b);
-	}
+            Matrix b(1, 1);
+            // bias matrix initialization
+            if(GetNeuronActuationFuncType() != ActuationFuncType::Relu)
+            {
+                // for non-ReLu neurons, use Xavier initialization
+                // Xavier also require b to be initialized with 0
+                b = b * 0.;
+                //b.RandomGaus(0., 1.); // (0, 1) normal distribution
+            }
+            else if(__use_batch_normalization)
+            {
+                // if use batch normalization, b = 0
+                // b is combined into \beta
+                b = b*0.;
+            }
+            else 
+            {
+                // for ReLu neurons, use Kaiming He method, set bias to 0.
+                b = b * 0.;
+            }
+            __biasVector.push_back(b);
+        }
     }
     else if(__type == LayerType::pooling)
     {
         for(size_t i=0;i<__n_kernels_cnn;i++) // pooling used cnn symbol
-	{
-	    Matrix w(__kernelDim, 1); // pooling layer weight and bias matrix are not used, so set them to 1
-	    __weightMatrix.push_back(w);
+        {
+            Matrix w(__kernelDim, 1); // pooling layer weight and bias matrix are not used, so set them to 1
+            __weightMatrix.push_back(w);
 
-	    Matrix b(1, 1, 0);
-	    __biasVector.push_back(b);
-	}
+            Matrix b(1, 1, 0);
+            __biasVector.push_back(b);
+        }
     }
     else {
-	std::cout<<"Error: need layer type info before initing w&b."<<std::endl;
-	exit(0);
+        std::cout<<"Error: need layer type info before initing w&b."<<std::endl;
+        exit(0);
     }
 }
 
@@ -722,16 +722,16 @@ void ConstructLayer::ForwardPropagate_Z_ForSample(int sample_index)
     // step 1) finish z
     for(size_t k=0;k<__neurons.size();k++)
     {
-	auto dim = __neurons[k].Dimension();
-	for(size_t i=0;i<dim.first;i++)
-	{
-	    for(size_t j=0;j<dim.second;j++)
-	    {
-		//cout<<"coord (i, j, k): ("<<i<<", "<<j<<", "<<k<<")"<<endl;
-		if(!__neurons[k][i][j]->IsActive()) continue;
-		__neurons[k][i][j] -> UpdateZ(sample_index);
-	    }
-	}
+        auto dim = __neurons[k].Dimension();
+        for(size_t i=0;i<dim.first;i++)
+        {
+            for(size_t j=0;j<dim.second;j++)
+            {
+                //cout<<"coord (i, j, k): ("<<i<<", "<<j<<", "<<k<<")"<<endl;
+                if(!__neurons[k][i][j]->IsActive()) continue;
+                __neurons[k][i][j] -> UpdateZ(sample_index);
+            }
+        }
     }
     UpdateImagesZ(sample_index);
 }
@@ -750,17 +750,17 @@ void ConstructLayer::ForwardPropagate_SigmaPrimeAndA_ForSample(int sample_index)
     // step 2) then  finish a and sigma^\prime
     for(size_t k=0;k<__neurons.size();k++)
     {
-	auto dim = __neurons[k].Dimension();
-	for(size_t i=0;i<dim.first;i++)
-	{
-	    for(size_t j=0;j<dim.second;j++)
-	    {
-		//cout<<"coord (i, j, k): ("<<i<<", "<<j<<", "<<k<<")"<<endl;
-		if(!__neurons[k][i][j]->IsActive()) continue;
-		__neurons[k][i][j] -> UpdateA(sample_index);
-		__neurons[k][i][j] -> UpdateSigmaPrime(sample_index); // sigma^\prime is not needed in layer, but needed in neuron
-	    }
-	}
+        auto dim = __neurons[k].Dimension();
+        for(size_t i=0;i<dim.first;i++)
+        {
+            for(size_t j=0;j<dim.second;j++)
+            {
+                //cout<<"coord (i, j, k): ("<<i<<", "<<j<<", "<<k<<")"<<endl;
+                if(!__neurons[k][i][j]->IsActive()) continue;
+                __neurons[k][i][j] -> UpdateA(sample_index);
+                __neurons[k][i][j] -> UpdateSigmaPrime(sample_index); // sigma^\prime is not needed in layer, but needed in neuron
+            }
+        }
     }
     UpdateImagesA(sample_index);
 
@@ -777,34 +777,34 @@ void ConstructLayer::BackwardPropagateForSample(int sample_index)
 
     if(__type == LayerType::output)
     {
-	ComputeCostInOutputLayerForCurrentSample(sample_index);
+        ComputeCostInOutputLayerForCurrentSample(sample_index);
     } 
     else 
     {
-	for(size_t k=0;k<__neurons.size();k++)
-	{
-	    auto dim = __neurons[k].Dimension();
-	    for(size_t i=0;i<dim.first;i++)  {
-		for(size_t j=0;j<dim.second;j++) {
-		    if(__neurons[k][i][j]->IsActive())
-		    {
-			__neurons[k][i][j] -> BackwardPropagateForSample(sample_index);
-			/*
-			   if(__type == LayerType::fullyConnected)
-			   {
-			   cout<<__func__<<" fc layer neuron coord: "<<__neurons[k][i][j]->GetCoord()<<endl;
-			   }
-			   else if(__type == LayerType::cnn)
-			   {
-			   cout<<__func__<<" cnn layer neuron coord: "<<__neurons[k][i][j]->GetCoord()<<endl;
-			   }
-			   */
-		    }
-		}
-	    }
-	}
-	// when propagation for this layer is done, update the Delta matrices
-	UpdateImagesDelta(sample_index);
+        for(size_t k=0;k<__neurons.size();k++)
+        {
+            auto dim = __neurons[k].Dimension();
+            for(size_t i=0;i<dim.first;i++)  {
+                for(size_t j=0;j<dim.second;j++) {
+                    if(__neurons[k][i][j]->IsActive())
+                    {
+                        __neurons[k][i][j] -> BackwardPropagateForSample(sample_index);
+                        /*
+                           if(__type == LayerType::fullyConnected)
+                           {
+                           cout<<__func__<<" fc layer neuron coord: "<<__neurons[k][i][j]->GetCoord()<<endl;
+                           }
+                           else if(__type == LayerType::cnn)
+                           {
+                           cout<<__func__<<" cnn layer neuron coord: "<<__neurons[k][i][j]->GetCoord()<<endl;
+                           }
+                           */
+                    }
+                }
+            }
+        }
+        // when propagation for this layer is done, update the Delta matrices
+        UpdateImagesDelta(sample_index);
     }
 }
 
@@ -821,9 +821,9 @@ void ConstructLayer::ForwardPropagateForBatch()
     auto process_range_for_z = [&](int start, int end)
     {
         for(int sample_index = start; sample_index<end; sample_index++)
-	{
-	    ForwardPropagate_Z_ForSample(sample_index);
-	}
+        {
+            ForwardPropagate_Z_ForSample(sample_index);
+        }
     };
 
     std::vector<std::thread> vth;
@@ -850,35 +850,35 @@ void ConstructLayer::ForwardPropagateForBatch()
     // after batch propagation finished, do batch normalization
     if(__use_batch_normalization)
     {
-	BatchNormalization_UpdateZ();
+        BatchNormalization_UpdateZ();
 
         // A-image and \sigma^\prime-image are calcualted after finishing all Z calculations in neurons
-	// so if replace un-normalized Z values in neurons with normalized Z values
-	// then the nueron will automatically use the normalized Z to 
-	// calculate A and \sigma^\prime (In this design, the original un-normalized A and \sigma^\prime
-	// will not be calculated, saving computation time)
+        // so if replace un-normalized Z values in neurons with normalized Z values
+        // then the nueron will automatically use the normalized Z to 
+        // calculate A and \sigma^\prime (In this design, the original un-normalized A and \sigma^\prime
+        // will not be calculated, saving computation time)
 #ifdef MULTI_THREAD
-	auto process_range_for_replace_z = [&](int start, int end)
-	{
-	    for(int sample_index = start; sample_index < end; sample_index++)
-	    {
-		ReplaceNeuronZWithBatchNormalization(sample_index);
-	    }
-	};
+        auto process_range_for_replace_z = [&](int start, int end)
+        {
+            for(int sample_index = start; sample_index < end; sample_index++)
+            {
+                ReplaceNeuronZWithBatchNormalization(sample_index);
+            }
+        };
 
-	vth.clear();
-	for(int i=0;i<NTHREAD;i++)
-	{
-	    vth.push_back(std::thread(process_range_for_replace_z, Range[i], Range[i+1]));
-	}
+        vth.clear();
+        for(int i=0;i<NTHREAD;i++)
+        {
+            vth.push_back(std::thread(process_range_for_replace_z, Range[i], Range[i+1]));
+        }
 
-	for(auto &i: vth)
-	    i.join();
+        for(auto &i: vth)
+            i.join();
 #else
-	for(int sample_index = 0;sample_index<sample_size;sample_index++)
-	{
-	    ReplaceNeuronZWithBatchNormalization(sample_index);
-	}
+        for(int sample_index = 0;sample_index<sample_size;sample_index++)
+        {
+            ReplaceNeuronZWithBatchNormalization(sample_index);
+        }
 #endif
     }
 
@@ -890,9 +890,9 @@ void ConstructLayer::ForwardPropagateForBatch()
     auto process_range_for_A_sigma_prime = [&](int start, int end)
     {
         for(int sample_index = start; sample_index<end; sample_index++)
-	{
-	    ForwardPropagate_SigmaPrimeAndA_ForSample(sample_index);
-	}
+        {
+            ForwardPropagate_SigmaPrimeAndA_ForSample(sample_index);
+        }
     };
 
     vth.clear();
@@ -909,6 +909,9 @@ void ConstructLayer::ForwardPropagateForBatch()
         ForwardPropagate_SigmaPrimeAndA_ForSample(sample_index);
     }
 #endif
+
+    // progress
+    std::cout<<"forward propagate for batch finished. Layer: "<<GetID()<<std::endl;
 }
 
 
@@ -925,19 +928,19 @@ void ConstructLayer::TestBatchNormalization_UpdateZ()
         std::cout<<i<<std::endl;
     }
 
-/*
-    cout<<"average mu_N: "<<endl;
-    for(auto &i: __imageAverage_BN)
-        cout<<i<<endl;
+    /*
+       cout<<"average mu_N: "<<endl;
+       for(auto &i: __imageAverage_BN)
+       cout<<i<<endl;
 
-    cout<<"sigma squared: "<<endl;
-    for(auto &i: __imageVariance_BN)
-        cout<<i<<endl;
+       cout<<"sigma squared: "<<endl;
+       for(auto &i: __imageVariance_BN)
+       cout<<i<<endl;
 
-    cout<<"image z after normlization: "<<endl;
-    for(auto &i: __imageZ_BN)
-        cout<<i<<endl;
-*/
+       cout<<"image z after normlization: "<<endl;
+       for(auto &i: __imageZ_BN)
+       cout<<i<<endl;
+       */
     std::cout<<"image y after normalization: "<<std::endl;
     for(auto &i: __imageY_BN)
         std::cout<<i<<std::endl;
@@ -955,9 +958,9 @@ void ConstructLayer::BackwardPropagateForBatch()
     auto process_range = [&](int start, int end)
     {
         for(int i = start;i<end;i++)
-	{
-	    BackwardPropagateForSample(i);
-	}
+        {
+            BackwardPropagateForSample(i);
+        }
     };
 
     std::vector<std::thread> vth;
@@ -987,6 +990,9 @@ void ConstructLayer::BackwardPropagateForBatch()
     {
         BatchNormalization_RestoreDelta();
     }
+
+    // progress
+    std::cout<<"backward propagate for batch finished. Layer: "<<GetID()<<std::endl;
 }
 
 
@@ -1017,10 +1023,10 @@ void ConstructLayer::BatchNormalization_RestoreDelta()
 
     // only apply for cnn, fc and output layer, no need for pooling and input layers
     if( (GetType() != LayerType::cnn) &&
-	    ( GetType() != LayerType::fullyConnected) &&
-	    (GetType() != LayerType::output))
+            ( GetType() != LayerType::fullyConnected) &&
+            (GetType() != LayerType::output))
     {
-	return; 
+        return; 
     }
 
     // extract gradients on batch normalization parameters
@@ -1038,9 +1044,9 @@ void ConstructLayer::BatchNormalization_RestoreDelta()
     auto process_sample = [&](int start, int end)
     {
         for(int i=start;i<end;i++)
-	    BatchNormalization_RestoreDelta_ForSample(i);
+            BatchNormalization_RestoreDelta_ForSample(i);
     };
-    
+
     for(size_t n=0;n<NTHREAD;n++)
         vth.push_back(std::thread(process_sample, Range[n], Range[n+1]));
 
@@ -1082,14 +1088,14 @@ void ConstructLayer::BatchNormalization_GetGradientOnParameters()
     __v_partial_C_over_partial_beta.clear();
 
     if(GetLayerDimension() == LayerDimension::_1D)
-	BatchNormalization_GetGradientOnParameters_1DLayer();
+        BatchNormalization_GetGradientOnParameters_1DLayer();
     else if(GetLayerDimension() == LayerDimension::_2D)
-	BatchNormalization_GetGradientOnParameters_2DLayer();
+        BatchNormalization_GetGradientOnParameters_2DLayer();
     else
     {
         std::cout<<"Error: "<<__func__<<" unsupported layer dimension."
-	         <<std::endl;
-	exit(0);
+            <<std::endl;
+        exit(0);
     }
 }
 
@@ -1118,12 +1124,12 @@ void ConstructLayer::BatchNormalization_GetGradientOnParameters_1DLayer() //TO-D
     Matrix partial_C_over_partial_sigma_B2(__imageZ[0].OutputImageFromKernel[0].Dimension(), 0.);
     for(size_t i=0;i<batch_size;i++)
     {
-	Matrix partial_C_over_partial_hat_x = __imageDelta[i].OutputImageFromKernel[0] ^ __gamma_BN[0];
+        Matrix partial_C_over_partial_hat_x = __imageDelta[i].OutputImageFromKernel[0] ^ __gamma_BN[0];
 
-	Matrix tmp = __imageZ[i].OutputImageFromKernel[0] - mu_B;
-	tmp = tmp ^ partial_C_over_partial_hat_x;
+        Matrix tmp = __imageZ[i].OutputImageFromKernel[0] - mu_B;
+        tmp = tmp ^ partial_C_over_partial_hat_x;
 
-	partial_C_over_partial_sigma_B2 = partial_C_over_partial_sigma_B2 + tmp;
+        partial_C_over_partial_sigma_B2 = partial_C_over_partial_sigma_B2 + tmp;
     }
     partial_C_over_partial_sigma_B2 = partial_C_over_partial_sigma_B2 ^ Var_inverse_half_cubic;
 
@@ -1135,11 +1141,11 @@ void ConstructLayer::BatchNormalization_GetGradientOnParameters_1DLayer() //TO-D
     Matrix part2(__imageZ[0].OutputImageFromKernel[0].Dimension(), 0.);
     for(size_t i=0;i<batch_size;i++)
     {
-	Matrix partial_C_over_partial_hat_x = __imageDelta[i].OutputImageFromKernel[0] ^ __gamma_BN[0];
-	part1 = part1 + partial_C_over_partial_hat_x;
+        Matrix partial_C_over_partial_hat_x = __imageDelta[i].OutputImageFromKernel[0] ^ __gamma_BN[0];
+        part1 = part1 + partial_C_over_partial_hat_x;
 
-	part2 = part2 + __imageZ[i].OutputImageFromKernel[0];
-	part2 = part2 - mu_B;
+        part2 = part2 + __imageZ[i].OutputImageFromKernel[0];
+        part2 = part2 - mu_B;
     }
     part1 = part1 ^ Var_inverse_square_root;
 
@@ -1158,7 +1164,7 @@ void ConstructLayer::BatchNormalization_GetGradientOnParameters_1DLayer() //TO-D
         Matrix tmp = __imageDelta[i].OutputImageFromKernel[0] ^ __imageZ_BN[i].OutputImageFromKernel[0];
         partial_C_over_partial_gamma = partial_C_over_partial_gamma +  tmp;
 
-	partial_C_over_partial_beta = partial_C_over_partial_beta + __imageDelta[i].OutputImageFromKernel[0];
+        partial_C_over_partial_beta = partial_C_over_partial_beta + __imageDelta[i].OutputImageFromKernel[0];
     }
 
     // \partial{C}/\partial{\gamma} and \partial{C}/\partial{beta} result
@@ -1179,96 +1185,96 @@ void ConstructLayer::BatchNormalization_GetGradientOnParameters_2DLayer() // TO-
     for(size_t k=0;k<nK;k++)
     {
         // mu_B
-	// both cnn and fc have one average and variance
-	Matrix & mu_B = __imageAverage_BN[0].OutputImageFromKernel[k];
-	// sigma_B^2
-	Matrix & sigma_B = __imageVariance_BN[0].OutputImageFromKernel[k];
+        // both cnn and fc have one average and variance
+        Matrix & mu_B = __imageAverage_BN[0].OutputImageFromKernel[k];
+        // sigma_B^2
+        Matrix & sigma_B = __imageVariance_BN[0].OutputImageFromKernel[k];
 
-	Matrix Var_inverse_half_cubic = sigma_B + epsilon;
-	Var_inverse_half_cubic(inverse_half_cubic);
-	Var_inverse_half_cubic = Var_inverse_half_cubic * (-1./2.);
+        Matrix Var_inverse_half_cubic = sigma_B + epsilon;
+        Var_inverse_half_cubic(inverse_half_cubic);
+        Var_inverse_half_cubic = Var_inverse_half_cubic * (-1./2.);
 
-	Matrix Var_inverse_square_root = sigma_B + epsilon;
-	Var_inverse_square_root(inverse_square_root);
-	Var_inverse_square_root = Var_inverse_square_root * (-1.);
+        Matrix Var_inverse_square_root = sigma_B + epsilon;
+        Var_inverse_square_root(inverse_square_root);
+        Var_inverse_square_root = Var_inverse_square_root * (-1.);
 
-	// 1) \partial{C}/\partial{\sigma_B^2}
-	Matrix partial_C_over_partial_sigma_B2(__imageZ[0].OutputImageFromKernel[k].Dimension(), 0.);
-	for(size_t i=0;i<batch_size;i++)
-	{
-	    Matrix partial_C_over_partial_hat_x = __imageDelta[i].OutputImageFromKernel[k] * (__gamma_BN[k])[0][0];
+        // 1) \partial{C}/\partial{\sigma_B^2}
+        Matrix partial_C_over_partial_sigma_B2(__imageZ[0].OutputImageFromKernel[k].Dimension(), 0.);
+        for(size_t i=0;i<batch_size;i++)
+        {
+            Matrix partial_C_over_partial_hat_x = __imageDelta[i].OutputImageFromKernel[k] * (__gamma_BN[k])[0][0];
 
-	    Matrix tmp = __imageZ[i].OutputImageFromKernel[k] - mu_B[0][0];
-	    tmp = tmp ^ partial_C_over_partial_hat_x;
+            Matrix tmp = __imageZ[i].OutputImageFromKernel[k] - mu_B[0][0];
+            tmp = tmp ^ partial_C_over_partial_hat_x;
 
-	    partial_C_over_partial_sigma_B2 = partial_C_over_partial_sigma_B2 + tmp;
-	}
-	auto dim = partial_C_over_partial_sigma_B2.Dimension();
-	double sum = partial_C_over_partial_sigma_B2.SumInSection(0, dim.first, 0, dim.second);
-	sum *= Var_inverse_half_cubic[0][0]; 
-	Matrix res(1, 1, sum); // for cnn layer, result should be in DIM(1,1) matrix form
-	
-	// \partial{C}/\partial{\sigma_B^2}  result
-	__v_partial_C_over_partial_sigma_square.push_back(res);
+            partial_C_over_partial_sigma_B2 = partial_C_over_partial_sigma_B2 + tmp;
+        }
+        auto dim = partial_C_over_partial_sigma_B2.Dimension();
+        double sum = partial_C_over_partial_sigma_B2.SumInSection(0, dim.first, 0, dim.second);
+        sum *= Var_inverse_half_cubic[0][0]; 
+        Matrix res(1, 1, sum); // for cnn layer, result should be in DIM(1,1) matrix form
 
-	// 2) \partial{C}/\partial{mu_B}
-	Matrix part1(__imageZ[0].OutputImageFromKernel[k].Dimension(), 0.);
-	Matrix part2(__imageZ[0].OutputImageFromKernel[k].Dimension(), 0.);
-	for(size_t i=0;i<batch_size;i++)
-	{
-	    Matrix partial_C_over_partial_hat_x = __imageDelta[i].OutputImageFromKernel[k] * (__gamma_BN[k])[0][0];
-	    part1 = part1 + partial_C_over_partial_hat_x;
+        // \partial{C}/\partial{\sigma_B^2}  result
+        __v_partial_C_over_partial_sigma_square.push_back(res);
 
-	    part2 = part2 + __imageZ[i].OutputImageFromKernel[k];
-	    part2 = part2 - mu_B[0][0];
-	}
-	double sum1 = part1.SumInSection(0, dim.first, 0, dim.second);
-	sum1 = sum1 * Var_inverse_square_root[0][0];
+        // 2) \partial{C}/\partial{mu_B}
+        Matrix part1(__imageZ[0].OutputImageFromKernel[k].Dimension(), 0.);
+        Matrix part2(__imageZ[0].OutputImageFromKernel[k].Dimension(), 0.);
+        for(size_t i=0;i<batch_size;i++)
+        {
+            Matrix partial_C_over_partial_hat_x = __imageDelta[i].OutputImageFromKernel[k] * (__gamma_BN[k])[0][0];
+            part1 = part1 + partial_C_over_partial_hat_x;
+
+            part2 = part2 + __imageZ[i].OutputImageFromKernel[k];
+            part2 = part2 - mu_B[0][0];
+        }
+        double sum1 = part1.SumInSection(0, dim.first, 0, dim.second);
+        sum1 = sum1 * Var_inverse_square_root[0][0];
 
         double sum2 = part2.SumInSection(0, dim.first, 0, dim.second);
-	sum2 = sum2 * (-2./(double)batch_size/(double)dim.first/(double)dim.second);
-	sum2 = sum2 * res[0][0];
+        sum2 = sum2 * (-2./(double)batch_size/(double)dim.first/(double)dim.second);
+        sum2 = sum2 * res[0][0];
 
-	double tmp = sum1 + sum2;
-	res[0][0] = tmp;
-	// \partial{C}/\partial{mu_B}   result
-	__v_partial_C_over_partial_mu.push_back(res);
+        double tmp = sum1 + sum2;
+        res[0][0] = tmp;
+        // \partial{C}/\partial{mu_B}   result
+        __v_partial_C_over_partial_mu.push_back(res);
 
         // 3) \partial{C}/\partial{\gamma} and \partial{C}/\partial{beta}
-	Matrix partial_C_over_partial_gamma(__imageZ[0].OutputImageFromKernel[k].Dimension(), 0.);
-	Matrix partial_C_over_partial_beta(__imageZ[0].OutputImageFromKernel[k].Dimension(), 0.);
-	for(size_t i=0;i<batch_size;i++)
-	{
-	    Matrix tmp = __imageDelta[i].OutputImageFromKernel[k] ^ __imageZ_BN[i].OutputImageFromKernel[k];
-	    partial_C_over_partial_gamma = partial_C_over_partial_gamma +  tmp;
+        Matrix partial_C_over_partial_gamma(__imageZ[0].OutputImageFromKernel[k].Dimension(), 0.);
+        Matrix partial_C_over_partial_beta(__imageZ[0].OutputImageFromKernel[k].Dimension(), 0.);
+        for(size_t i=0;i<batch_size;i++)
+        {
+            Matrix tmp = __imageDelta[i].OutputImageFromKernel[k] ^ __imageZ_BN[i].OutputImageFromKernel[k];
+            partial_C_over_partial_gamma = partial_C_over_partial_gamma +  tmp;
 
-	    partial_C_over_partial_beta = partial_C_over_partial_beta + __imageDelta[i].OutputImageFromKernel[k];
-	}
+            partial_C_over_partial_beta = partial_C_over_partial_beta + __imageDelta[i].OutputImageFromKernel[k];
+        }
 
-	sum1 = partial_C_over_partial_gamma.SumInSection(0, dim.first, 0, dim.second);
-	sum2 = partial_C_over_partial_beta.SumInSection(0, dim.first, 0, dim.second);
-	res[0][0] = sum1;
-	__v_partial_C_over_partial_gamma.push_back(res);
-	res[0][0] = sum2;
-	__v_partial_C_over_partial_beta.push_back(res);
+        sum1 = partial_C_over_partial_gamma.SumInSection(0, dim.first, 0, dim.second);
+        sum2 = partial_C_over_partial_beta.SumInSection(0, dim.first, 0, dim.second);
+        res[0][0] = sum1;
+        __v_partial_C_over_partial_gamma.push_back(res);
+        res[0][0] = sum2;
+        __v_partial_C_over_partial_beta.push_back(res);
     }
 }
- 
+
 void ConstructLayer::BatchNormalization_RestoreDelta_ForSample(int sample_id)
 {
     if(__layerDimension == LayerDimension::_1D)
     {
-	BatchNormalization_RestoreDelta_ForSample_1DLayer(sample_id);
+        BatchNormalization_RestoreDelta_ForSample_1DLayer(sample_id);
     }
     else if(__layerDimension == LayerDimension::_2D)
     {
-	BatchNormalization_RestoreDelta_ForSample_2DLayer(sample_id);
+        BatchNormalization_RestoreDelta_ForSample_2DLayer(sample_id);
     }
     else
     {
         std::cout<<"Error: "<<__func__<<" undefined layer dimension."
-	         <<std::endl;
-	exit(0);
+            <<std::endl;
+        exit(0);
     }
 }
 
@@ -1320,36 +1326,36 @@ void ConstructLayer::BatchNormalization_RestoreDelta_ForSample_2DLayer(int sampl
     for(size_t k=0;k<nK;k++)
     {
         // part 1
-	Matrix partial_C_over_partial_hat_x = __imageDelta[sample_id].OutputImageFromKernel[k];
-	partial_C_over_partial_hat_x = partial_C_over_partial_hat_x * (__gamma_BN[k])[0][0];
+        Matrix partial_C_over_partial_hat_x = __imageDelta[sample_id].OutputImageFromKernel[k];
+        partial_C_over_partial_hat_x = partial_C_over_partial_hat_x * (__gamma_BN[k])[0][0];
 
-	Matrix var = __imageVariance_BN[0].OutputImageFromKernel[k];
-	var = var + epsilon;
-	var(inverse_square_root);
+        Matrix var = __imageVariance_BN[0].OutputImageFromKernel[k];
+        var = var + epsilon;
+        var(inverse_square_root);
 
-	partial_C_over_partial_hat_x = partial_C_over_partial_hat_x * var[0][0];
+        partial_C_over_partial_hat_x = partial_C_over_partial_hat_x * var[0][0];
 
-	// part 2
-	Matrix original_z = __imageZ[sample_id].OutputImageFromKernel[k];
-	Matrix &mu = __imageAverage_BN[0].OutputImageFromKernel[k];
-	original_z = original_z - mu[0][0];
+        // part 2
+        Matrix original_z = __imageZ[sample_id].OutputImageFromKernel[k];
+        Matrix &mu = __imageAverage_BN[0].OutputImageFromKernel[k];
+        original_z = original_z - mu[0][0];
 
-	auto dim = __imageZ[sample_id].OutputImageFromKernel[k].Dimension();
-	original_z = original_z *( 2. / ((double)batch_size) / ((double)dim.first) / ((double)dim.second) );
-	Matrix partial_C_over_partial_sigma2 = __v_partial_C_over_partial_sigma_square[k];
+        auto dim = __imageZ[sample_id].OutputImageFromKernel[k].Dimension();
+        original_z = original_z *( 2. / ((double)batch_size) / ((double)dim.first) / ((double)dim.second) );
+        Matrix partial_C_over_partial_sigma2 = __v_partial_C_over_partial_sigma_square[k];
 
-	original_z = original_z * partial_C_over_partial_sigma2[0][0];
+        original_z = original_z * partial_C_over_partial_sigma2[0][0];
 
-	// part 3
-	Matrix partial_C_over_partial_mu = __v_partial_C_over_partial_mu[k];
-	double part3 = partial_C_over_partial_mu[0][0];
-	part3 = part3 * ( 2. / ((double)batch_size) / ((double)dim.first) / ((double)dim.second) );
+        // part 3
+        Matrix partial_C_over_partial_mu = __v_partial_C_over_partial_mu[k];
+        double part3 = partial_C_over_partial_mu[0][0];
+        part3 = part3 * ( 2. / ((double)batch_size) / ((double)dim.first) / ((double)dim.second) );
 
-	// result
-	Matrix new_delta = partial_C_over_partial_hat_x + original_z;
-	new_delta = new_delta + part3;
+        // result
+        Matrix new_delta = partial_C_over_partial_hat_x + original_z;
+        new_delta = new_delta + part3;
 
-	__imageDelta_BN[sample_id].OutputImageFromKernel.push_back(new_delta);
+        __imageDelta_BN[sample_id].OutputImageFromKernel.push_back(new_delta);
     }
 }
 
@@ -1367,14 +1373,14 @@ static double cross_entropy(Matrix &A, Matrix &Y)
     double res = 0.;
     for(size_t i=0;i<dim.first;i++)
     {
-	if((double)A[i][0] <= 1e-10 || (double)A[i][0] >= 1-1e-10) res += 0;
-	else
-	    //res += Y[i][0] * log(A[i][0]) + (1. - Y[i][0]) * log(1. - A[i][0]);
-	    res += (double)Y[i][0] * log((double)A[i][0]); 
+        if((double)A[i][0] <= 1e-10 || (double)A[i][0] >= 1-1e-10) res += 0;
+        else
+            //res += Y[i][0] * log(A[i][0]) + (1. - Y[i][0]) * log(1. - A[i][0]);
+            res += (double)Y[i][0] * log((double)A[i][0]); 
     }
 
     return res; // no minus symbol here, 
-                // need to add a - sign when computing the cost for this batch
+    // need to add a - sign when computing the cost for this batch
 }
 
 // cost functions ---------- log likelihood
@@ -1398,11 +1404,11 @@ static double quadratic_sum(Matrix &A, Matrix &Y)
     double res = 0.;
     for(size_t i=0;i<dim.first;i++)
     {
-	res += (A[i][0] - Y[i][0]) *  (A[i][0] - Y[i][0]);
+        res += (A[i][0] - Y[i][0]) *  (A[i][0] - Y[i][0]);
     }
 
     return res; // no minus symbol here, 
-                // need to add a - sign when computing the cost for this batch
+    // need to add a - sign when computing the cost for this batch
 }
 
 void ConstructLayer::ComputeCostInOutputLayerForCurrentSample(int sample_index)
@@ -1410,7 +1416,7 @@ void ConstructLayer::ComputeCostInOutputLayerForCurrentSample(int sample_index)
     if(__type != LayerType::output)
     {
         std::cout<<"Error: ComputeCostInOutputLayerForCurrentSample() only works for output layer."
-	         <<std::endl;
+            <<std::endl;
         std::exit(0);
     }
 
@@ -1430,20 +1436,20 @@ void ConstructLayer::ComputeCostInOutputLayerForCurrentSample(int sample_index)
     double cost = 0.;
     if(__cost_func_type == CostFuncType::cross_entropy)
     {
-	cost = cross_entropy(sample_A, sample_label);
+        cost = cross_entropy(sample_A, sample_label);
     }
     else if(__cost_func_type == CostFuncType::log_likelihood)
     {
-	cost = log_likelihood(sample_A, sample_label);
+        cost = log_likelihood(sample_A, sample_label);
     }
     else if(__cost_func_type == CostFuncType::quadratic_sum)
     {
-	cost = quadratic_sum(sample_A, sample_label);
+        cost = quadratic_sum(sample_A, sample_label);
     }
     else {
-	std::cout<<"Error: cost function only supports cross_entropy, loglikelihood, quadratic_sum"
-	         <<std::endl;
-	exit(0);
+        std::cout<<"Error: cost function only supports cross_entropy, loglikelihood, quadratic_sum"
+            <<std::endl;
+        exit(0);
     }
     // push cost for current sample to memory
     //__outputLayerCost.push_back(cost);
@@ -1461,20 +1467,20 @@ void ConstructLayer::ComputeCostInOutputLayerForCurrentSample(int sample_index)
     Matrix delta = Matrix(sample_A.Dimension());
     if(__cost_func_type == CostFuncType::cross_entropy)
     {
-	delta = sample_A - sample_label; // softmax and sigmoid all have this form
+        delta = sample_A - sample_label; // softmax and sigmoid all have this form
     }
     else if(__cost_func_type == CostFuncType::log_likelihood)
     {
-	delta = sample_A - sample_label;
+        delta = sample_A - sample_label;
     }
     else if(__cost_func_type == CostFuncType::quadratic_sum)
     {
-	delta = sample_A - sample_label; // this is a place holder, not used
+        delta = sample_A - sample_label; // this is a place holder, not used
     }
     else {
-	std::cout<<"Error: cost function only supports cross_entropy, loglikelihood, quadratic_sum"
-	         <<std::endl;
-	exit(0);
+        std::cout<<"Error: cost function only supports cross_entropy, loglikelihood, quadratic_sum"
+            <<std::endl;
+        exit(0);
     }
     // push cost for current sample to memory
     Images images_delta_from_current_sample;
@@ -1515,7 +1521,7 @@ void ConstructLayer::FillBatchDataToInputLayerA()
 
     // input data whitening
     if(__input_data_batch_whitening)
-	Matrix::BatchNormalization(input_data);
+        Matrix::BatchNormalization(input_data);
 
     // first clear the previous batch
     __imageA.clear(); // input layer dropout is not used
@@ -1524,14 +1530,14 @@ void ConstructLayer::FillBatchDataToInputLayerA()
     // load all batch data to memory, this should be faster
     for(auto &i: input_data)
     {
-	Images image_a; // one image
+        Images image_a; // one image
 
-	// input layer only has one kernel
-	image_a.OutputImageFromKernel.push_back(i);
+        // input layer only has one kernel
+        image_a.OutputImageFromKernel.push_back(i);
 
-	// push this image to images of this batch
-	__imageA.push_back(image_a);
-	__imageAFull.push_back(image_a);
+        // push this image to images of this batch
+        __imageA.push_back(image_a);
+        __imageAFull.push_back(image_a);
     }
 
     std::cout<<">>>: "<<__imageA.size()<<" samples in current batch."<<std::endl;
@@ -1543,12 +1549,12 @@ void ConstructLayer::ClearUsedSampleForInputLayer_obsolete()
     if(__type != LayerType::input)
     {
         std::cout<<"Error: Clear used sample for input layer only works for input layer..."<<std::endl;
-	exit(0);
+        exit(0);
     }
     if(__imageA.size() <= 0)
     {
         std::cout<<"Error: ClearUsedSampleForInputLayer(): __imageA already empty."<<std::endl;
-	exit(0);
+        exit(0);
     }
 
     __imageA.pop_back();
@@ -1566,21 +1572,21 @@ static Matrix filterMatrix(Matrix &A, Filter2D &F)
     std::vector<std::vector<double>> R;
     for(size_t i=0;i<dimA.first;i++)
     {
-	std::vector<double> _tmp_row;
-	for(size_t j=0;j<dimA.second;j++)
-	{
-	    if(F[i][j]==1)
-	    {
-		_tmp_row.push_back(A[i][j]);
-	    }
-	    else if(F[i][j] != 0)
-	    {
-		std::cout<<"Error: filter matrix element value must be 0 or 1"<<std::endl;
-		exit(0);
-	    }
-	}
-	if(_tmp_row.size() > 0)
-	    R.push_back(_tmp_row);
+        std::vector<double> _tmp_row;
+        for(size_t j=0;j<dimA.second;j++)
+        {
+            if(F[i][j]==1)
+            {
+                _tmp_row.push_back(A[i][j]);
+            }
+            else if(F[i][j] != 0)
+            {
+                std::cout<<"Error: filter matrix element value must be 0 or 1"<<std::endl;
+                exit(0);
+            }
+        }
+        if(_tmp_row.size() > 0)
+            R.push_back(_tmp_row);
     }
     Matrix Ret(R);
     return Ret;
@@ -1601,73 +1607,75 @@ void ConstructLayer::UpdateImagesA(int sample_id)
 
     if(__type == LayerType::fullyConnected || __type == LayerType::output) 
     {
-	// for fully connected layer; output layer is also a fully connected layer
-	for(size_t k=0;k<__neuronDim.k;k++) // kernel
-	{
-	    Matrix A( __neuronDim.i, __neuronDim.j, 0);
-	    //cout<<"A before filling"<<endl<<A<<endl;
-	    for(size_t i=0;i<__neuronDim.i;i++){
-		for(size_t j=0;j<__neuronDim.j;j++)
-		{
-		    auto & a_vector = __neurons[k][i][j]->GetAVector();
-		    if(__neurons[k][i][j]->IsActive())
-		    {  // make sure no over extract
-			//cout<<a_vector.size()<<"......"<<l<<endl;
-			//assert(a_vector.size() - 1 == l); // obsolete
-			//A[i][j] = a_vector.back();        // obsolete
-			A[i][j] = a_vector[sample_id];
-		    }
-		    else
-		    {
-		        // if neuron is inactive, set it to 0
-			A[i][j] = 0;
-		    }
-		}
-	    }
-	    // save full image
-	    sample_image_A_full.OutputImageFromKernel.push_back(A);
-	    //cout<<"A after filling: "<<endl<<A<<endl;
+        // for fully connected layer; output layer is also a fully connected layer
+        for(size_t k=0;k<__neuronDim.k;k++) // kernel
+        {
+            Matrix A( __neuronDim.i, __neuronDim.j, 0);
+            //cout<<"A before filling"<<endl<<A<<endl;
+            for(size_t i=0;i<__neuronDim.i;i++){
+                for(size_t j=0;j<__neuronDim.j;j++)
+                {
+                    auto & a_vector = __neurons[k][i][j]->GetAVector();
+                    if(__neurons[k][i][j]->IsActive())
+                    {  
+                        // make sure no over extract
+                        //cout<<a_vector.size()<<"......"<<l<<endl;
+                        //assert(a_vector.size() - 1 == l); // obsolete
+                        //A[i][j] = a_vector.back();        // obsolete
+                        A[i][j] = a_vector[sample_id];
+                    }
+                    else
+                    {
+                        // if neuron is inactive, set it to 0
+                        A[i][j] = 0;
+                    }
+                }
+            }
+            // save full image
+            sample_image_A_full.OutputImageFromKernel.push_back(A);
+            //cout<<"A after filling: "<<endl<<A<<endl;
 
-	    // only save active elements
-	    Matrix R = filterMatrix(A, __activeFlag[k]);
-	    sample_image_A.OutputImageFromKernel.push_back(R);
+            // only save active elements
+            Matrix R = filterMatrix(A, __activeFlag[k]);
+            sample_image_A.OutputImageFromKernel.push_back(R);
 
-	    assert(R.Dimension().first  == __activeNeuronDim.i);
-	    assert(R.Dimension().second == __activeNeuronDim.j);
-	}
-	//__imageA.push_back(sample_image_A); // obsolete
-	__imageA[sample_id] = sample_image_A;
-	__imageAFull[sample_id] = sample_image_A_full;
+            assert(R.Dimension().first  == __activeNeuronDim.i);
+            assert(R.Dimension().second == __activeNeuronDim.j);
+        }
+        //__imageA.push_back(sample_image_A); // obsolete
+        __imageA[sample_id] = sample_image_A;
+        __imageAFull[sample_id] = sample_image_A_full;
     }
     else if(__type == LayerType::cnn || __type == LayerType::pooling ) // for cnn layer and pooling layer
     {
-	// for cnn, drop out happens on kernels (weight matrix)
-	// so the neurons are all active
-	for(size_t k=0;k<__neuronDim.k;k++) // kernel
-	{
-	    Matrix A( __neuronDim.i, __neuronDim.j);
-	    for(size_t i=0;i<__neuronDim.i;i++){
-		for(size_t j=0;j<__neuronDim.j;j++)
-		{
-		    auto & a_vector = __neurons[k][i][j]->GetAVector();
-		    if(__neurons[k][i][j]->IsActive())
-		    {  // make sure no over extract
-			//assert(a_vector.size() - 1 == l); // obsolete
-			//A[i][j] = a_vector.back();        // obsolete
-			A[i][j] = a_vector[sample_id];
-		    }
-		    else
-		    {
-			A[i][j] = 0;
-		    }
-		}
-	    }
-	    sample_image_A.OutputImageFromKernel.push_back(A); // no need to filter
-	    sample_image_A_full.OutputImageFromKernel.push_back(A); // no need to filter
-	}
-	//__imageA.push_back(sample_image_A);
-	__imageA[sample_id] = sample_image_A;
-	__imageAFull[sample_id] = sample_image_A;
+        // for cnn, drop out happens on kernels (weight matrix)
+        // so the neurons are all active
+        for(size_t k=0;k<__neuronDim.k;k++) // kernel
+        {
+            Matrix A( __neuronDim.i, __neuronDim.j);
+            for(size_t i=0;i<__neuronDim.i;i++){
+                for(size_t j=0;j<__neuronDim.j;j++)
+                {
+                    auto & a_vector = __neurons[k][i][j]->GetAVector();
+                    if(__neurons[k][i][j]->IsActive())
+                    {  
+                        // make sure no over extract
+                        //assert(a_vector.size() - 1 == l); // obsolete
+                        //A[i][j] = a_vector.back();        // obsolete
+                        A[i][j] = a_vector[sample_id];
+                    }
+                    else
+                    {
+                        A[i][j] = 0;
+                    }
+                }
+            }
+            sample_image_A.OutputImageFromKernel.push_back(A); // no need to filter
+            sample_image_A_full.OutputImageFromKernel.push_back(A); // no need to filter
+        }
+        //__imageA.push_back(sample_image_A);
+        __imageA[sample_id] = sample_image_A;
+        __imageAFull[sample_id] = sample_image_A;
     }
     else // reserved for other layer types
     {
@@ -1687,68 +1695,68 @@ void ConstructLayer::UpdateImagesSigmaPrime(int sample_id)
 
     if(__type == LayerType::fullyConnected || __type == LayerType::output) 
     {
-	// for fully connected layer; output layer is also a fully connected layer
-	for(size_t k=0;k<__neuronDim.k;k++) // kernel
-	{
-	    Matrix SigP( __neuronDim.i, __neuronDim.j, 0);
-	    //cout<<"A before filling"<<endl<<A<<endl;
-	    for(size_t i=0;i<__neuronDim.i;i++){
-		for(size_t j=0;j<__neuronDim.j;j++)
-		{
-		    auto & s_vector = __neurons[k][i][j]->GetSigmaPrimeVector();
-		    if(__neurons[k][i][j]->IsActive())
-		    {
-			SigP[i][j] = s_vector[sample_id];
-		    }
-		    else
-		    {
-		        // if neuron is inactive, set it to 0
-			SigP[i][j] = 0;
-		    }
-		}
-	    }
-	    // save full image
-	    sample_image_SigmaPrime_full.OutputImageFromKernel.push_back(SigP);
-	    //cout<<"A after filling: "<<endl<<A<<endl;
+        // for fully connected layer; output layer is also a fully connected layer
+        for(size_t k=0;k<__neuronDim.k;k++) // kernel
+        {
+            Matrix SigP( __neuronDim.i, __neuronDim.j, 0);
+            //cout<<"A before filling"<<endl<<A<<endl;
+            for(size_t i=0;i<__neuronDim.i;i++){
+                for(size_t j=0;j<__neuronDim.j;j++)
+                {
+                    auto & s_vector = __neurons[k][i][j]->GetSigmaPrimeVector();
+                    if(__neurons[k][i][j]->IsActive())
+                    {
+                        SigP[i][j] = s_vector[sample_id];
+                    }
+                    else
+                    {
+                        // if neuron is inactive, set it to 0
+                        SigP[i][j] = 0;
+                    }
+                }
+            }
+            // save full image
+            sample_image_SigmaPrime_full.OutputImageFromKernel.push_back(SigP);
+            //cout<<"A after filling: "<<endl<<A<<endl;
 
-	    // only save active elements
-	    Matrix R = filterMatrix(SigP, __activeFlag[k]);
-	    sample_image_SigmaPrime.OutputImageFromKernel.push_back(R);
+            // only save active elements
+            Matrix R = filterMatrix(SigP, __activeFlag[k]);
+            sample_image_SigmaPrime.OutputImageFromKernel.push_back(R);
 
-	    assert(R.Dimension().first  == __activeNeuronDim.i);
-	    assert(R.Dimension().second == __activeNeuronDim.j);
-	}
-	//__imageA.push_back(sample_image_A); // obsolete
-	__imageSigmaPrime[sample_id] = sample_image_SigmaPrime;
-	__imageSigmaPrimeFull[sample_id] = sample_image_SigmaPrime_full;
+            assert(R.Dimension().first  == __activeNeuronDim.i);
+            assert(R.Dimension().second == __activeNeuronDim.j);
+        }
+        //__imageA.push_back(sample_image_A); // obsolete
+        __imageSigmaPrime[sample_id] = sample_image_SigmaPrime;
+        __imageSigmaPrimeFull[sample_id] = sample_image_SigmaPrime_full;
     }
     else if(__type == LayerType::cnn || __type == LayerType::pooling ) // for cnn layer and pooling layer
     {
-	// for cnn, drop out happens on kernels (weight matrix)
-	// so the neurons are all active
-	for(size_t k=0;k<__neuronDim.k;k++) // kernel
-	{
-	    Matrix SigP( __neuronDim.i, __neuronDim.j);
-	    for(size_t i=0;i<__neuronDim.i;i++){
-		for(size_t j=0;j<__neuronDim.j;j++)
-		{
-		    auto & s_vector = __neurons[k][i][j]->GetSigmaPrimeVector();
-		    if(__neurons[k][i][j]->IsActive())
-		    { 
-			SigP[i][j] = s_vector[sample_id];
-		    }
-		    else
-		    {
-			SigP[i][j] = 0;
-		    }
-		}
-	    }
-	    sample_image_SigmaPrime.OutputImageFromKernel.push_back(SigP); // no need to filter
-	    sample_image_SigmaPrime_full.OutputImageFromKernel.push_back(SigP); // no need to filter
-	}
-	//__imageA.push_back(sample_image_A);
-	__imageSigmaPrime[sample_id] = sample_image_SigmaPrime;
-	__imageSigmaPrimeFull[sample_id] = sample_image_SigmaPrime;
+        // for cnn, drop out happens on kernels (weight matrix)
+        // so the neurons are all active
+        for(size_t k=0;k<__neuronDim.k;k++) // kernel
+        {
+            Matrix SigP( __neuronDim.i, __neuronDim.j);
+            for(size_t i=0;i<__neuronDim.i;i++){
+                for(size_t j=0;j<__neuronDim.j;j++)
+                {
+                    auto & s_vector = __neurons[k][i][j]->GetSigmaPrimeVector();
+                    if(__neurons[k][i][j]->IsActive())
+                    { 
+                        SigP[i][j] = s_vector[sample_id];
+                    }
+                    else
+                    {
+                        SigP[i][j] = 0;
+                    }
+                }
+            }
+            sample_image_SigmaPrime.OutputImageFromKernel.push_back(SigP); // no need to filter
+            sample_image_SigmaPrime_full.OutputImageFromKernel.push_back(SigP); // no need to filter
+        }
+        //__imageA.push_back(sample_image_A);
+        __imageSigmaPrime[sample_id] = sample_image_SigmaPrime;
+        __imageSigmaPrimeFull[sample_id] = sample_image_SigmaPrime;
     }
     else // reserved for other layer types
     {
@@ -1779,70 +1787,72 @@ void ConstructLayer::UpdateImagesZ(int sample_id)
 
     if(__type == LayerType::fullyConnected || __type == LayerType::output) // for fully connected layer; output layer is also a fully connected layer
     {
-	for(size_t k=0;k<__neuronDim.k;k++) // kernel
-	{
-	    Matrix Z( __neuronDim.i, __neuronDim.j, 0);
-	    //cout<<"Z before filling"<<endl<<Z<<endl;
-	    for(size_t i=0;i<__neuronDim.i;i++){
-		for(size_t j=0;j<__neuronDim.j;j++)
-		{
-		    auto & z_vector = __neurons[k][i][j]->GetZVector();
-		    if(__neurons[k][i][j]->IsActive())
-		    {  // make sure no over extract
-			//assert(z_vector.size() - 1 == l); // obsolete
-			//Z[i][j] = z_vector.back();        // obsolete
-			Z[i][j] = z_vector[sample_id];
-		    }
-		    else
-		    {
-		        // if neuron is inactive, set it to 0
-			Z[i][j] = 0;
-		    }
-		}
-	    }
-	    //cout<<"Z after filing: "<<endl<<Z<<endl;
-	    // save full image
-	    sample_image_Z_full.OutputImageFromKernel.push_back(Z);
-	    // only save active elements
-	    Matrix R = filterMatrix(Z, __activeFlag[k]);
-	    sample_image_Z.OutputImageFromKernel.push_back(R);
+        for(size_t k=0;k<__neuronDim.k;k++) // kernel
+        {
+            Matrix Z( __neuronDim.i, __neuronDim.j, 0);
+            //cout<<"Z before filling"<<endl<<Z<<endl;
+            for(size_t i=0;i<__neuronDim.i;i++){
+                for(size_t j=0;j<__neuronDim.j;j++)
+                {
+                    auto & z_vector = __neurons[k][i][j]->GetZVector();
+                    if(__neurons[k][i][j]->IsActive())
+                    {  
+                        // make sure no over extract
+                        //assert(z_vector.size() - 1 == l); // obsolete
+                        //Z[i][j] = z_vector.back();        // obsolete
+                        Z[i][j] = z_vector[sample_id];
+                    }
+                    else
+                    {
+                        // if neuron is inactive, set it to 0
+                        Z[i][j] = 0;
+                    }
+                }
+            }
+            //cout<<"Z after filing: "<<endl<<Z<<endl;
+            // save full image
+            sample_image_Z_full.OutputImageFromKernel.push_back(Z);
+            // only save active elements
+            Matrix R = filterMatrix(Z, __activeFlag[k]);
+            sample_image_Z.OutputImageFromKernel.push_back(R);
 
-	    assert(R.Dimension().first  == __activeNeuronDim.i);
-	    assert(R.Dimension().second == __activeNeuronDim.j);
-	}
-	//__imageZ.push_back(sample_image_Z);
-	__imageZ[sample_id] = sample_image_Z;
-	__imageZFull[sample_id] = sample_image_Z_full;
+            assert(R.Dimension().first  == __activeNeuronDim.i);
+            assert(R.Dimension().second == __activeNeuronDim.j);
+        }
+        //__imageZ.push_back(sample_image_Z);
+        __imageZ[sample_id] = sample_image_Z;
+        __imageZFull[sample_id] = sample_image_Z_full;
     }
     else if(__type == LayerType::cnn || __type == LayerType::pooling) // for cnn layer and pooling
     {
-	// for cnn, drop out happens on kernels (weight matrix)
-	// so the neurons are all active
-	for(size_t k=0;k<__neuronDim.k;k++) // kernel
-	{
-	    Matrix Z( __neuronDim.i, __neuronDim.j);
-	    for(size_t i=0;i<__neuronDim.i;i++){
-		for(size_t j=0;j<__neuronDim.j;j++)
-		{
-		    auto & z_vector = __neurons[k][i][j]->GetZVector();
-		    if(__neurons[k][i][j]->IsActive())
-		    {  // make sure no over extract
-			//assert(z_vector.size() - 1 == l); // obsolete
-			//Z[i][j] = z_vector.back();        // obsolete
-			Z[i][j] = z_vector[sample_id];
-		    }
-		    else
-		    {
-			Z[i][j] = 0;
-		    }
-		}
-	    }
-	    sample_image_Z.OutputImageFromKernel.push_back(Z); // no need to filter
-	    sample_image_Z_full.OutputImageFromKernel.push_back(Z); // no need to filter
-	}
-	//__imageZ.push_back(sample_image_Z);
-	__imageZ[sample_id] = sample_image_Z;
-	__imageZFull[sample_id] = sample_image_Z_full;
+        // for cnn, drop out happens on kernels (weight matrix)
+        // so the neurons are all active
+        for(size_t k=0;k<__neuronDim.k;k++) // kernel
+        {
+            Matrix Z( __neuronDim.i, __neuronDim.j);
+            for(size_t i=0;i<__neuronDim.i;i++){
+                for(size_t j=0;j<__neuronDim.j;j++)
+                {
+                    auto & z_vector = __neurons[k][i][j]->GetZVector();
+                    if(__neurons[k][i][j]->IsActive())
+                    {  
+                        // make sure no over extract
+                        //assert(z_vector.size() - 1 == l); // obsolete
+                        //Z[i][j] = z_vector.back();        // obsolete
+                        Z[i][j] = z_vector[sample_id];
+                    }
+                    else
+                    {
+                        Z[i][j] = 0;
+                    }
+                }
+            }
+            sample_image_Z.OutputImageFromKernel.push_back(Z); // no need to filter
+            sample_image_Z_full.OutputImageFromKernel.push_back(Z); // no need to filter
+        }
+        //__imageZ.push_back(sample_image_Z);
+        __imageZ[sample_id] = sample_image_Z;
+        __imageZFull[sample_id] = sample_image_Z_full;
     }
     else // for other layer types
     {
@@ -1854,44 +1864,44 @@ void ConstructLayer::InitBatchNormalizationParameters()
 {
     // only apply for cnn, fc and output layer, no need for pooling and input layers
     if( (GetType() != LayerType::cnn) &&
-	    ( GetType() != LayerType::fullyConnected) &&
-	    (GetType() != LayerType::output))
+            ( GetType() != LayerType::fullyConnected) &&
+            (GetType() != LayerType::output))
     {
-	return; 
+        return; 
     }
 
     if(GetLayerDimension() == LayerDimension::_1D)
     {
         auto dim = GetOutputImageSize();
-	assert(dim.first >= 1);
-	assert(dim.second >= 1);
+        assert(dim.first >= 1);
+        assert(dim.second >= 1);
 
         // for 1D layer, each channel (or feature) has one pair of (\gamma, \beta)
-	//   so the matrix dimension equals the output image dimension
-	//   and __gamma_BN should have only one matrix
-	Matrix tmp1(dim, 1.0); // initialize gamma parameters with 1.0
-	__gamma_BN.push_back(tmp1);
-	Matrix tmp2(dim, 0);   // initialize beta parameters with 0
-	__beta_BN.push_back(tmp2);
+        //   so the matrix dimension equals the output image dimension
+        //   and __gamma_BN should have only one matrix
+        Matrix tmp1(dim, 1.0); // initialize gamma parameters with 1.0
+        __gamma_BN.push_back(tmp1);
+        Matrix tmp2(dim, 0);   // initialize beta parameters with 0
+        __beta_BN.push_back(tmp2);
     }
     else if(GetLayerDimension() == LayerDimension::_2D)
     {
         size_t n = GetNumberOfKernelsCNN();
-	assert(n == __weightMatrix.size());  // one-on-one mapping to vector of kernels
-	assert(n >= 1);
+        assert(n == __weightMatrix.size());  // one-on-one mapping to vector of kernels
+        assert(n >= 1);
 
-	// for 2D layer, each kernel has one pair of (\gamma, \beta)
-	//   so the matrix dimension should be (1, 1)
-	//   and __gamma_BN should have the same length with number of kernels
-	for(size_t i=0;i<n;i++)
-	{
-	    __gamma_BN.push_back(Matrix(1, 1, 1.0)); // initialize gamma with 1.
-	    __beta_BN.push_back(Matrix(1, 1, 0.0)); // initialize beta with 0.
-	}
+        // for 2D layer, each kernel has one pair of (\gamma, \beta)
+        //   so the matrix dimension should be (1, 1)
+        //   and __gamma_BN should have the same length with number of kernels
+        for(size_t i=0;i<n;i++)
+        {
+            __gamma_BN.push_back(Matrix(1, 1, 1.0)); // initialize gamma with 1.
+            __beta_BN.push_back(Matrix(1, 1, 0.0)); // initialize beta with 0.
+        }
     }
     else {
         std::cout<<"Error: InitBatchNormalizationParameters(): unsupported layer dimension."<<std::endl;
-	exit(0);
+        exit(0);
     }
 
     // Above we initilize parameter \gamma with 1. and paramter \beta with 0
@@ -1910,8 +1920,8 @@ void ConstructLayer::GetMu_BFor1DLayer(std::vector<Images> &source, Images &res)
     Matrix tmp(dim, 0);
     for(size_t i=0;i<source.size();i++)
     {
-	Matrix & _t = source[i].OutputImageFromKernel[0];
-	tmp = tmp + _t;
+        Matrix & _t = source[i].OutputImageFromKernel[0];
+        tmp = tmp + _t;
     }
 
     double batch_size = source.size();
@@ -1931,16 +1941,16 @@ void ConstructLayer::GetMu_BFor2DLayer(std::vector<Images> &source, Images &res)
     size_t nKernel = source[0].OutputImageFromKernel.size();
     for(size_t i = 0; i< nKernel;i++)
     {
-	auto dim = source[0].OutputImageFromKernel[i].Dimension();
-	Matrix tmp(1, 1, 0);
-	for(size_t n=0;n<source.size();n++)
-	{
-	    Matrix& m = source[n].OutputImageFromKernel[i];
-	    double _sum = m.SumInSection(0, dim.first, 0, dim.second);
-	    tmp = tmp + _sum;
-	}
-	tmp = tmp / batch_size / (double)dim.first / (double) dim.second; // = sum /n /(p x q)
-	res.OutputImageFromKernel.push_back(tmp);
+        auto dim = source[0].OutputImageFromKernel[i].Dimension();
+        Matrix tmp(1, 1, 0);
+        for(size_t n=0;n<source.size();n++)
+        {
+            Matrix& m = source[n].OutputImageFromKernel[i];
+            double _sum = m.SumInSection(0, dim.first, 0, dim.second);
+            tmp = tmp + _sum;
+        }
+        tmp = tmp / batch_size / (double)dim.first / (double) dim.second; // = sum /n /(p x q)
+        res.OutputImageFromKernel.push_back(tmp);
     }
 }
 
@@ -1964,10 +1974,10 @@ void ConstructLayer::GetSigmaSquareFor1DLayer(std::vector<Images> &source, Image
     {
         Matrix & tmp_kernel_image = source[i].OutputImageFromKernel[0];
 
-	Matrix _t1 = tmp_kernel_image - average;
-	Matrix _t1_square = _t1^_t1;
+        Matrix _t1 = tmp_kernel_image - average;
+        Matrix _t1_square = _t1^_t1;
 
-	tmp_sigma_square = tmp_sigma_square + _t1_square;
+        tmp_sigma_square = tmp_sigma_square + _t1_square;
     }
 
     tmp_sigma_square = tmp_sigma_square / batch_size;
@@ -1998,19 +2008,19 @@ void ConstructLayer::GetSigmaSquareFor2DLayer(std::vector<Images> &source, Image
     {
         double average = (mu.OutputImageFromKernel[i])[0][0];
         Matrix tmp(dim, 0);
-	auto kernel_image_dim = source[0].OutputImageFromKernel[i].Dimension();
+        auto kernel_image_dim = source[0].OutputImageFromKernel[i].Dimension();
 
         for(int ii=0;ii<(int)batch_size;ii++)
-	{
-	    Matrix diff = source[ii].OutputImageFromKernel[i] - average;
-	    diff = diff^diff;
-	    tmp = tmp + diff.SumInSection(0, kernel_image_dim.first, 0, kernel_image_dim.second);
-	}
+        {
+            Matrix diff = source[ii].OutputImageFromKernel[i] - average;
+            diff = diff^diff;
+            tmp = tmp + diff.SumInSection(0, kernel_image_dim.first, 0, kernel_image_dim.second);
+        }
 
-	tmp  = tmp/batch_size / (double)kernel_image_dim.first / (double)kernel_image_dim.second; // = tmp / n / (p x q)
-	tmp = tmp * batch_size / (batch_size - 1.0); // Var[x]^2 = E(\sigma)^2 * m / (m-1)
+        tmp  = tmp/batch_size / (double)kernel_image_dim.first / (double)kernel_image_dim.second; // = tmp / n / (p x q)
+        tmp = tmp * batch_size / (batch_size - 1.0); // Var[x]^2 = E(\sigma)^2 * m / (m-1)
 
-	sigma_square.OutputImageFromKernel.push_back(tmp);
+        sigma_square.OutputImageFromKernel.push_back(tmp);
     }
 }
 
@@ -2049,49 +2059,49 @@ void ConstructLayer::BatchNormalization_UpdateZ_1DLayer()
     Matrix variance_m_full = sigma_square_full.OutputImageFromKernel[0];
     variance_m_full = variance_m_full + epsilon;
     variance_m_full(sqrt);
-/*
+    /*
     for(size_t i=0;i<batch_size;i++) // TO-DO: need to parallize
     {
-	// part I) for active image
-	Matrix m = __imageZ[i].OutputImageFromKernel[0]; // using copy assigment
-	m = m - average_m_active;
-	m = m / variance_m_active;
-	Images tmp;
-	tmp.OutputImageFromKernel.push_back(m);
-	__imageZ_BN[i]=tmp;
+        // part I) for active image
+        Matrix m = __imageZ[i].OutputImageFromKernel[0]; // using copy assigment
+        m = m - average_m_active;
+        m = m / variance_m_active;
+        Images tmp;
+        tmp.OutputImageFromKernel.push_back(m);
+        __imageZ_BN[i]=tmp;
 
 
-	// part II) for full image
-	Matrix m_full = __imageZFull[i].OutputImageFromKernel[0]; // using copy assigment
-	m_full = m_full - average_m_full;
-	m_full = m_full / variance_m_full;
-	Images tmp_full;
-	tmp_full.OutputImageFromKernel.push_back(m_full);
-	__imageZFull_BN[i]=tmp_full;
+        // part II) for full image
+        Matrix m_full = __imageZFull[i].OutputImageFromKernel[0]; // using copy assigment
+        m_full = m_full - average_m_full;
+        m_full = m_full / variance_m_full;
+        Images tmp_full;
+        tmp_full.OutputImageFromKernel.push_back(m_full);
+        __imageZFull_BN[i]=tmp_full;
     }
-*/
+    */
     // parallelize
     auto fill_z = [&](size_t start, size_t end) 
     {
-	for(size_t i=start;i<end;i++)
-	{
-	    // part I) for active image
-	    Matrix m = __imageZ[i].OutputImageFromKernel[0]; // using copy assigment
-	    m = m - average_m_active;
-	    m = m / variance_m_active;
-	    Images tmp;
-	    tmp.OutputImageFromKernel.push_back(m);
-	    __imageZ_BN[i]=tmp;
+        for(size_t i=start;i<end;i++)
+        {
+            // part I) for active image
+            Matrix m = __imageZ[i].OutputImageFromKernel[0]; // using copy assigment
+            m = m - average_m_active;
+            m = m / variance_m_active;
+            Images tmp;
+            tmp.OutputImageFromKernel.push_back(m);
+            __imageZ_BN[i]=tmp;
 
 
-	    // part II) for full image
-	    Matrix m_full = __imageZFull[i].OutputImageFromKernel[0]; // using copy assigment
-	    m_full = m_full - average_m_full;
-	    m_full = m_full / variance_m_full;
-	    Images tmp_full;
-	    tmp_full.OutputImageFromKernel.push_back(m_full);
-	    __imageZFull_BN[i]=tmp_full;
-	}
+            // part II) for full image
+            Matrix m_full = __imageZFull[i].OutputImageFromKernel[0]; // using copy assigment
+            m_full = m_full - average_m_full;
+            m_full = m_full / variance_m_full;
+            Images tmp_full;
+            tmp_full.OutputImageFromKernel.push_back(m_full);
+            __imageZFull_BN[i]=tmp_full;
+        }
     };
 
 #ifdef MULTI_THREAD
@@ -2100,7 +2110,7 @@ void ConstructLayer::BatchNormalization_UpdateZ_1DLayer()
     for(int i=0;i<NTHREAD;i++)
         Range[i] = batch_size/NTHREAD * i;
     Range[NTHREAD] = batch_size;
-    
+
     for(size_t n=0;n<NTHREAD;n++)
         vth.push_back(std::thread(fill_z, Range[n], Range[n+1]));
 
@@ -2113,43 +2123,43 @@ void ConstructLayer::BatchNormalization_UpdateZ_1DLayer()
     // 4) affine transformation to get y
     assert(__gamma_BN.size() == 1); // for 1D layer, size = 1; for 2D layer, size = nKernel
     assert(__beta_BN.size() == 1); 
-/*
+    /*
     for(size_t i=0;i<batch_size;i++) // TO-DO: need to parallize
     {
         // part I) active
-	Matrix m = __imageZ_BN[i].OutputImageFromKernel[0] ^ __gamma_BN[0];
-	m = m + __beta_BN[0];
-	Images tmp;
-	tmp.OutputImageFromKernel.push_back(m);
-	__imageY_BN[i]=tmp;
+        Matrix m = __imageZ_BN[i].OutputImageFromKernel[0] ^ __gamma_BN[0];
+        m = m + __beta_BN[0];
+        Images tmp;
+        tmp.OutputImageFromKernel.push_back(m);
+        __imageY_BN[i]=tmp;
 
-	// part II) full
-	m = __imageZFull_BN[i].OutputImageFromKernel[0] ^ __gamma_BN[0];
-	m = m + __beta_BN[0];
-	tmp.OutputImageFromKernel.clear();
-	tmp.OutputImageFromKernel.push_back(m);
-	__imageYFull_BN[i]=tmp;
+        // part II) full
+        m = __imageZFull_BN[i].OutputImageFromKernel[0] ^ __gamma_BN[0];
+        m = m + __beta_BN[0];
+        tmp.OutputImageFromKernel.clear();
+        tmp.OutputImageFromKernel.push_back(m);
+        __imageYFull_BN[i]=tmp;
     }
-*/
+    */
     // parallelize
     auto fill_y = [&](size_t start, size_t end)
     {
-	for(size_t i=start;i<end;i++)
-	{
-	    // part I) active
-	    Matrix m = __imageZ_BN[i].OutputImageFromKernel[0] ^ __gamma_BN[0];
-	    m = m + __beta_BN[0];
-	    Images tmp;
-	    tmp.OutputImageFromKernel.push_back(m);
-	    __imageY_BN[i]=tmp;
+        for(size_t i=start;i<end;i++)
+        {
+            // part I) active
+            Matrix m = __imageZ_BN[i].OutputImageFromKernel[0] ^ __gamma_BN[0];
+            m = m + __beta_BN[0];
+            Images tmp;
+            tmp.OutputImageFromKernel.push_back(m);
+            __imageY_BN[i]=tmp;
 
-	    // part II) full
-	    m = __imageZFull_BN[i].OutputImageFromKernel[0] ^ __gamma_BN[0];
-	    m = m + __beta_BN[0];
-	    tmp.OutputImageFromKernel.clear();
-	    tmp.OutputImageFromKernel.push_back(m);
-	    __imageYFull_BN[i]=tmp;
-	}
+            // part II) full
+            m = __imageZFull_BN[i].OutputImageFromKernel[0] ^ __gamma_BN[0];
+            m = m + __beta_BN[0];
+            tmp.OutputImageFromKernel.clear();
+            tmp.OutputImageFromKernel.push_back(m);
+            __imageYFull_BN[i]=tmp;
+        }
     };
 
 #ifdef MULTI_THREAD
@@ -2196,86 +2206,86 @@ void ConstructLayer::BatchNormalization_UpdateZ_2DLayer()
         Range[i] = batch_size/NTHREAD * i;
     Range[NTHREAD] = batch_size;
 
-/*
+    /*
     for(size_t k=0;k<nKernel;k++)
     {
-	// part I) active mu and sigma matrix
-	Matrix & average_m_active = mu.OutputImageFromKernel[k];
-	Matrix variance_m_active = sigma_square.OutputImageFromKernel[k];
-	variance_m_active = variance_m_active + epsilon;
-	variance_m_active(sqrt);
-	// part II) full mu and sigma matrix
-	Matrix & average_m_full = mu_full.OutputImageFromKernel[k];
-	Matrix variance_m_full = sigma_square_full.OutputImageFromKernel[k];
-	variance_m_full = variance_m_full + epsilon;
-	variance_m_full(sqrt);
+        // part I) active mu and sigma matrix
+        Matrix & average_m_active = mu.OutputImageFromKernel[k];
+        Matrix variance_m_active = sigma_square.OutputImageFromKernel[k];
+        variance_m_active = variance_m_active + epsilon;
+        variance_m_active(sqrt);
+        // part II) full mu and sigma matrix
+        Matrix & average_m_full = mu_full.OutputImageFromKernel[k];
+        Matrix variance_m_full = sigma_square_full.OutputImageFromKernel[k];
+        variance_m_full = variance_m_full + epsilon;
+        variance_m_full(sqrt);
 
-	// since one kernel corresponds to one pair of (\gamma, \beta)
-	// so matrix average_m_active... etc must have dimension(1, 1)
-	assert(average_m_active.Dimension().first == 1);
-	assert(average_m_active.Dimension().second == 1);
-	double _fMu_active = average_m_active[0][0];
-	double _fVariance_active = variance_m_active[0][0];
-	double _fMu_full = average_m_full[0][0];
-	double _fVariance_full = variance_m_full[0][0];
+        // since one kernel corresponds to one pair of (\gamma, \beta)
+        // so matrix average_m_active... etc must have dimension(1, 1)
+        assert(average_m_active.Dimension().first == 1);
+        assert(average_m_active.Dimension().second == 1);
+        double _fMu_active = average_m_active[0][0];
+        double _fVariance_active = variance_m_active[0][0];
+        double _fMu_full = average_m_full[0][0];
+        double _fVariance_full = variance_m_full[0][0];
 
-	for(size_t i=0;i<batch_size;i++) // TO-DO: need to parallize
-	{
-	    // part I) for active image
-	    Matrix m = __imageZ[i].OutputImageFromKernel[k]; // using copy assignment
-	    m = m - _fMu_active;
-	    m = m / _fVariance_active;
-	    __imageZ_BN[i].OutputImageFromKernel.push_back(m);
+        for(size_t i=0;i<batch_size;i++) // TO-DO: need to parallize
+        {
+            // part I) for active image
+            Matrix m = __imageZ[i].OutputImageFromKernel[k]; // using copy assignment
+            m = m - _fMu_active;
+            m = m / _fVariance_active;
+            __imageZ_BN[i].OutputImageFromKernel.push_back(m);
 
-	    // part II) for full image
-	    Matrix m_full = __imageZFull[i].OutputImageFromKernel[k];
-	    m_full = m_full - _fMu_full;
-	    m_full = m_full / _fVariance_full;
-	    __imageZFull_BN[i].OutputImageFromKernel.push_back(m_full);
-	}
+            // part II) for full image
+            Matrix m_full = __imageZFull[i].OutputImageFromKernel[k];
+            m_full = m_full - _fMu_full;
+            m_full = m_full / _fVariance_full;
+            __imageZFull_BN[i].OutputImageFromKernel.push_back(m_full);
+        }
     }
-*/
+    */
 
     // parallelize
     auto fill_z = [&](size_t start, size_t end)
     {
-	for(size_t k=0;k<nKernel;k++)
-	{
-	    // part I) active mu and sigma matrix
-	    Matrix & average_m_active = mu.OutputImageFromKernel[k];
-	    Matrix variance_m_active = sigma_square.OutputImageFromKernel[k];
-	    variance_m_active = variance_m_active + epsilon;
-	    variance_m_active(sqrt);
-	    // part II) full mu and sigma matrix
-	    Matrix & average_m_full = mu_full.OutputImageFromKernel[k];
-	    Matrix variance_m_full = sigma_square_full.OutputImageFromKernel[k];
-	    variance_m_full = variance_m_full + epsilon;
-	    variance_m_full(sqrt);
+        for(size_t k=0;k<nKernel;k++)
+        {
+            // part I) active mu and sigma matrix
+            Matrix & average_m_active = mu.OutputImageFromKernel[k];
+            Matrix variance_m_active = sigma_square.OutputImageFromKernel[k];
+            variance_m_active = variance_m_active + epsilon;
+            variance_m_active(sqrt);
+            // part II) full mu and sigma matrix
+            Matrix & average_m_full = mu_full.OutputImageFromKernel[k];
+            Matrix variance_m_full = sigma_square_full.OutputImageFromKernel[k];
+            variance_m_full = variance_m_full + epsilon;
+            variance_m_full(sqrt);
 
-	    // since one kernel corresponds to one pair of (\gamma, \beta)
-	    // so matrix average_m_active... etc must have dimension(1, 1)
-	    assert(average_m_active.Dimension().first == 1);
-	    assert(average_m_active.Dimension().second == 1);
-	    double _fMu_active = average_m_active[0][0];
-	    double _fVariance_active = variance_m_active[0][0];
-	    double _fMu_full = average_m_full[0][0];
-	    double _fVariance_full = variance_m_full[0][0];
+            // since one kernel corresponds to one pair of (\gamma, \beta)
+            // so matrix average_m_active... etc must have dimension(1, 1)
+            assert(average_m_active.Dimension().first == 1);
+            assert(average_m_active.Dimension().second == 1);
+            double _fMu_active = average_m_active[0][0];
+            double _fVariance_active = variance_m_active[0][0];
+            double _fMu_full = average_m_full[0][0];
+            double _fVariance_full = variance_m_full[0][0];
 
-	    for(size_t i=start;i<end;i++) // TO-DO: need to parallize
-	    {
-		// part I) for active image
-		Matrix m = __imageZ[i].OutputImageFromKernel[k]; // using copy assignment
-		m = m - _fMu_active;
-		m = m / _fVariance_active;
-		__imageZ_BN[i].OutputImageFromKernel.push_back(m);
+            for(size_t i=start;i<end;i++) // TO-DO: need to parallize
+            {
+                // part I) for active image
+                Matrix m = __imageZ[i].OutputImageFromKernel[k]; // using copy assignment
+                m = m - _fMu_active;
+                m = m / _fVariance_active;
+                __imageZ_BN[i].OutputImageFromKernel.push_back(m);
 
-		// part II) for full image
-		Matrix m_full = __imageZFull[i].OutputImageFromKernel[k];
-		m_full = m_full - _fMu_full;
-		m_full = m_full / _fVariance_full;
-		__imageZFull_BN[i].OutputImageFromKernel.push_back(m_full);
-	    }
-	}
+                // part II) for full image
+                Matrix m_full = __imageZFull[i].OutputImageFromKernel[k];
+                m_full = m_full - _fMu_full;
+                m_full = m_full / _fVariance_full;
+                __imageZFull_BN[i].OutputImageFromKernel.push_back(m_full);
+            }
+        }
     };
 
 #ifdef MULTI_THREAD
@@ -2292,46 +2302,46 @@ void ConstructLayer::BatchNormalization_UpdateZ_2DLayer()
     assert(__gamma_BN.size() == nKernel);
     assert(__beta_BN.size() == nKernel);
 
-/*
+    /*
     for(size_t i = 0; i<batch_size;i++) // To-Do: need to parallize
     {
         for(size_t k=0;k<nKernel;k++)
-	{
-	    double gamma = (__gamma_BN[k])[0][0];
-	    double beta = (__beta_BN[k])[0][0];
-	    // part I) active 
-	    Matrix m = __imageZ_BN[i].OutputImageFromKernel[k] * gamma;
-	    m = m + beta;
-	    __imageY_BN[i].OutputImageFromKernel.push_back(m);
+        {
+            double gamma = (__gamma_BN[k])[0][0];
+            double beta = (__beta_BN[k])[0][0];
+            // part I) active 
+            Matrix m = __imageZ_BN[i].OutputImageFromKernel[k] * gamma;
+            m = m + beta;
+            __imageY_BN[i].OutputImageFromKernel.push_back(m);
 
-	    // part II) full
-	    m = __imageZFull_BN[i].OutputImageFromKernel[k] * gamma;
-	    m = m + beta;
-	    __imageYFull_BN[i].OutputImageFromKernel.push_back(m);
-	}
+            // part II) full
+            m = __imageZFull_BN[i].OutputImageFromKernel[k] * gamma;
+            m = m + beta;
+            __imageYFull_BN[i].OutputImageFromKernel.push_back(m);
+        }
     }
-*/
+    */
 
     // parallelize
     auto fill_y = [&](size_t start, size_t end)
     {
-	for(size_t i = start; i<end;i++) // To-Do: need to parallize
-	{
-	    for(size_t k=0;k<nKernel;k++)
-	    {
-		double gamma = (__gamma_BN[k])[0][0];
-		double beta = (__beta_BN[k])[0][0];
-		// part I) active 
-		Matrix m = __imageZ_BN[i].OutputImageFromKernel[k] * gamma;
-		m = m + beta;
-		__imageY_BN[i].OutputImageFromKernel.push_back(m);
+        for(size_t i = start; i<end;i++) // To-Do: need to parallize
+        {
+            for(size_t k=0;k<nKernel;k++)
+            {
+                double gamma = (__gamma_BN[k])[0][0];
+                double beta = (__beta_BN[k])[0][0];
+                // part I) active 
+                Matrix m = __imageZ_BN[i].OutputImageFromKernel[k] * gamma;
+                m = m + beta;
+                __imageY_BN[i].OutputImageFromKernel.push_back(m);
 
-		// part II) full
-		m = __imageZFull_BN[i].OutputImageFromKernel[k] * gamma;
-		m = m + beta;
-		__imageYFull_BN[i].OutputImageFromKernel.push_back(m);
-	    }
-	}
+                // part II) full
+                m = __imageZFull_BN[i].OutputImageFromKernel[k] * gamma;
+                m = m + beta;
+                __imageYFull_BN[i].OutputImageFromKernel.push_back(m);
+            }
+        }
     };
     vth.clear();
     for(int i=0;i<NTHREAD;i++)
@@ -2346,33 +2356,33 @@ void ConstructLayer::BatchNormalization_UpdateZ()
 
     // only apply for cnn, fc and output layer, no need for pooling and input layers
     if( (GetType() != LayerType::cnn) &&
-	    ( GetType() != LayerType::fullyConnected) &&
-	    (GetType() != LayerType::output))
+            ( GetType() != LayerType::fullyConnected) &&
+            (GetType() != LayerType::output))
     {
-	return; 
+        return; 
     }
 
     // 1D layers
     if(GetLayerDimension() == LayerDimension::_1D)
-	BatchNormalization_UpdateZ_1DLayer();
+        BatchNormalization_UpdateZ_1DLayer();
 
     // 2D layers
     else if(GetLayerDimension() == LayerDimension::_2D)
-	BatchNormalization_UpdateZ_2DLayer();
+        BatchNormalization_UpdateZ_2DLayer();
 
     // unsupported layers
     else
     {
-	std::cout<<"Error in batch normalization: Unsupported layer dimension."<<std::endl;
-	std::cout<<"         only 1D and 2D layers are supported."<<std::endl;
-	exit(0);
+        std::cout<<"Error in batch normalization: Unsupported layer dimension."<<std::endl;
+        std::cout<<"         only 1D and 2D layers are supported."<<std::endl;
+        exit(0);
     }
 }
 
 void ConstructLayer::ReplaceNeuronZWithBatchNormalization(int sample_id)
 {
     // replace the Z values (un-normalized) in neurons with normalized Z values 
-    
+
     // logic:
     // since 1) z, a, \sigma^\prime calculation is all done in neuron 
     //          and layer just fetch the calculated value in neuron and form matrices (images)
@@ -2401,34 +2411,34 @@ void ConstructLayer::ReplaceNeuronZWithBatchNormalization(int sample_id)
 
     if(__type == LayerType::fullyConnected || __type == LayerType::output)
     {
-	assert(image_sample.OutputImageFromKernel.size() ==1);
-	Matrix & y_matrix = image_sample.OutputImageFromKernel[0];
-	for(size_t i=0;i<__neuronDim.i;i++){
-	    for(size_t j=0;j<__neuronDim.j;j++)
-	    {
-		if(! __neurons[0][i][j] -> IsActive()) continue;
-		double normalized_z = y_matrix[i][j];
-		// fc layer only has one kernel
-		__neurons[0][i][j] -> ReplaceZ(sample_id, normalized_z);
-	    }
-	}
+        assert(image_sample.OutputImageFromKernel.size() ==1);
+        Matrix & y_matrix = image_sample.OutputImageFromKernel[0];
+        for(size_t i=0;i<__neuronDim.i;i++){
+            for(size_t j=0;j<__neuronDim.j;j++)
+            {
+                if(! __neurons[0][i][j] -> IsActive()) continue;
+                double normalized_z = y_matrix[i][j];
+                // fc layer only has one kernel
+                __neurons[0][i][j] -> ReplaceZ(sample_id, normalized_z);
+            }
+        }
     }
     else if( __type == LayerType::cnn)
     {
-	assert(image_sample.OutputImageFromKernel.size() == GetNumberOfKernelsCNN());
+        assert(image_sample.OutputImageFromKernel.size() == GetNumberOfKernelsCNN());
 
-	for(size_t k=0;k<__neuronDim.k;k++)
-	{
-	    Matrix & y_matrix = image_sample.OutputImageFromKernel[k];
-	    for(size_t i=0;i<__neuronDim.i;i++) {
-		for(size_t j=0;j<__neuronDim.j;j++)
-		{
-		    if(!__neurons[k][i][j] -> IsActive()) continue;
-		    double z_normalized = y_matrix[i][j];
-		    __neurons[k][i][j] -> ReplaceZ(sample_id, z_normalized);
-		}
-	    }
-	}
+        for(size_t k=0;k<__neuronDim.k;k++)
+        {
+            Matrix & y_matrix = image_sample.OutputImageFromKernel[k];
+            for(size_t i=0;i<__neuronDim.i;i++) {
+                for(size_t j=0;j<__neuronDim.j;j++)
+                {
+                    if(!__neurons[k][i][j] -> IsActive()) continue;
+                    double z_normalized = y_matrix[i][j];
+                    __neurons[k][i][j] -> ReplaceZ(sample_id, z_normalized);
+                }
+            }
+        }
     }
 }
 
@@ -2438,13 +2448,13 @@ std::vector<Images>& ConstructLayer::GetImagesActiveDelta()
     if(__type == LayerType::cnn || __type == LayerType::fullyConnected || __type == LayerType::output) 
     {
         // batch normalization is only applied for cnn, fc, output layers
-	if(__use_batch_normalization)
-	    return __imageDelta_BN;
-	else
-	    return __imageDelta;
+        if(__use_batch_normalization)
+            return __imageDelta_BN;
+        else
+            return __imageDelta;
     }
     else
-	return __imageDelta;
+        return __imageDelta;
 }
 
 std::vector<Images>& ConstructLayer::GetImagesFullDelta()
@@ -2475,72 +2485,72 @@ void ConstructLayer::UpdateImagesDelta(int sample_index)
     //                no need to do it here
     if(__type == LayerType::fullyConnected) // for fully connected layer, 
     {
-	for(size_t k=0;k<__neuronDim.k;k++) // kernel
-	{
-	    Matrix Delta( __neuronDim.i, __neuronDim.j, 0);
-	    //cout<<"sample index: "<<sample_index<<endl;
-	    //cout<<"before filling delta"<<endl<<Delta<<endl;
-	    for(size_t i=0;i<__neuronDim.i;i++){
-		for(size_t j=0;j<__neuronDim.j;j++)
-		{
-		    auto & delta_vector = __neurons[k][i][j]->GetDeltaVector();
-		    if(__neurons[k][i][j]->IsActive())
-		    {  // make sure no over extract
-			//assert(delta_vector.size() - 1 == l); // obsolete
-			//Delta[i][j] = delta_vector.back();    // obsolete
-			Delta[i][j] = delta_vector[sample_index];    // obsolete
-		    }
-		    else
-		    {
-		        // if neuron is inactive, set it to 0
-			Delta[i][j] = 0;
-		    }
-		}
-	    }
-	    // save full delta image
-	    sample_image_delta_full.OutputImageFromKernel.push_back(Delta);
-	    //cout<<"full image delta: "<<endl<<Delta<<endl;
-	    //getchar();
-	    // only save active elements
-	    Matrix R = filterMatrix(Delta, __activeFlag[k]);
-	    sample_image_delta.OutputImageFromKernel.push_back(R);
+        for(size_t k=0;k<__neuronDim.k;k++) // kernel
+        {
+            Matrix Delta( __neuronDim.i, __neuronDim.j, 0);
+            //cout<<"sample index: "<<sample_index<<endl;
+            //cout<<"before filling delta"<<endl<<Delta<<endl;
+            for(size_t i=0;i<__neuronDim.i;i++){
+                for(size_t j=0;j<__neuronDim.j;j++)
+                {
+                    auto & delta_vector = __neurons[k][i][j]->GetDeltaVector();
+                    if(__neurons[k][i][j]->IsActive())
+                    {  // make sure no over extract
+                        //assert(delta_vector.size() - 1 == l); // obsolete
+                        //Delta[i][j] = delta_vector.back();    // obsolete
+                        Delta[i][j] = delta_vector[sample_index];    // obsolete
+                    }
+                    else
+                    {
+                        // if neuron is inactive, set it to 0
+                        Delta[i][j] = 0;
+                    }
+                }
+            }
+            // save full delta image
+            sample_image_delta_full.OutputImageFromKernel.push_back(Delta);
+            //cout<<"full image delta: "<<endl<<Delta<<endl;
+            //getchar();
+            // only save active elements
+            Matrix R = filterMatrix(Delta, __activeFlag[k]);
+            sample_image_delta.OutputImageFromKernel.push_back(R);
 
-	    assert(R.Dimension().first  == __activeNeuronDim.i);
-	    assert(R.Dimension().second == __activeNeuronDim.j);
-	}
-	//__imageDelta.push_back(sample_image_delta);
-	__imageDelta[sample_index] = sample_image_delta;
-	__imageDeltaFull[sample_index] = sample_image_delta_full;
+            assert(R.Dimension().first  == __activeNeuronDim.i);
+            assert(R.Dimension().second == __activeNeuronDim.j);
+        }
+        //__imageDelta.push_back(sample_image_delta);
+        __imageDelta[sample_index] = sample_image_delta;
+        __imageDeltaFull[sample_index] = sample_image_delta_full;
     }
     else if(__type == LayerType::cnn || __type == LayerType::pooling) // for cnn layer and pooling layer
     {
-	// for cnn, drop out happens on kernels (weight matrix)
-	// so the neurons are all active
-	for(size_t k=0;k<__neuronDim.k;k++) // kernel
-	{
-	    Matrix Delta( __neuronDim.i, __neuronDim.j);
-	    for(size_t i=0;i<__neuronDim.i;i++){
-		for(size_t j=0;j<__neuronDim.j;j++)
-		{
-		    auto & delta_vector = __neurons[k][i][j]->GetDeltaVector();
-		    if(__neurons[k][i][j]->IsActive())
-		    {  // make sure no over extract
-			//assert(delta_vector.size() - 1 == l);
-			//Delta[i][j] = delta_vector.back();
-			Delta[i][j] = delta_vector[sample_index];
-		    }
-		    else
-		    {
-			Delta[i][j] = 0;
-		    }
-		}
-	    }
-	    sample_image_delta.OutputImageFromKernel.push_back(Delta); // no need to filter
-	    sample_image_delta_full.OutputImageFromKernel.push_back(Delta); 
-	}
-	//__imageDelta.push_back(sample_image_delta); // obsolete
-	__imageDelta[sample_index] = sample_image_delta;
-	__imageDeltaFull[sample_index] = sample_image_delta_full;
+        // for cnn, drop out happens on kernels (weight matrix)
+        // so the neurons are all active
+        for(size_t k=0;k<__neuronDim.k;k++) // kernel
+        {
+            Matrix Delta( __neuronDim.i, __neuronDim.j);
+            for(size_t i=0;i<__neuronDim.i;i++){
+                for(size_t j=0;j<__neuronDim.j;j++)
+                {
+                    auto & delta_vector = __neurons[k][i][j]->GetDeltaVector();
+                    if(__neurons[k][i][j]->IsActive())
+                    {  // make sure no over extract
+                        //assert(delta_vector.size() - 1 == l);
+                        //Delta[i][j] = delta_vector.back();
+                        Delta[i][j] = delta_vector[sample_index];
+                    }
+                    else
+                    {
+                        Delta[i][j] = 0;
+                    }
+                }
+            }
+            sample_image_delta.OutputImageFromKernel.push_back(Delta); // no need to filter
+            sample_image_delta_full.OutputImageFromKernel.push_back(Delta); 
+        }
+        //__imageDelta.push_back(sample_image_delta); // obsolete
+        __imageDelta[sample_index] = sample_image_delta;
+        __imageDeltaFull[sample_index] = sample_image_delta_full;
     }
     else // reserved for other layer types
     {
@@ -2562,19 +2572,19 @@ void ConstructLayer::UpdateCoordsForActiveNeuronFC()
     size_t active_i = 0;
     for(size_t i=0;i<dim.first;i++)
     {
-	// first reset coords back
-	//__neurons[0][i][0]->SetCoord(0, i, 0); //SetCoord(i, j, k), please note the sequence of the coordinates
-	__neurons[0][i][0]->SetCoord(i, 0, 0);   //SetCoord(i, j, k), 
+        // first reset coords back
+        //__neurons[0][i][0]->SetCoord(0, i, 0); //SetCoord(i, j, k), please note the sequence of the coordinates
+        __neurons[0][i][0]->SetCoord(i, 0, 0);   //SetCoord(i, j, k), 
 
-	// then set coord according to filter mask
-	if(!__activeFlag[0][i][0]){
-	    __neurons[0][i][0]->Disable();
-	    continue;
-	}
-	__neurons[0][i][0]->Enable();
-	//__neurons[0][i][0]->SetCoord(0, active_i, 0);
-	__neurons[0][i][0]->SetCoord(active_i, 0, 0); // SetCoord(i, j, k)
-	active_i++;
+        // then set coord according to filter mask
+        if(!__activeFlag[0][i][0]){
+            __neurons[0][i][0]->Disable();
+            continue;
+        }
+        __neurons[0][i][0]->Enable();
+        //__neurons[0][i][0]->SetCoord(0, active_i, 0);
+        __neurons[0][i][0]->SetCoord(active_i, 0, 0); // SetCoord(i, j, k)
+        active_i++;
     }
 }
 
@@ -2593,57 +2603,57 @@ void ConstructLayer::AssignWeightsAndBiasToNeurons()
     // pass active weights and bias pointers to neurons
     if(__type == LayerType::fullyConnected || __type == LayerType::output) // output is also a fully connected layer
     {
-	// assert(__weightMatrixActive.size() == 1); // should be equal to number of active neurons
-	assert(__neurons.size() == 1);
-	auto dim = __neurons[0].Dimension();
-	assert(dim.second == 1);
+        // assert(__weightMatrixActive.size() == 1); // should be equal to number of active neurons
+        assert(__neurons.size() == 1);
+        auto dim = __neurons[0].Dimension();
+        assert(dim.second == 1);
 
-	size_t active_i = 0;
-	for(size_t i=0;i<dim.first;i++)
-	{
-	    if(!__neurons[0][i][0]->IsActive())
-		continue;
-	    __neurons[0][i][0] -> PassWeightPointer(&__weightMatrixActive[active_i]);
-	    __neurons[0][i][0] -> PassBiasPointer(&__biasVectorActive[active_i]);
+        size_t active_i = 0;
+        for(size_t i=0;i<dim.first;i++)
+        {
+            if(!__neurons[0][i][0]->IsActive())
+                continue;
+            __neurons[0][i][0] -> PassWeightPointer(&__weightMatrixActive[active_i]);
+            __neurons[0][i][0] -> PassBiasPointer(&__biasVectorActive[active_i]);
 
-	    active_i++;
-	}
+            active_i++;
+        }
     }
     else if(__type == LayerType::cnn || __type == LayerType::pooling)
     {
-	size_t nKernel = __weightMatrixActive.size();
-	assert(__neurons.size() == nKernel); // layers must match
-	auto dim = __neurons[0].Dimension(); // image size (pixel)
-	for(size_t k=0;k<nKernel;k++)
-	{
-	    for(size_t i=0;i<dim.first;i++)
-	    {
-		for(size_t j=0;j<dim.second;j++)
-		{
-		    __neurons[k][i][j] -> PassWeightPointer(&__weightMatrixActive[k]);
-		    __neurons[k][i][j] -> PassBiasPointer(&__biasVectorActive[k]);
-		}
-	    }
-	}
+        size_t nKernel = __weightMatrixActive.size();
+        assert(__neurons.size() == nKernel); // layers must match
+        auto dim = __neurons[0].Dimension(); // image size (pixel)
+        for(size_t k=0;k<nKernel;k++)
+        {
+            for(size_t i=0;i<dim.first;i++)
+            {
+                for(size_t j=0;j<dim.second;j++)
+                {
+                    __neurons[k][i][j] -> PassWeightPointer(&__weightMatrixActive[k]);
+                    __neurons[k][i][j] -> PassBiasPointer(&__biasVectorActive[k]);
+                }
+            }
+        }
     }
     else 
     {
-	std::cout<<"Error: assign w&b pointers, unrecognized layer type."
-	    <<std::endl;
-	exit(0);
+        std::cout<<"Error: assign w&b pointers, unrecognized layer type."
+            <<std::endl;
+        exit(0);
     }
 }
 
 void ConstructLayer::DropOut()
 {
     if(__type == LayerType::fullyConnected)
-	__UpdateActiveFlagFC();
+        __UpdateActiveFlagFC();
     else if(__type == LayerType::cnn || __type == LayerType::pooling)
-	__UpdateActiveFlagCNN();
+        __UpdateActiveFlagCNN();
     else 
     {
-	std::cout<<"Error: drop out, un-recongnized layer type."<<std::endl;
-	exit(0);
+        std::cout<<"Error: drop out, un-recongnized layer type."<<std::endl;
+        exit(0);
     }
 }
 
@@ -2674,8 +2684,8 @@ void ConstructLayer::SetupDropOutFilterPool()
     if(__activeFlag.size() <= 0)
     {
         std::cout<<__func__<<" Error: Filters must be initialized before setting up filter pool."
-	         <<std::endl;
-	exit(0);
+            <<std::endl;
+        exit(0);
     }
     assert(__activeFlag[0].Dimension().first > 0);
     assert(__dropOutBranches >= 1);
@@ -2686,18 +2696,18 @@ void ConstructLayer::SetupDropOutFilterPool()
     for(auto &i: __activeFlag)
     {
         std::vector<Filter2D> tmp = i.GenerateCompleteDropOutSet(__dropOutBranches, __dropOut);
-	_p.push_back(tmp);
+        _p.push_back(tmp);
     }
 
     // 2) fill accordingly to the drop-out pool
     for(int drop_id=0;drop_id<__dropOutBranches;drop_id++)
     {
         std::vector<Filter2D> tmp;
-	for(auto &i: _p)
-	{
-	    tmp.push_back(i[drop_id]);
-	}
-	__activeFlagPool.push_back(tmp);
+        for(auto &i: _p)
+        {
+            tmp.push_back(i[drop_id]);
+        }
+        __activeFlagPool.push_back(tmp);
     }
 }
 
@@ -2727,13 +2737,13 @@ void ConstructLayer::__UpdateActiveFlagFC_Obsolete() // this function has been m
     // generate a filter vector
     std::vector<bool> tmp(dim.first, true);
     for(int i=0;i<n_dead;i++)
-	tmp[i] = false;
+        tmp[i] = false;
     TOOLS::Shuffle(tmp);
 
     // mask out filters
     for(size_t i=0;i<dim.first;i++)
     {
-	__activeFlag[0][i][0] = tmp[i];
+        __activeFlag[0][i][0] = tmp[i];
     }
 }
 
@@ -2759,27 +2769,27 @@ void ConstructLayer::__UpdateActiveFlagCNN_Obsolete() // this function has been 
 
     auto not_inside = [&](std::vector<std::pair<int, int>> &v, std::pair<int, int>&p) -> bool
     {
-	for(auto &i: v)
-	    if (i == p) return false;
-	return true;
+        for(auto &i: v)
+            if (i == p) return false;
+        return true;
     };
 
     for(size_t k=0;k<nKernel;k++)
     {
-	std::vector<std::pair<int, int>> rand_elements;
-	while(rand_elements.size() < (size_t)nDead)
-	{
-	    int r = row(gen);
-	    int c = col(gen);
-	    std::pair<int, int> p(r, c);
-	    if(not_inside(rand_elements, p)) 
-		rand_elements.emplace_back(r, c);
-	}
+        std::vector<std::pair<int, int>> rand_elements;
+        while(rand_elements.size() < (size_t)nDead)
+        {
+            int r = row(gen);
+            int c = col(gen);
+            std::pair<int, int> p(r, c);
+            if(not_inside(rand_elements, p)) 
+                rand_elements.emplace_back(r, c);
+        }
 
-	for(auto &i: rand_elements)
-	{
-	    __activeFlag[k][i.first][i.second] = false;
-	}
+        for(auto &i: rand_elements)
+        {
+            __activeFlag[k][i.first][i.second] = false;
+        }
     }
 }
 
@@ -2791,29 +2801,29 @@ void ConstructLayer::TransferValueFromActiveToOriginal_WB()
     size_t nKernels = __weightMatrix.size();
     if(__biasVector.size() != nKernels || __activeFlag.size() != nKernels) 
     {
-	std::cout<<"Error: number of kernels not match in filtering"<<std::endl;
-	exit(0);
+        std::cout<<"Error: number of kernels not match in filtering"<<std::endl;
+        exit(0);
     }
 
     // for cnn layer
     // cnn layer drop out algorithm only make the filtered element be zero, dimension wont change
     auto active_to_original_cnn = [&](Matrix &original_M, Filter2D &filter_M, Matrix &active_M) 
     {
-	auto dim = original_M.Dimension();
-	if( dim != filter_M.Dimension())
-	{
-	    std::cout<<"Error: filter M & original M dimension not match."<<std::endl;
-	    exit(0);
-	}
+        auto dim = original_M.Dimension();
+        if( dim != filter_M.Dimension())
+        {
+            std::cout<<"Error: filter M & original M dimension not match."<<std::endl;
+            exit(0);
+        }
 
-	for(size_t i=0;i<dim.first;i++)
-	{
-	    for(size_t j=0;j<dim.second;j++)
-	    {
-		// transfer value from active matrix to original matrix
-		if(filter_M[i][j]) original_M[i][j] = active_M[i][j];
-	    }
-	}
+        for(size_t i=0;i<dim.first;i++)
+        {
+            for(size_t j=0;j<dim.second;j++)
+            {
+                // transfer value from active matrix to original matrix
+                if(filter_M[i][j]) original_M[i][j] = active_M[i][j];
+            }
+        }
     };
 
     // for fully connected layer
@@ -2822,61 +2832,61 @@ void ConstructLayer::TransferValueFromActiveToOriginal_WB()
     // and collum number still equals the number of active neurons of previous layer
     auto active_to_original_fc = [&](Filter2D &filter_M, Filter2D &filter_M_prev_layer) 
     {
-	auto dim = __weightMatrix[0].Dimension();
-	assert(dim.first = filter_M.Dimension().first);
+        auto dim = __weightMatrix[0].Dimension();
+        assert(dim.first = filter_M.Dimension().first);
 
-	if(filter_M.Dimension().second != 1 || filter_M_prev_layer.Dimension().second != 1)
-	{
-	    std::cout<<"Error: filter matrix fc layer should be a 1-collumn matrix."<<std::endl;
-	    exit(0);
-	}
+        if(filter_M.Dimension().second != 1 || filter_M_prev_layer.Dimension().second != 1)
+        {
+            std::cout<<"Error: filter matrix fc layer should be a 1-collumn matrix."<<std::endl;
+            exit(0);
+        }
 
-	size_t active_i = 0;
-	for(size_t i=0;i<dim.first;i++)
-	{
-	    if(!filter_M[i][0]) continue;
+        size_t active_i = 0;
+        for(size_t i=0;i<dim.first;i++)
+        {
+            if(!filter_M[i][0]) continue;
 
-	    // get weights for current active neuron
-	    Matrix & act_row = __weightMatrixActive[active_i];
-	    assert(act_row.Dimension().first == 1);
+            // get weights for current active neuron
+            Matrix & act_row = __weightMatrixActive[active_i];
+            assert(act_row.Dimension().first == 1);
 
-	    // get bias for current active neuron
-	    Matrix & act_b = __biasVectorActive[active_i];
-	    assert(act_b.Dimension().first == 1);
-	    assert(act_b.Dimension().second == 1);
+            // get bias for current active neuron
+            Matrix & act_b = __biasVectorActive[active_i];
+            assert(act_b.Dimension().first == 1);
+            assert(act_b.Dimension().second == 1);
 
-	    // weight
-	    size_t active_j = 0;
-	    for(size_t j=0;j<dim.second;j++)
-	    {
-		if(!filter_M_prev_layer[j][0])
-		    continue;
-		__weightMatrix[0][i][j] = act_row[active_i][active_j];
-		active_j++;
-	    }
-	    // bias
-	    __biasVector[0][i][0] = act_b[0][0];
+            // weight
+            size_t active_j = 0;
+            for(size_t j=0;j<dim.second;j++)
+            {
+                if(!filter_M_prev_layer[j][0])
+                    continue;
+                __weightMatrix[0][i][j] = act_row[active_i][active_j];
+                active_j++;
+            }
+            // bias
+            __biasVector[0][i][0] = act_b[0][0];
 
-	    active_i++;
-	    assert(act_row.Dimension().second == active_j);
-	}
-	assert(__weightMatrixActive.size() == active_i);
+            active_i++;
+            assert(act_row.Dimension().second == active_j);
+        }
+        assert(__weightMatrixActive.size() == active_i);
     };
 
     // start transfer
     for(size_t i=0;i<nKernels;i++)
     {
-	if(__type == LayerType::cnn || __type == LayerType::pooling) {
-	    active_to_original_cnn(__weightMatrix[i], __activeFlag[i], __weightMatrixActive[i]);
-	}
-	else if(__type == LayerType::fullyConnected || __type == LayerType::output)
-	{
-	    // for fc layer, nKernels = 1
-	    assert(nKernels == 1);
-	    auto & filter_prev_layer = __prevLayer->GetActiveFlag();
-	    assert(filter_prev_layer.size() == 1);
-	    active_to_original_fc(__activeFlag[i], filter_prev_layer[0]);
-	}
+        if(__type == LayerType::cnn || __type == LayerType::pooling) {
+            active_to_original_cnn(__weightMatrix[i], __activeFlag[i], __weightMatrixActive[i]);
+        }
+        else if(__type == LayerType::fullyConnected || __type == LayerType::output)
+        {
+            // for fc layer, nKernels = 1
+            assert(nKernels == 1);
+            auto & filter_prev_layer = __prevLayer->GetActiveFlag();
+            assert(filter_prev_layer.size() == 1);
+            active_to_original_fc(__activeFlag[i], filter_prev_layer[0]);
+        }
     }
 }
 
@@ -2886,28 +2896,28 @@ void ConstructLayer::TransferValueFromOriginalToActive_WB()
     size_t nKernel = __weightMatrix.size();
     assert(nKernel == __biasVector.size());
     if(__type == LayerType::cnn || __type == LayerType::pooling) 
-	assert(nKernel == __activeFlag.size());
+        assert(nKernel == __activeFlag.size());
 
     // a lambda funtion for cnn layer mapping original w&b matrix to active w&b matrix
     auto map_matrix_cnn = [&](Matrix &ori_M, Filter2D &filter_M)
     {
-	auto dim = ori_M.Dimension();
-	assert(dim == filter_M.Dimension());
+        auto dim = ori_M.Dimension();
+        assert(dim == filter_M.Dimension());
 
-	// weight matrix
-	Matrix tmp(dim);
-	for(size_t i=0;i<dim.first;i++)
-	{
-	    for(size_t j=0;j<dim.second;j++){
-		if(filter_M[i][j]){
-		    tmp[i][j] = ori_M[i][j];
-		}
-		else{
-		    tmp[i][j] = 0.;
-		}
-	    }
-	}
-	__weightMatrixActive.push_back(tmp);
+        // weight matrix
+        Matrix tmp(dim);
+        for(size_t i=0;i<dim.first;i++)
+        {
+            for(size_t j=0;j<dim.second;j++){
+                if(filter_M[i][j]){
+                    tmp[i][j] = ori_M[i][j];
+                }
+                else{
+                    tmp[i][j] = 0.;
+                }
+            }
+        }
+        __weightMatrixActive.push_back(tmp);
     };
 
     // a lambda funtion for fc layer mapping original w&b matrix to active w&b matrix
@@ -2916,71 +2926,71 @@ void ConstructLayer::TransferValueFromOriginalToActive_WB()
     //   so active w&b matrix will be composed of dimension (1, N) matrix, and then each of them will be passed to neurons
     auto map_matrix_fc = [&](Matrix &ori_M, Filter2D &filter_M)
     {
-	auto dim = ori_M.Dimension();
+        auto dim = ori_M.Dimension();
 
-	assert(dim.first == filter_M.Dimension().first);
-	assert(filter_M.Dimension().second == 1);
-	assert(__biasVector.size() == 1);
+        assert(dim.first == filter_M.Dimension().first);
+        assert(filter_M.Dimension().second == 1);
+        assert(__biasVector.size() == 1);
 
-	for(size_t i=0;i<dim.first;i++)
-	{
-	    if(!filter_M[i][0]) continue;
+        for(size_t i=0;i<dim.first;i++)
+        {
+            if(!filter_M[i][0]) continue;
 
-	    // weight
-	    std::vector<double> act_row;
-	    for(size_t j=0;j<dim.second;j++)
-	    {
-		if(__prevLayer != nullptr &&   // current layer is not input layer
-			(__prevLayer->GetType() == LayerType::fullyConnected ) // only fc layer no need for other type layers (output layer is labeled as 'fc'; input layer has no w&b matrix)
-		  )
-		{
-		    auto & filter_prev = __prevLayer->GetActiveFlag();
-		    assert(filter_prev.size() == 1);
-		    if(!filter_prev[0][j][0])
-			continue;
-		}
-		act_row.push_back(ori_M[i][j]);
-	    }
-	    std::vector<std::vector<double>> act_M;
-	    act_M.push_back(act_row);
-	    Matrix tmp(act_M);
-	    __weightMatrixActive.push_back(tmp);
+            // weight
+            std::vector<double> act_row;
+            for(size_t j=0;j<dim.second;j++)
+            {
+                if(__prevLayer != nullptr &&   // current layer is not input layer
+                        (__prevLayer->GetType() == LayerType::fullyConnected ) // only fc layer no need for other type layers (output layer is labeled as 'fc'; input layer has no w&b matrix)
+                  )
+                {
+                    auto & filter_prev = __prevLayer->GetActiveFlag();
+                    assert(filter_prev.size() == 1);
+                    if(!filter_prev[0][j][0])
+                        continue;
+                }
+                act_row.push_back(ori_M[i][j]);
+            }
+            std::vector<std::vector<double>> act_M;
+            act_M.push_back(act_row);
+            Matrix tmp(act_M);
+            __weightMatrixActive.push_back(tmp);
 
-	    // bias
-	    std::vector<double> act_bias;
-	    act_bias.push_back(__biasVector[0][i][0]);
-	    std::vector<std::vector<double>> act_b;
-	    act_b.push_back(act_bias);
-	    Matrix tmp_b(act_b);
-	    __biasVectorActive.push_back(tmp_b);
-	}
+            // bias
+            std::vector<double> act_bias;
+            act_bias.push_back(__biasVector[0][i][0]);
+            std::vector<std::vector<double>> act_b;
+            act_b.push_back(act_bias);
+            Matrix tmp_b(act_b);
+            __biasVectorActive.push_back(tmp_b);
+        }
     };
 
     // start mapping
     if(__type == LayerType::cnn || __type == LayerType::pooling)
     {
-	for(size_t k=0; k<nKernel;k++)
-	{
-	    map_matrix_cnn(__weightMatrix[k], __activeFlag[k]);
-	}
-	// for cnn, drop out won't change threshold
-	__biasVectorActive = __biasVector; 
+        for(size_t k=0; k<nKernel;k++)
+        {
+            map_matrix_cnn(__weightMatrix[k], __activeFlag[k]);
+        }
+        // for cnn, drop out won't change threshold
+        __biasVectorActive = __biasVector; 
     }
     else if (__type == LayerType::fullyConnected || __type == LayerType::output)
     {
-	map_matrix_fc(__weightMatrix[0], __activeFlag[0]);
+        map_matrix_fc(__weightMatrix[0], __activeFlag[0]);
     }
 
     // update active neuron coord after drop out
     if(__type == LayerType::cnn || __type == LayerType::pooling)
     {
-	__activeNeuronDim = __neuronDim; // drop out not happening on neurons, so dimension stays same
+        __activeNeuronDim = __neuronDim; // drop out not happening on neurons, so dimension stays same
     }
     else if(__type == LayerType::fullyConnected || __type == LayerType::output)
     {
-	__activeNeuronDim = __neuronDim; // update active neuron dimension
-	size_t active_neurons = __weightMatrixActive.size();
-	__activeNeuronDim.i = active_neurons;
+        __activeNeuronDim = __neuronDim; // update active neuron dimension
+        size_t active_neurons = __weightMatrixActive.size();
+        __activeNeuronDim.i = active_neurons;
     }
 
     //std::cout<<"Debug: Layer:"<<GetID()<<" TransferValueFromOriginalToActiveWB() done."<<std::endl;
@@ -2998,7 +3008,7 @@ void ConstructLayer::ClearImage()
     // members in this routine needs to be cleared for each batch
     // because contents are different for each batch
     // and to avoid memory leak
-    
+
     __imageA.clear();
     __imageZ.clear();
     __imageSigmaPrime.clear();
@@ -3098,7 +3108,7 @@ int ConstructLayer::GetBatchSize()
     if( __p_data_interface == nullptr)
     {
         std::cout<<"Error: ConstructLayer::GetBatchSize() data interface is nullptr."
-	         <<std::endl;
+            <<std::endl;
         exit(0);
     }
 
@@ -3106,7 +3116,7 @@ int ConstructLayer::GetBatchSize()
     if(batch_size <= 0)
     {
         std::cout<<"Error: ConstructLayer::GetBatchSize() batch size is 0, seems data interface is not implemented."
-	         <<std::endl;
+            <<std::endl;
         exit(0);
     }
     return batch_size;
@@ -3117,8 +3127,8 @@ CostFuncType ConstructLayer::GetCostFuncType()
     if(__type != LayerType::output)
     {
         std::cout<<"Error: ConstructLayer::GetCostFuncType() only works for output layer"
-	         <<std::endl;
-	exit(0);
+            <<std::endl;
+        exit(0);
     }
     return __cost_func_type;
 }
@@ -3133,8 +3143,8 @@ DataInterface * ConstructLayer::GetDataInterface()
     if(__p_data_interface == nullptr)
     {
         std::cout<<"Error: ConstructLayer::GetDataInterface() data interface is nullptr."
-	         <<std::endl;
-	exit(0);
+            <<std::endl;
+        exit(0);
     }
     return __p_data_interface;
 }
@@ -3144,8 +3154,8 @@ Layer* ConstructLayer::GetNextLayer()
     if(__nextLayer == nullptr)
     {
         std::cout<<"Error: ConstructLayer::GetNextLayer(): __nextLayer is not setup"
-	         <<std::endl;
-	exit(0);
+            <<std::endl;
+        exit(0);
     }
     return __nextLayer;
 }
@@ -3156,8 +3166,8 @@ Layer* ConstructLayer::GetPrevLayer()
     if(__prevLayer == nullptr)
     {
         std::cout<<"Error: ConstructLayer::GetNextLayer(): __prevLayer is not setup"
-	         <<std::endl;
-	exit(0);
+            <<std::endl;
+        exit(0);
     }
 
     return __prevLayer;
@@ -3176,20 +3186,20 @@ void ConstructLayer::UpdateWeightsAndBias()
 
     if(layerType == LayerType::fullyConnected || layerType == LayerType::output)  // output is also a fc layer
     {
-	UpdateWeightsAndBiasFC();
+        UpdateWeightsAndBiasFC();
     }
     else if(layerType == LayerType::cnn) 
     {
-	UpdateWeightsAndBiasCNN();
+        UpdateWeightsAndBiasCNN();
     }
     else if(layerType == LayerType::pooling) 
     {
-	UpdateWeightsAndBiasPooling();
+        UpdateWeightsAndBiasPooling();
     }
     else 
     {
-	std::cout<<__func__<<" Error: update weights and bias, unsupported layer type."<<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: update weights and bias, unsupported layer type."<<std::endl;
+        exit(0);
     }
 
     // 3) if use batch normalization, update \gamma and \beta
@@ -3204,20 +3214,20 @@ void ConstructLayer::UpdateWeightsAndBiasGradients()
 
     if(layerType == LayerType::fullyConnected || layerType == LayerType::output)  // output is also a fully connected layer
     {
-	UpdateWeightsAndBiasGradientsFC();
+        UpdateWeightsAndBiasGradientsFC();
     }
     else if(layerType == LayerType::cnn) 
     {
-	UpdateWeightsAndBiasGradientsCNN();
+        UpdateWeightsAndBiasGradientsCNN();
     }
     else if(layerType == LayerType::pooling) 
     {
-	UpdateWeightsAndBiasGradientsPooling();
+        UpdateWeightsAndBiasGradientsPooling();
     }
     else 
     {
-	std::cout<<__func__<<" Error: update weights and bias gradients, unsupported layer type."<<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: update weights and bias gradients, unsupported layer type."<<std::endl;
+        exit(0);
     }
 }
 
@@ -3230,15 +3240,15 @@ void ConstructLayer::UpdateWeightsAndBiasGradientsFC()
     if(/*__prevLayer->GetType() != LayerType::input && */__prevLayer->GetType() != LayerType::fullyConnected) // input layer has no W&B
     {
         // if previous layer is not an input/fullyConnected layer, then Vectorization operation is needed
-	//      this is for cnn->fc or pooling->fc
+        //      this is for cnn->fc or pooling->fc
         auto & _tmp = __prevLayer->GetImagesFullA(); // 'a' images from previous layer
-	for(auto &i: _tmp)
-	    a_images.push_back(i.Vectorization());
+        for(auto &i: _tmp)
+            a_images.push_back(i.Vectorization());
     }
     else
     {
         // if previous layer is input/fc, no other operation is needed
-	a_images = __prevLayer->GetImagesFullA(); // 'a' images from previous layer
+        a_images = __prevLayer->GetImagesFullA(); // 'a' images from previous layer
     }
     auto & d_images = this->GetImagesFullDelta(); // delta images from current layer
     // NOTE: 'a' and 'delta' include value correpsonds to disabled neurons
@@ -3246,20 +3256,20 @@ void ConstructLayer::UpdateWeightsAndBiasGradientsFC()
     //       see Functions UpdateImagesA() and UpdateImagesDelta()
     //       since dC/dw_ij = a^{l-1}_j * delta^l_k, so if a = 0 or delta = 0, then dC/dw = 0, namely no change on w for inactive neurons
     if(a_images.size() != d_images.size()) {
-	std::cout<<__func__<<" Error: batch size not equal..."<<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: batch size not equal..."<<std::endl;
+        exit(0);
     }
     if(a_images.back().OutputImageFromKernel.size() != 1 ) {
-	std::cout<<__func__<<" Error: updating weights and bias gradients for FC, dimension not match."<<std::endl;
-	std::cout<<"                  kernel size: "<<a_images.back().OutputImageFromKernel.size()<<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: updating weights and bias gradients for FC, dimension not match."<<std::endl;
+        std::cout<<"                  kernel size: "<<a_images.back().OutputImageFromKernel.size()<<std::endl;
+        exit(0);
     }
 
     // so directly work on __weightMatrix, not __weightMatrixActive
     // check layer type
     if(__weightMatrix.size() != 1) {
-	std::cout<<__func__<<" Error: more than 1 weight matrix exist in fully connected layer."<<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: more than 1 weight matrix exist in fully connected layer."<<std::endl;
+        exit(0);
     }
 
     //cout<<"sample size: "<<d_images.size()<<endl;
@@ -3271,42 +3281,42 @@ void ConstructLayer::UpdateWeightsAndBiasGradientsFC()
     // loop for samples
     for(size_t i=0;i<a_images.size();i++)
     {
-	Matrix & a_matrix = a_images[i].OutputImageFromKernel[0]; // 'a' image from previous layer
-	Matrix & d_matrix = d_images[i].OutputImageFromKernel[0]; // 'd' image from current layer
-	//cout<<"Layer id: "<<GetID()<<endl;
-	//cout<<"a matrix: "<<endl<<a_matrix<<endl;
-	//cout<<"delta matrix: "<<endl<<d_matrix<<endl;
+        Matrix & a_matrix = a_images[i].OutputImageFromKernel[0]; // 'a' image from previous layer
+        Matrix & d_matrix = d_images[i].OutputImageFromKernel[0]; // 'd' image from current layer
+        //cout<<"Layer id: "<<GetID()<<endl;
+        //cout<<"a matrix: "<<endl<<a_matrix<<endl;
+        //cout<<"delta matrix: "<<endl<<d_matrix<<endl;
 
-	auto d1 = (__weightMatrix[0]).Dimension(), d2 = a_matrix.Dimension(), d3 = d_matrix.Dimension();
-	if(d1.first != d3.first || d1.second != d2.first)
-	{
-	    std::cout<<__func__<<"Error: updating weights and bias gradients for FC, dimension not match."<<std::endl;
-	    std::cout<<"          current layer 'w' matrix dimension: "<<d1<<std::endl;
-	    std::cout<<"          previous layer 'a' matrix dimension: "<<d2<<std::endl;
-	    std::cout<<"          current layer 'delta' matrix dimension: "<<d3<<std::endl;
-	    exit(0);
-	}
+        auto d1 = (__weightMatrix[0]).Dimension(), d2 = a_matrix.Dimension(), d3 = d_matrix.Dimension();
+        if(d1.first != d3.first || d1.second != d2.first)
+        {
+            std::cout<<__func__<<"Error: updating weights and bias gradients for FC, dimension not match."<<std::endl;
+            std::cout<<"          current layer 'w' matrix dimension: "<<d1<<std::endl;
+            std::cout<<"          previous layer 'a' matrix dimension: "<<d2<<std::endl;
+            std::cout<<"          current layer 'delta' matrix dimension: "<<d3<<std::endl;
+            exit(0);
+        }
 
-	//cout<<"sample_id: "<<i<<endl;
-	Matrix a_T = a_matrix.Transpose();
-	Matrix dw = d_matrix * a_T;
+        //cout<<"sample_id: "<<i<<endl;
+        Matrix a_T = a_matrix.Transpose();
+        Matrix dw = d_matrix * a_T;
 
         //cout<<a_T.Dimension()<<endl;
-	//cout<<"a :"<<endl<<a_T<<endl;
-	//cout<<d_matrix.Dimension()<<endl;
-	//cout<<"d :"<<endl<<d_matrix<<endl;
-	//cout<<"dw: "<<endl<<dw<<endl;
-	//cout<<"dw matrix."<<endl;
-	//getchar();
+        //cout<<"a :"<<endl<<a_T<<endl;
+        //cout<<d_matrix.Dimension()<<endl;
+        //cout<<"d :"<<endl<<d_matrix<<endl;
+        //cout<<"dw: "<<endl<<dw<<endl;
+        //cout<<"dw matrix."<<endl;
+        //getchar();
 
-	// push bias gradient for current training sample
-	Images tmp_w_gradients;
-	tmp_w_gradients.OutputImageFromKernel.push_back(dw);
-	__wGradient.push_back(tmp_w_gradients); // push weight gradient for current training sample
+        // push bias gradient for current training sample
+        Images tmp_w_gradients;
+        tmp_w_gradients.OutputImageFromKernel.push_back(dw);
+        __wGradient.push_back(tmp_w_gradients); // push weight gradient for current training sample
 
-	Images tmp_b_gradients;
-	tmp_b_gradients.OutputImageFromKernel.push_back(d_matrix);
-	__bGradient.push_back(tmp_b_gradients); // bias gradient equals delta
+        Images tmp_b_gradients;
+        tmp_b_gradients.OutputImageFromKernel.push_back(d_matrix);
+        __bGradient.push_back(tmp_b_gradients); // bias gradient equals delta
     }
 
     //cout<<"INFO: "<<__func__<<" finished."<<endl;
@@ -3325,9 +3335,9 @@ static void maskMatrix(Matrix& M, Matrix& F)
     for(size_t i=0;i<dimF.first;i++)
     {
         for(size_t j=0;j<dimF.second;j++)
-	{
-	    if(F[i][j] == 0) M[i][j] = 0;
-	}
+        {
+            if(F[i][j] == 0) M[i][j] = 0;
+        }
     }
 }
 */
@@ -3338,53 +3348,53 @@ void ConstructLayer::UpdateWeightsAndBiasFC()
     // after finishing one batch, update weights and bias, for FC layer
     size_t M = __imageDeltaFull.size(); // batch size
     if( M != __wGradient.size() ) {
-	std::cout<<__func__<<" Error: update FC weights, batch size not match."<<std::endl;
-	std::cout<<"           weight gradient batch size: "<<__wGradient.size()<<std::endl;
-	std::cout<<"           delta image batch size: "<<__imageDeltaFull.size()<<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: update FC weights, batch size not match."<<std::endl;
+        std::cout<<"           weight gradient batch size: "<<__wGradient.size()<<std::endl;
+        std::cout<<"           delta image batch size: "<<__imageDeltaFull.size()<<std::endl;
+        exit(0);
     }
     if( __wGradient[0].OutputImageFromKernel.size() != 1 || __bGradient[0].OutputImageFromKernel.size()!=1) 
     {
-	std::cout<<__func__<<" Error: update FC weiths, more than 1 w gradient matrix found."
-	         <<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: update FC weiths, more than 1 w gradient matrix found."
+            <<std::endl;
+        exit(0);
     }
 
     // gradient descent
     if(__weightMatrix.size() != __neuronDim.k) {
-	std::cout<<__func__<<" Error: update FC layer weights, more than 1 weight matrix found."<<std::endl;
-	std::cout<<"__weightMatrix size: "<<__weightMatrix.size()<<std::endl;
-	std::cout<<"neuron dimension: "<<__neuronDim<<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: update FC layer weights, more than 1 weight matrix found."<<std::endl;
+        std::cout<<"__weightMatrix size: "<<__weightMatrix.size()<<std::endl;
+        std::cout<<"neuron dimension: "<<__neuronDim<<std::endl;
+        exit(0);
     }
     Matrix dw((__weightMatrix[0]).Dimension(), 0); 
     for(size_t i=0;i<M;i++){ // sum x (batches)
-	dw  = dw + __wGradient[i].OutputImageFromKernel[0];
-	//cout<<__wGradient[i].OutputImageFromKernel[0]<<endl;
-	//cout<<i<<" before sum"<<endl;
-	//getchar();
+        dw  = dw + __wGradient[i].OutputImageFromKernel[0];
+        //cout<<__wGradient[i].OutputImageFromKernel[0]<<endl;
+        //cout<<i<<" before sum"<<endl;
+        //getchar();
     }
 
     if(__weights_optimizer == WeightsOptimizer::SGD)
     {
         // standard SGD 
-	dw = dw * double(__learningRate/(double)M); // over batch 
+        dw = dw * double(__learningRate/(double)M); // over batch 
     }
     else if(__weights_optimizer == WeightsOptimizer::Adam)
     {
         // Adam optimizer
-	dw = dw * (1./ (double)M );
+        dw = dw * (1./ (double)M );
 
-	//Matrix tmp = dw * __learningRate;
-	//cout<<"Before adam: "<<endl<<dw<<endl;
+        //Matrix tmp = dw * __learningRate;
+        //cout<<"Before adam: "<<endl<<dw<<endl;
         dw = AdamOptimizer(dw, 0);
-	//cout<<"after adam: "<<endl<<dw<<endl;
-	//getchar();
+        //cout<<"after adam: "<<endl<<dw<<endl;
+        //getchar();
     }
     else
     {
         std::cout<<__func__<<" Error: unsupported optimization method."<<std::endl;
-	exit(0);
+        exit(0);
     }
     //cout<<"learning rate: "<<double(__learningRate/(double)M)<<endl;
 
@@ -3393,15 +3403,15 @@ void ConstructLayer::UpdateWeightsAndBiasFC()
     auto convertFilterToMatrix = [&](Filter2D & F) -> Matrix
     {
         auto dim = F.Dimension();
-	Matrix M(dim, 0);
-	for(size_t i=0;i<dim.first;i++)
-	{
-	    for(size_t j=0;j<dim.second;j++)
-	    {
-	        if(F[i][j]) M[i][j] = 1;
-	    }
-	}
-	return M;
+        Matrix M(dim, 0);
+        for(size_t i=0;i<dim.first;i++)
+        {
+            for(size_t j=0;j<dim.second;j++)
+            {
+                if(F[i][j]) M[i][j] = 1;
+            }
+        }
+        return M;
     };
     Matrix currentLayerFilter = convertFilterToMatrix(__activeFlag[0]);
     //cout<<currentLayerFilter.Dimension()<<endl;
@@ -3410,13 +3420,13 @@ void ConstructLayer::UpdateWeightsAndBiasFC()
 
     if(__prevLayer->GetType() == LayerType::input) // only fc layer need this, other layers won't affect
     {
-	auto & prevLayerFilters = __prevLayer->GetActiveFlag();
-	assert(prevLayerFilters.size() == 1);
-	assert(prevLayerFilters[0].Dimension().first == (size_t)__prevLayer->GetNumberOfNeurons());
+        auto & prevLayerFilters = __prevLayer->GetActiveFlag();
+        assert(prevLayerFilters.size() == 1);
+        assert(prevLayerFilters[0].Dimension().first == (size_t)__prevLayer->GetNumberOfNeurons());
 
-	Matrix filter = convertFilterToMatrix(prevLayerFilters[0]);
-	prevLayerFilter = filter.Transpose();
-	//cout<<"after: "<<endl<<prevLayerFilter<<endl;
+        Matrix filter = convertFilterToMatrix(prevLayerFilters[0]);
+        prevLayerFilter = filter.Transpose();
+        //cout<<"after: "<<endl<<prevLayerFilter<<endl;
     }
 
     // following is two flag matrix (dim[n,1] x dim[1, m], with bool elements) product
@@ -3434,45 +3444,45 @@ void ConstructLayer::UpdateWeightsAndBiasFC()
     if(__regularizationMethod == Regularization::L2) 
     {
         // obsolete
-	//f_regularization = 1 - __learningRate * __regularizationParameter / M;
-	//(__weightMatrix[0]) = (__weightMatrix[0]) * f_regularization - dw;
-	
-	// new
-	// hadamard multiply with F to maks out all inactive elements
-	Matrix regularization_M = (__weightMatrix[0]^F) *(__learningRate * __regularizationParameter/((double)M)); 
-	Matrix total_correction_M = regularization_M + dw; // dw already include learning rate during generation
-	__weightMatrix[0] = __weightMatrix[0] - total_correction_M;
+        //f_regularization = 1 - __learningRate * __regularizationParameter / M;
+        //(__weightMatrix[0]) = (__weightMatrix[0]) * f_regularization - dw;
+
+        // new
+        // hadamard multiply with F to maks out all inactive elements
+        Matrix regularization_M = (__weightMatrix[0]^F) *(__learningRate * __regularizationParameter/((double)M)); 
+        Matrix total_correction_M = regularization_M + dw; // dw already include learning rate during generation
+        __weightMatrix[0] = __weightMatrix[0] - total_correction_M;
     } 
     else if(__regularizationMethod == Regularization::L1) 
     {
-	Matrix _t = (__weightMatrix[0]); // make a copy of weight matrix
-	_t(&SGN); // get the sign for each element in weight matrix
-	_t = _t^F; // hadamard operation to mask out all inactive elements
-	_t = _t * (__learningRate*__regularizationParameter/(double)M); // L1 regularization part
-	(__weightMatrix[0]) = (__weightMatrix[0]) -  _t; // apply L1 regularization to weight matrix
-	(__weightMatrix[0]) = (__weightMatrix[0]) - dw; // apply gradient decsent part
+        Matrix _t = (__weightMatrix[0]); // make a copy of weight matrix
+        _t(&SGN); // get the sign for each element in weight matrix
+        _t = _t^F; // hadamard operation to mask out all inactive elements
+        _t = _t * (__learningRate*__regularizationParameter/(double)M); // L1 regularization part
+        (__weightMatrix[0]) = (__weightMatrix[0]) -  _t; // apply L1 regularization to weight matrix
+        (__weightMatrix[0]) = (__weightMatrix[0]) - dw; // apply gradient decsent part
     } 
     else 
     {
-	std::cout<<__func__<<" Error: update FC weights, unsupported regularization."<<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: update FC weights, unsupported regularization."<<std::endl;
+        exit(0);
     }
 
     //cout<<"reached hrere..."<<endl;
 
     if(!__use_batch_normalization || 
-	    (__type != LayerType::cnn && __type != LayerType::fullyConnected && __type != LayerType::output))
+            (__type != LayerType::cnn && __type != LayerType::fullyConnected && __type != LayerType::output))
     {
-	// for cnn, fc, output layers, if BN is not used, one need to update b paramter.
-	// if BN is used, b parameter is discarded (combined into \beta parameter)
-	// bias
-	Matrix db(__biasVector[0].Dimension());
-	for(size_t i=0;i<M;i++){
-	    db = db + __bGradient[i].OutputImageFromKernel[0];
-	}
-	db = db / (double)M;
-	db = db * __learningRate;
-	__biasVector[0] = __biasVector[0] - db;
+        // for cnn, fc, output layers, if BN is not used, one need to update b paramter.
+        // if BN is used, b parameter is discarded (combined into \beta parameter)
+        // bias
+        Matrix db(__biasVector[0].Dimension());
+        for(size_t i=0;i<M;i++){
+            db = db + __bGradient[i].OutputImageFromKernel[0];
+        }
+        db = db / (double)M;
+        db = db * __learningRate;
+        __biasVector[0] = __biasVector[0] - db;
     }
     //cout<<__func__<<" ended.."<<endl;
 }
@@ -3499,58 +3509,58 @@ void ConstructLayer::UpdateWeightsAndBiasGradientsCNN()
     // loop for batch
     for(size_t nbatch = 0;nbatch<aVec.size();nbatch++)
     {
-	Images &a_image =  aVec[nbatch];
-	std::vector<Matrix> &a_matrix = a_image.OutputImageFromKernel;
-	Images &d_image = deltaVec[nbatch];
-	std::vector<Matrix> &d_matrix = d_image.OutputImageFromKernel;
-	if(d_matrix.size() != nKernel) {
-	    std::cout<<"Error: updateing cnn w gradients, number of kernels not match."<<std::endl;
-	    exit(0);
-	}
+        Images &a_image =  aVec[nbatch];
+        std::vector<Matrix> &a_matrix = a_image.OutputImageFromKernel;
+        Images &d_image = deltaVec[nbatch];
+        std::vector<Matrix> &d_matrix = d_image.OutputImageFromKernel;
+        if(d_matrix.size() != nKernel) {
+            std::cout<<"Error: updateing cnn w gradients, number of kernels not match."<<std::endl;
+            exit(0);
+        }
 
-	// tmp image for saving weight and bias gradients
-	Images tmp_w_gradients;
-	Images tmp_b_gradients;
+        // tmp image for saving weight and bias gradients
+        Images tmp_w_gradients;
+        Images tmp_b_gradients;
 
-	// loop for kernel
-	for(size_t k = 0;k<nKernel;k++)
-	{
-	    // get 'delta' matrix for current kernel
-	    Matrix &delta = d_matrix[k];
+        // loop for kernel
+        for(size_t k = 0;k<nKernel;k++)
+        {
+            // get 'delta' matrix for current kernel
+            Matrix &delta = d_matrix[k];
 
-	    // update current kernel
-	    auto dimKernel = __weightMatrixActive[k].Dimension();
+            // update current kernel
+            auto dimKernel = __weightMatrixActive[k].Dimension();
 
-	    // weight gradient
-	    Matrix dw(dimKernel);
+            // weight gradient
+            Matrix dw(dimKernel);
 
-	    for(size_t i=0;i<dimKernel.first;i++)
-	    {
-		for(size_t j=0;j<dimKernel.second;j++)
-		{
-		    // It is a convolution value with 'a_previous_layer' as the input image and 'delta_this_layer' as the "kernel"
-		    // step 1) (i, j) is the w(i, j) of current layer weight matrix -> need to find the corresponding coord in 'a_previous_layer'
-		    //size_t i_a_prev = i*__cnnStride; // now __cnnStride is set to 1, and is not adjustable
-		    //size_t j_a_prev = j*__cnnStride; // need to derive a detailed expression for __cnnStride > 1
-		    // step 2) gradient descent part
-		    double _tmp = 0;
-		    for(auto &_ap: a_matrix){
-			_tmp += Matrix::GetCorrelationValue(_ap, delta, i, j);
-		    }
-		    dw[i][j] = _tmp;
-		}
-	    }
-	    tmp_w_gradients.OutputImageFromKernel.push_back(dw); // push weight gradient for current training sample
+            for(size_t i=0;i<dimKernel.first;i++)
+            {
+                for(size_t j=0;j<dimKernel.second;j++)
+                {
+                    // It is a convolution value with 'a_previous_layer' as the input image and 'delta_this_layer' as the "kernel"
+                    // step 1) (i, j) is the w(i, j) of current layer weight matrix -> need to find the corresponding coord in 'a_previous_layer'
+                    //size_t i_a_prev = i*__cnnStride; // now __cnnStride is set to 1, and is not adjustable
+                    //size_t j_a_prev = j*__cnnStride; // need to derive a detailed expression for __cnnStride > 1
+                    // step 2) gradient descent part
+                    double _tmp = 0;
+                    for(auto &_ap: a_matrix){
+                        _tmp += Matrix::GetCorrelationValue(_ap, delta, i, j);
+                    }
+                    dw[i][j] = _tmp;
+                }
+            }
+            tmp_w_gradients.OutputImageFromKernel.push_back(dw); // push weight gradient for current training sample
 
-	    // update bias gradient
-	    Matrix db(1, 1);
-	    auto dim = delta.Dimension();
-	    double b_gradient = delta.SumInSection(0, dim.first, 0, dim.second);
-	    db[0][0] = b_gradient;
-	    tmp_b_gradients.OutputImageFromKernel.push_back(db);
-	}
-	__wGradient.push_back(tmp_w_gradients);
-	__bGradient.push_back(tmp_b_gradients);
+            // update bias gradient
+            Matrix db(1, 1);
+            auto dim = delta.Dimension();
+            double b_gradient = delta.SumInSection(0, dim.first, 0, dim.second);
+            db[0][0] = b_gradient;
+            tmp_b_gradients.OutputImageFromKernel.push_back(db);
+        }
+        __wGradient.push_back(tmp_w_gradients);
+        __bGradient.push_back(tmp_b_gradients);
     }
 }
 
@@ -3569,8 +3579,8 @@ void ConstructLayer::UpdateWeightsAndBiasCNN()
     // after finishing one batch, update weights and bias, CNN layer
     size_t M = __imageDeltaFull.size(); // batch size
     if( M != __wGradient.size() ) {
-	std::cout<<"Error: update FC weights, batch size not match."<<std::endl;
-	exit(0);
+        std::cout<<"Error: update FC weights, batch size not match."<<std::endl;
+        exit(0);
     }
 
     // in case use drop out, need to filter out all inactive elements
@@ -3578,16 +3588,16 @@ void ConstructLayer::UpdateWeightsAndBiasCNN()
     assert(__activeFlag.size() == __weightMatrix.size());
     auto convertFilterToMatrix = [&](Filter2D & F) -> Matrix
     {
-	auto dim = F.Dimension();
-	Matrix _M(dim, 0);
-	for(size_t i=0;i<dim.first;i++)
-	{
-	    for(size_t j=0;j<dim.second;j++)
-	    {
-		if(F[i][j]) _M[i][j] = 1;
-	    }
-	}
-	return _M;
+        auto dim = F.Dimension();
+        Matrix _M(dim, 0);
+        for(size_t i=0;i<dim.first;i++)
+        {
+            for(size_t j=0;j<dim.second;j++)
+            {
+                if(F[i][j]) _M[i][j] = 1;
+            }
+        }
+        return _M;
     };
 
     // loop for kernel
@@ -3595,76 +3605,76 @@ void ConstructLayer::UpdateWeightsAndBiasCNN()
     for(size_t k=0;k<nKernel;k++)
     {
         // 1) get gradient
-	// gradient descent
-	Matrix dw(__weightMatrix[k].Dimension());
-	// loop for batch
-	for(size_t i=0;i<M;i++){ 
-	    dw  = dw + __wGradient[i].OutputImageFromKernel[k];
-	}
-	if(__weights_optimizer == WeightsOptimizer::SGD)
-	{
-	    // stochastic gradient descent
-	    dw = dw * double(__learningRate/(double)M); // gradients average over batch size
-	}
-	else if(__weights_optimizer == WeightsOptimizer::Adam)
-	{
-	    // adam optimize
-	    dw = dw * (1./(double)M);
-	    dw = AdamOptimizer(dw, k);
-	}
-	else
-	{
-	    std::cout<<__func__<<" Error: unsupported weights optimizer."<<std::endl;
-	    exit(0);
-	}
+        // gradient descent
+        Matrix dw(__weightMatrix[k].Dimension());
+        // loop for batch
+        for(size_t i=0;i<M;i++){ 
+            dw  = dw + __wGradient[i].OutputImageFromKernel[k];
+        }
+        if(__weights_optimizer == WeightsOptimizer::SGD)
+        {
+            // stochastic gradient descent
+            dw = dw * double(__learningRate/(double)M); // gradients average over batch size
+        }
+        else if(__weights_optimizer == WeightsOptimizer::Adam)
+        {
+            // adam optimize
+            dw = dw * (1./(double)M);
+            dw = AdamOptimizer(dw, k);
+        }
+        else
+        {
+            std::cout<<__func__<<" Error: unsupported weights optimizer."<<std::endl;
+            exit(0);
+        }
 
         // Hadamard F to mask out all inactive elements
-	Matrix F = convertFilterToMatrix(__activeFlag[k]);
-	assert(F.Dimension() == (__weightMatrix[k]).Dimension());
-	dw = dw^F; // for safe reason, mask out all inactive elements
+        Matrix F = convertFilterToMatrix(__activeFlag[k]);
+        assert(F.Dimension() == (__weightMatrix[k]).Dimension());
+        dw = dw^F; // for safe reason, mask out all inactive elements
 
-	// regularization part
-	//double f_regularization = 0;
-	if(__regularizationMethod == Regularization::L2)
-	{
-	    // obsolete
-	    //f_regularization = 1 - __learningRate * __regularizationParameter / (double)M;
-	    //(__weightMatrix[k]) = (__weightMatrix[k])*f_regularization;
-	    //(__weightMatrix[k]) = (__weightMatrix[k]) - dw;
+        // regularization part
+        //double f_regularization = 0;
+        if(__regularizationMethod == Regularization::L2)
+        {
+            // obsolete
+            //f_regularization = 1 - __learningRate * __regularizationParameter / (double)M;
+            //(__weightMatrix[k]) = (__weightMatrix[k])*f_regularization;
+            //(__weightMatrix[k]) = (__weightMatrix[k]) - dw;
 
-	    Matrix regularization_M = (__weightMatrix[k]^F) * (__learningRate * __regularizationParameter/((double)M));
-	    Matrix total_correction_M = regularization_M + dw; // dw already have learing rate multiplied
-	    __weightMatrix[k] = __weightMatrix[k] - total_correction_M;
-	}
-	else if(__regularizationMethod == Regularization::L1)
-	{
-	    Matrix tmp = (__weightMatrixActive[k]);
-	    tmp(&SGN);
-	    tmp = tmp^F; // hadamard operation to mask out all inactive elements
-	    tmp = tmp * (__learningRate*__regularizationParameter/(double)M);
-	    //(*__w) = (*__w) - tmp - dw;
-	    (__weightMatrix[k]) = (__weightMatrix[k]) - dw;
-	    (__weightMatrix[k]) = (__weightMatrix[k]) - tmp;
-	}
-	else {
-	    std::cout<<"Error: update CNN weights, unsupported regularizaton method."<<std::endl;
-	    exit(0);
-	}
+            Matrix regularization_M = (__weightMatrix[k]^F) * (__learningRate * __regularizationParameter/((double)M));
+            Matrix total_correction_M = regularization_M + dw; // dw already have learing rate multiplied
+            __weightMatrix[k] = __weightMatrix[k] - total_correction_M;
+        }
+        else if(__regularizationMethod == Regularization::L1)
+        {
+            Matrix tmp = (__weightMatrixActive[k]);
+            tmp(&SGN);
+            tmp = tmp^F; // hadamard operation to mask out all inactive elements
+            tmp = tmp * (__learningRate*__regularizationParameter/(double)M);
+            //(*__w) = (*__w) - tmp - dw;
+            (__weightMatrix[k]) = (__weightMatrix[k]) - dw;
+            (__weightMatrix[k]) = (__weightMatrix[k]) - tmp;
+        }
+        else {
+            std::cout<<"Error: update CNN weights, unsupported regularizaton method."<<std::endl;
+            exit(0);
+        }
 
-	if(!__use_batch_normalization || 
-		(__type != LayerType::cnn && __type != LayerType::fullyConnected && __type != LayerType::output))
-	{
-	    // for cnn, output fc layers, if BN is not used, one need to update b paramter
-	    // if BN is used, then b prameter is discarded (combined into \beta paramter), no need to update b parmater
-	    // update bias
-	    Matrix db(1, 1);
-	    // loop for batch
-	    for(size_t i=0;i<M;i++){
-		db = db + __bGradient[i].OutputImageFromKernel[k];
-	    }
-	    db = db * double(__learningRate / (double)M);
-	    __biasVector[k] = __biasVector[k] - db;
-	}
+        if(!__use_batch_normalization || 
+                (__type != LayerType::cnn && __type != LayerType::fullyConnected && __type != LayerType::output))
+        {
+            // for cnn, output fc layers, if BN is not used, one need to update b paramter
+            // if BN is used, then b prameter is discarded (combined into \beta paramter), no need to update b parmater
+            // update bias
+            Matrix db(1, 1);
+            // loop for batch
+            for(size_t i=0;i<M;i++){
+                db = db + __bGradient[i].OutputImageFromKernel[k];
+            }
+            db = db * double(__learningRate / (double)M);
+            __biasVector[k] = __biasVector[k] - db;
+        }
     }
 }
 
@@ -3690,11 +3700,11 @@ void ConstructLayer::BatchNormalization_UpdateGammaBeta()
 
     // only apply for cnn, fc and output layers
     if(__type != LayerType::cnn && __type != LayerType::fullyConnected && __type != LayerType::output)
-	return;
+        return;
 
     size_t nK = 1;
     if(GetLayerDimension() == LayerDimension::_2D)
-	nK = __n_kernels_cnn;
+        nK = __n_kernels_cnn;
 
     assert(__gamma_BN.size() == nK);
     assert(__gamma_BN.size() == __v_partial_C_over_partial_gamma.size());
@@ -3705,12 +3715,12 @@ void ConstructLayer::BatchNormalization_UpdateGammaBeta()
     for(size_t i=0;i<nK;i++)
     {
         Matrix & gradient_gamma = __v_partial_C_over_partial_gamma[i];
-	Matrix & gradient_beta = __v_partial_C_over_partial_beta[i];
+        Matrix & gradient_beta = __v_partial_C_over_partial_beta[i];
 
         Matrix d_gamma =  gradient_gamma *  (__learningRate/(double)batch_size);
-	__gamma_BN[i] = __gamma_BN[i] - d_gamma;
-	Matrix d_beta =  gradient_beta * (__learningRate/(double)batch_size);
-	__beta_BN[i] = __beta_BN[i] - d_beta;
+        __gamma_BN[i] = __gamma_BN[i] - d_gamma;
+        Matrix d_beta =  gradient_beta * (__learningRate/(double)batch_size);
+        __beta_BN[i] = __beta_BN[i] - d_beta;
     }
 }
 
@@ -3728,18 +3738,18 @@ Matrix ConstructLayer::AdamOptimizer(const Matrix &dw, int kernel_index)
     if(Momentum_1st_order.size() == 0)
     {
         // initiaize with 0's
-	if(__type == LayerType::fullyConnected || __type == LayerType::output || __type == LayerType::input)
-	{
-	    assert(kernel_index == 0);
-	    Momentum_1st_order.resize(1, Matrix(dw.Dimension(), 0));
-	    Momentum_2nd_order.resize(1, Matrix(dw.Dimension(), 0));
-	}
-	else if(__type == LayerType::cnn || __type == LayerType::pooling)
-	{
-	    assert(__n_kernels_cnn > 0);
-	    Momentum_1st_order.resize(__n_kernels_cnn, Matrix(dw.Dimension(), 0));
-	    Momentum_2nd_order.resize(__n_kernels_cnn, Matrix(dw.Dimension(), 0));
-	}
+        if(__type == LayerType::fullyConnected || __type == LayerType::output || __type == LayerType::input)
+        {
+            assert(kernel_index == 0);
+            Momentum_1st_order.resize(1, Matrix(dw.Dimension(), 0));
+            Momentum_2nd_order.resize(1, Matrix(dw.Dimension(), 0));
+        }
+        else if(__type == LayerType::cnn || __type == LayerType::pooling)
+        {
+            assert(__n_kernels_cnn > 0);
+            Momentum_1st_order.resize(__n_kernels_cnn, Matrix(dw.Dimension(), 0));
+            Momentum_2nd_order.resize(__n_kernels_cnn, Matrix(dw.Dimension(), 0));
+        }
     }
 
     // g_t
@@ -3845,15 +3855,15 @@ int ConstructLayer::GetCNNStride()
 std::pair<size_t, size_t> ConstructLayer::GetOutputImageSize()
 {
     if(__type == LayerType::fullyConnected)
-	return GetOutputImageSizeFC();
+        return GetOutputImageSizeFC();
     else if(__type == LayerType::cnn)
-	return GetOutputImageSizeCNN();
+        return GetOutputImageSizeCNN();
     else if(__type == LayerType::input)
         return GetOutputImageSizeInputLayer();
     else if(__type == LayerType::output) // for now, output layer is fully connected
         return GetOutputImageSizeFC();
     else
-	return GetOutputImageSizeCNN();
+        return GetOutputImageSizeCNN();
 }
 
 std::pair<size_t, size_t> ConstructLayer::GetOutputImageSizeCNN()
@@ -3883,23 +3893,23 @@ int ConstructLayer::GetNumberOfNeurons()
 {
     if(__type == LayerType::fullyConnected || __type == LayerType::output ) // output layer is also a fully connected layer
     {
-	// used for setup fc layer
-	return __n_neurons_fc;
+        // used for setup fc layer
+        return __n_neurons_fc;
     }
     else if(__type == LayerType::input)
     {
-	auto dim = __neurons[0].Dimension();
-	return static_cast<int>((dim.first * dim.second));
+        auto dim = __neurons[0].Dimension();
+        return static_cast<int>((dim.first * dim.second));
     }
     else if(__type == LayerType::cnn || __type == LayerType::pooling)
     {
-	auto dim = GetOutputImageSize();
-	return static_cast<int>((dim.first * dim.second * __n_kernels_cnn));
+        auto dim = GetOutputImageSize();
+        return static_cast<int>((dim.first * dim.second * __n_kernels_cnn));
     }
     else
     {
-	std::cout<<"Warning: GetNumberOfNeurons only work for fc and input layer."<<std::endl;
-	return 0;
+        std::cout<<"Warning: GetNumberOfNeurons only work for fc and input layer."<<std::endl;
+        return 0;
     }
 }
 
@@ -3933,24 +3943,24 @@ void ConstructLayer::SaveAccuracyAndCostForBatch()
     for(size_t i=0;i<batch_labels.size();i++)
     {
         Matrix & label_sample = batch_labels[i];
-	Matrix & output_sample = __imageA[i].OutputImageFromKernel[0]; // output layer is 1D
+        Matrix & output_sample = __imageA[i].OutputImageFromKernel[0]; // output layer is 1D
 
-	auto dim = output_sample.Dimension();
-	assert(dim == label_sample.Dimension());
-	assert(dim.second == 1);
+        auto dim = output_sample.Dimension();
+        assert(dim == label_sample.Dimension());
+        assert(dim.second == 1);
 
         std::pair<size_t, size_t> max_coord;
-	double max = output_sample.MaxInSection(0, dim.first, 0, dim.second, max_coord);
+        double max = output_sample.MaxInSection(0, dim.first, 0, dim.second, max_coord);
 
         double confidence_threshold = 0.8;
-	if (max > confidence_threshold)
-	{
-	    Matrix tmp(dim, 0);
-	    tmp[max_coord.first][max_coord.second] = 1.;
+        if (max > confidence_threshold)
+        {
+            Matrix tmp(dim, 0);
+            tmp[max_coord.first][max_coord.second] = 1.;
 
-	    if(tmp == label_sample)
-	        correct_prediction += 1.0;
-	}
+            if(tmp == label_sample)
+                correct_prediction += 1.0;
+        }
 
     }
 
@@ -4000,21 +4010,21 @@ void ConstructLayer::SaveTrainedWeightsAndBias()
     if(!ff.is_open())
     {
         std::cout<<__func__<<" Error: cannot open file: "<<oss.str()<<" to save weights and bias."
-	         <<std::endl;
-	std::cout<<"           please make sure you have 'weights_and_bias_trained' folder exsit."
-	         <<std::endl;
-	exit(0);
+            <<std::endl;
+        std::cout<<"           please make sure you have 'weights_and_bias_trained' folder exsit."
+            <<std::endl;
+        exit(0);
     }
     for(size_t i=0;i<__weightMatrix.size();i++)
     {
         ff<<"weight "<<i<<":"<<std::endl;
         //cout<<"weight "<<i<<":"<<std::endl;
-	ff<<__weightMatrix[i]<<std::endl;
-	//cout<<__weightMatrix[i]<<endl;
-	ff<<"bias "<<i<<":"<<std::endl;
-	//cout<<"bias: "<<i<<":"<<std::endl;
-	ff<<__biasVector[i]<<std::endl;
-	//cout<<__biasVector[i]<<endl;
+        ff<<__weightMatrix[i]<<std::endl;
+        //cout<<__weightMatrix[i]<<endl;
+        ff<<"bias "<<i<<":"<<std::endl;
+        //cout<<"bias: "<<i<<":"<<std::endl;
+        ff<<__biasVector[i]<<std::endl;
+        //cout<<__biasVector[i]<<endl;
     }
     ff.close();
 }
@@ -4039,11 +4049,11 @@ void ConstructLayer::LoadTrainedWeightsAndBias()
 
     if(!ff.is_open())
     {
-	std::cout<<__func__<<" Error: cannot open file: "<<oss.str()<<" to load weights and bias."
-	    <<std::endl;
-	std::cout<<"           please make sure you have files exsit."
-	    <<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: cannot open file: "<<oss.str()<<" to load weights and bias."
+            <<std::endl;
+        std::cout<<"           please make sure you have files exsit."
+            <<std::endl;
+        exit(0);
     }
 
     // a helper
@@ -4051,12 +4061,12 @@ void ConstructLayer::LoadTrainedWeightsAndBias()
     {
         std::vector<double> tmp;
         std::istringstream iss(line);
-	double v;
-	while(iss>>v)
-	{
-	    tmp.push_back(v);
-	}
-	return tmp;
+        double v;
+        while(iss>>v)
+        {
+            tmp.push_back(v);
+        }
+        return tmp;
     };
 
     std::string line;
@@ -4065,54 +4075,54 @@ void ConstructLayer::LoadTrainedWeightsAndBias()
     {
         std::vector<double> v_line;
         if(line.find("weight") != std::string::npos)
-	{
-	    if(vv.size() > 0) // last read is bias matrix
-	    {
-	        Matrix M(vv);
-		__biasVector.push_back(M);
-		vv.clear();
-	    }
-	} 
-	else if(line.find("bias") != std::string::npos)
-	{
-	    if(vv.size() > 0) // last read is weight matrix
-	    {
-	        Matrix M(vv);
-		__weightMatrix.push_back(M);
-		vv.clear();
-	    }
-	}
-	else if(line.size() > 0)
-	{
-	    v_line = parseLine(line);
-	    vv.push_back(v_line);
-	}
+        {
+            if(vv.size() > 0) // last read is bias matrix
+            {
+                Matrix M(vv);
+                __biasVector.push_back(M);
+                vv.clear();
+            }
+        } 
+        else if(line.find("bias") != std::string::npos)
+        {
+            if(vv.size() > 0) // last read is weight matrix
+            {
+                Matrix M(vv);
+                __weightMatrix.push_back(M);
+                vv.clear();
+            }
+        }
+        else if(line.size() > 0)
+        {
+            v_line = parseLine(line);
+            vv.push_back(v_line);
+        }
     }
 
     // save last bias matrix
     if(vv.size() > 0)
     {
         Matrix M(vv);
-	__biasVector.push_back(M);
-	vv.clear();
+        __biasVector.push_back(M);
+        vv.clear();
     }
 
     assert(__weightMatrix.size() == __biasVector.size());
     if(__type == LayerType::fullyConnected || __type == LayerType::output)
     {
-	assert(__weightMatrix.size() == 1);
-	auto dim = __weightMatrix[0].Dimension();
-	//cout<<"fc: load file dim:"<<dim<<endl;
-	//cout<<"fc neurons: "<<__n_neurons_fc<<endl;
-	assert(dim.first == __n_neurons_fc);
+        assert(__weightMatrix.size() == 1);
+        auto dim = __weightMatrix[0].Dimension();
+        //cout<<"fc: load file dim:"<<dim<<endl;
+        //cout<<"fc neurons: "<<__n_neurons_fc<<endl;
+        assert(dim.first == __n_neurons_fc);
     }
     if(__type == LayerType::cnn || __type == LayerType::pooling)
     {
         assert(__weightMatrix.size() == __n_kernels_cnn);
-	auto dim = __weightMatrix[0].Dimension();
-	//cout<<"cnn: load file dim: "<<dim<<endl;
-	//cout<<"cnn kernel dim: "<<__kernelDim<<endl;
-	assert(dim == __kernelDim);
+        auto dim = __weightMatrix[0].Dimension();
+        //cout<<"cnn: load file dim: "<<dim<<endl;
+        //cout<<"cnn kernel dim: "<<__kernelDim<<endl;
+        assert(dim == __kernelDim);
     }
 }
 
@@ -4127,53 +4137,53 @@ void ConstructLayer::Print()
     std::cout<<"drop out factor: "<<__dropOut<<std::endl;
     std::cout<<"use drop out: "<<__use_drop_out<<std::endl;
     if(__type == LayerType::fullyConnected)
-	std::cout<<"number of fc neurons: "<<__n_neurons_fc<<std::endl;
+        std::cout<<"number of fc neurons: "<<__n_neurons_fc<<std::endl;
     if(__type == LayerType::cnn)
     {
-	std::cout<<"number of cnn kernels: "<<__n_kernels_cnn<<std::endl;
-	std::cout<<"kernel  dimension: "<<__kernelDim<<std::endl;
+        std::cout<<"number of cnn kernels: "<<__n_kernels_cnn<<std::endl;
+        std::cout<<"kernel  dimension: "<<__kernelDim<<std::endl;
     }
     // weight matrix
     std::cout<<" --- w&b "<<std::endl;
     for(size_t i=0;i<__weightMatrix.size();i++)
     {
-	std::cout<<"weight matrix : "<<i<<std::endl;
-	std::cout<<__weightMatrix[i]<<std::endl;
-	std::cout<<"bias matrix: "<<i<<std::endl;
-	std::cout<<__biasVector[i]<<std::endl;
+        std::cout<<"weight matrix : "<<i<<std::endl;
+        std::cout<<__weightMatrix[i]<<std::endl;
+        std::cout<<"bias matrix: "<<i<<std::endl;
+        std::cout<<__biasVector[i]<<std::endl;
     }
     // drop out filter
     std::cout<<" --- active flag matrix "<<std::endl;
     for(size_t i=0;i<__activeFlag.size();i++)
     {
-	std::cout<<"active flag : "<<i<<std::endl;
-	std::cout<<__activeFlag[i]<<std::endl;
+        std::cout<<"active flag : "<<i<<std::endl;
+        std::cout<<__activeFlag[i]<<std::endl;
     }
 
     // active weight matrix
     std::cout<<" --- active w&b "<<std::endl;
     for(size_t i=0;i<__weightMatrixActive.size();i++)
     {
-	std::cout<<"active weight matrix : "<<i<<std::endl;
-	std::cout<<__weightMatrixActive[i]<<std::endl;
-	std::cout<<"active bias matrix: "<<i<<std::endl;
-	std::cout<<__biasVectorActive[i]<<std::endl;
+        std::cout<<"active weight matrix : "<<i<<std::endl;
+        std::cout<<__weightMatrixActive[i]<<std::endl;
+        std::cout<<"active bias matrix: "<<i<<std::endl;
+        std::cout<<__biasVectorActive[i]<<std::endl;
     }
 
     std::cout<<std::endl<<"==================================="<<std::endl;
     std::cout<<" --- neuron information: "<<std::endl;
     for(size_t ii=0;ii<__neurons.size();ii++)
     {
-	auto __neuron_dimension = __neurons[ii].Dimension();
-	std::cout<<"Neruon Matrix Dimension: "<<__neuron_dimension<<std::endl;
+        auto __neuron_dimension = __neurons[ii].Dimension();
+        std::cout<<"Neruon Matrix Dimension: "<<__neuron_dimension<<std::endl;
 
-	for(size_t i=0;i<__neuron_dimension.first;i++)
-	{
-	    for(size_t j=0;j<__neuron_dimension.second;j++)
-	    {
-		std::cout<<"coord:  ("<<i<<", "<<j<<")"<<std::endl;
-		__neurons[ii][i][j]->Print();
-	    }
-	}
+        for(size_t i=0;i<__neuron_dimension.first;i++)
+        {
+            for(size_t j=0;j<__neuron_dimension.second;j++)
+            {
+                std::cout<<"coord:  ("<<i<<", "<<j<<")"<<std::endl;
+                __neurons[ii][i][j]->Print();
+            }
+        }
     }
 }

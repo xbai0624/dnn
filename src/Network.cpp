@@ -109,6 +109,7 @@ void Network::ConstructLayers(TrainingType training_type)
 }
 */
 
+/*
 void Network::ConstructLayers(TrainingType training_type)
 {
     // Network structure: {Image->Input->CNN->pooling->CNN->pooling->FC->Output}
@@ -196,7 +197,7 @@ void Network::ConstructLayers(TrainingType training_type)
     //cout<<"total number of layers: "<<__middleAndOutputLayers.size()<<endl;
     __dataInterface = data_interface;
 }
-
+*/
 
 /*
 void Network::ConstructLayers(TrainingType _training_type) // test purelly fully connected
@@ -249,6 +250,76 @@ void Network::ConstructLayers(TrainingType _training_type) // test purelly fully
     __dataInterface = data_interface;
 }
 */
+
+void Network::ConstructLayers(TrainingType _training_type) // test purelly fully connected, deep network, 100 layers
+{
+    // Network structure: {Image->Input->FC->FC->FC->Output}
+    TrainingType training_type = _training_type;
+    training_type = TrainingType::NewTraining;
+    double learning_rate = 0.1;
+
+    // 1) Data interface, this is a tool class, for data prepare
+    DataInterface *data_interface = new DataInterface("simulation_data/data_signal_train.dat", "simulation_data/data_cosmic_train.dat", LayerDimension::_1D, std::pair<int, int>(900, 1), 200);
+
+    // 3) input layer   ID=0
+    LayerParameterList p_list0(LayerType::input, LayerDimension::_1D, data_interface, 0, 0, 
+            std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0, Regularization::Undefined, 0, ActuationFuncType::Undefined, training_type, false);
+    Layer* layer_input = new ConstructLayer(p_list0);
+    // NOTE: a data_interface class pointer must be passed to input layer before calling input_layer->Init() function
+    //       because Initialization rely on data_interface
+    layer_input->Init();
+
+    // 4) 49 middle layers: fc layer 
+    const int NLayer = 20;
+    Layer *l_mid[NLayer];
+    // layer 0
+    LayerParameterList p_list1(LayerType::fullyConnected, LayerDimension::_1D, data_interface, 890, 0, 
+            std::pair<size_t, size_t>(0, 0), learning_rate, false, 2, 0.5, Regularization::L2, 0.1, ActuationFuncType::Relu, training_type, true);
+    l_mid[0] = new ConstructLayer(p_list1);
+    l_mid[0]->SetPrevLayer(layer_input);
+    l_mid[0]->Init();
+    // layer 1 - layer 46
+    for(int i=1;i<NLayer;i++)
+    {
+        int n_neurons = 890 - ((890-4)/(NLayer-1))*i;
+        LayerParameterList p_list_mid(LayerType::fullyConnected, LayerDimension::_1D, data_interface, n_neurons, 0, 
+                std::pair<size_t, size_t>(0, 0), learning_rate, false, 2, 0.5, Regularization::L2, 0.1, ActuationFuncType::Relu, training_type, true);
+        l_mid[i] = new ConstructLayer(p_list_mid);
+        l_mid[i]->SetPrevLayer(l_mid[i-1]);
+        l_mid[i]->Init();
+    }
+
+
+    // 5) output layer ID = 7
+    LayerParameterList p_list_output(LayerType::output, LayerDimension::_1D, data_interface, 2, 0, 
+            std::pair<size_t, size_t>(0, 0), learning_rate, false, 0, 0., Regularization::L2, 0.1, ActuationFuncType::SoftMax, training_type, false);
+    Layer* layer_output = new ConstructLayer(p_list_output);
+    layer_output -> SetPrevLayer(l_mid[NLayer-1]);
+    layer_output -> Init();
+
+    // 6) connect all layers; SetNextLayer must be after all layers have finished initialization
+    //                        input layer not needed to set, input layer has no update on w & b
+    //                        input layer is just for data transfer (prepare)
+    //l1->SetNextLayer(l2);
+    //l2->SetNextLayer(l3);
+    //l3->SetNextLayer(layer_output); // This line is ugly, to be improved
+    for(int i=0;i<NLayer-1;i++)
+        l_mid[i]->SetNextLayer(l_mid[i+1]);
+    l_mid[NLayer-1]->SetNextLayer(layer_output);
+
+    // 7) save all constructed layers
+    __inputLayer = layer_input;
+    __outputLayer = layer_output;
+    //__middleAndOutputLayers.push_back(l1); // must be pushed in order
+    //__middleAndOutputLayers.push_back(l2); // must be pushed in order
+    //__middleAndOutputLayers.push_back(l3);
+    //__middleAndOutputLayers.push_back(layer_output);
+    for(int i=0;i<NLayer;i++)
+        __middleAndOutputLayers.push_back(l_mid[i]);
+    __middleAndOutputLayers.push_back(layer_output);
+    //cout<<"total number of layers: "<<__middleAndOutputLayers.size()<<endl;
+    __dataInterface = data_interface;
+}
 
 /*
 void Network::ConstructLayers(TrainingType trtp) // test fully connected + cnn
@@ -354,7 +425,7 @@ void Network::UpdateEpoch()
     // initializations for epoch
     for(auto &i: __middleAndOutputLayers)
     {
-	i->EpochInit();
+        i->EpochInit();
     }
 
     for(int i=0;i<numberofBatches;i++)
@@ -402,7 +473,7 @@ void Network::ForwardPropagateForBatch()
     // forward propagation
     for(auto &i: __middleAndOutputLayers)
     {
-	i->ForwardPropagateForBatch();
+        i->ForwardPropagateForBatch();
     }
 }
 
@@ -412,7 +483,7 @@ void Network::BackwardPropagateForBatch()
     int NLayers = __middleAndOutputLayers.size();
 
     for(int nlayer=NLayers-1; nlayer>=0; nlayer--)
-	__middleAndOutputLayers[nlayer]->BackwardPropagateForBatch();
+        __middleAndOutputLayers[nlayer]->BackwardPropagateForBatch();
 
     /// no need for input layer
 }
@@ -421,7 +492,7 @@ void Network::UpdateWeightsAndBiasForBatch()
 {
     // update w&b for output and  middle layers
     for(auto &i: __middleAndOutputLayers)
-	i->UpdateWeightsAndBias();
+        i->UpdateWeightsAndBias();
 }
 
 std::vector<Matrix> Network::Classify()
@@ -432,21 +503,21 @@ std::vector<Matrix> Network::Classify()
     __numberOfEpoch = 1; // test QQQQQQQQQQQQQQQQQQQQQQQQQQQQ
     for(int i=0;i<__numberOfEpoch;i++)
     {
-	std::cout<<"[------]Number of epoch: "<<i<<"/"<<__numberOfEpoch<<endl;
-	UpdateEpoch();
+        std::cout<<"[------]Number of epoch: "<<i<<"/"<<__numberOfEpoch<<endl;
+        UpdateEpoch();
     }
 
     // check accuracy 
     cout<<"accuracy: "<<endl;
     std::vector<double> & accuracy = __outputLayer->GetAccuracyForBatches();
     for(auto &i: accuracy)
-	cout<<i<<",   "<<endl;
+        cout<<i<<",   "<<endl;
 
     // check cost 
     cout<<"cost: "<<endl;
     std::vector<double> &cost = __outputLayer->GetCostForBatches();
     for(auto &i: cost)
-	cout<<i<<", "<<endl;
+        cout<<i<<", "<<endl;
 
     return res;
 }

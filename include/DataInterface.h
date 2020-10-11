@@ -45,7 +45,7 @@ public:
     std::vector<Images>& GetNewBatchLabelImage();
     std::vector<Images>& GetCurrentBatchDataImage(){return __data_image;};
     std::vector<Images>& GetCurrentBatchLabelImage(){return __label_image;};
- 
+
     // a helper
     void UpdateBatch(std::vector<Matrix>& data_image, std::vector<Matrix>& label_image);
     void loadFile(const char* path, std::vector<Matrix> &m); // for code development

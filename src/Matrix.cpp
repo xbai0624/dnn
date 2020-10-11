@@ -55,11 +55,11 @@ static std::vector<std::pair<std::pair<size_t, size_t>, std::pair<size_t, size_t
 
     for(size_t i=0;i<cores/2;i++){
         size_t y_end = (i+1)*yw;
-	if( i == cores/2 -1 ) y_end = cols;
+        if( i == cores/2 -1 ) y_end = cols;
         res.emplace_back(std::make_pair<size_t, size_t>(0, 0+xw), std::make_pair<size_t, size_t>(i*yw, 0+y_end)); // top half; the "0+" part is to get rid of error information
         res.emplace_back(std::make_pair<size_t, size_t>(0+xw, 0+rows), std::make_pair<size_t, size_t>(i*yw, 0+y_end)); // bottom half
     }
- 
+
     return res;
 }
 #endif
@@ -125,9 +125,9 @@ Matrix::Matrix(const Matrix &m)
     __M.resize(dim.first, std::vector<double>(dim.second, 0));
     for(size_t i=0;i<dim.first;i++){
         for(size_t j=0;j<dim.second;j++)
-	{
-	    __M[i][j] = m.GetElement(i, j);
-	}
+        {
+            __M[i][j] = m.GetElement(i, j);
+        }
     }
 
     assert(Dimension() == dim); // make sure copy is correct
@@ -143,15 +143,15 @@ Matrix Matrix::operator*(Matrix &B)
 {
     // matrix multiply operation *: A*B = C
     if(this->size() == 0 || B.size() == 0) {
-	std::cout<<__func__<<" Error: 0 Matrix."<<std::endl;
-	std::cout<<"    "<<this->size()<<" rows in left Matrix [times] "<<B.size()<<" rows in right Matrix."<<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: 0 Matrix."<<std::endl;
+        std::cout<<"    "<<this->size()<<" rows in left Matrix [times] "<<B.size()<<" rows in right Matrix."<<std::endl;
+        exit(0);
     }
 
     if((*this)[0].size() != B.size() ) {
-	std::cout<<__func__<<" Error: Matrix not match."<<std::endl;
-	std::cout<<"    "<<(*this)[0].size()<<" collums in left Matrix [times] "<<B.size()<<" rows in right Matrix."<<std::endl;
-	exit(0);
+        std::cout<<__func__<<" Error: Matrix not match."<<std::endl;
+        std::cout<<"    "<<(*this)[0].size()<<" collums in left Matrix [times] "<<B.size()<<" rows in right Matrix."<<std::endl;
+        exit(0);
     }
 
     Matrix _r((*this).size(), B[0].size());
@@ -166,7 +166,7 @@ Matrix Matrix::operator+(Matrix &B)
     // matrix plus operation +: A+B = C
     if(B.Dimension() != this->Dimension()){
         std::cout<<"Error: Matrix not match in + ops."<<std::endl;
-	exit(0);
+        exit(0);
     }
 
     Matrix C(B.Dimension());
@@ -175,14 +175,14 @@ Matrix Matrix::operator+(Matrix &B)
     std::vector<std::thread> th;
     for(auto &i: jobs)
     {
-	th.push_back( std::thread( [this, &B, &C, &i](){
-		    _hadamard_ComputeSection(HadamardOps::plus, B, C, i.first.first, i.first.second, i.second.first, i.second.second);
-		    }
-		    ) 
-		);
+        th.push_back( std::thread( [this, &B, &C, &i](){
+                    _hadamard_ComputeSection(HadamardOps::plus, B, C, i.first.first, i.first.second, i.second.first, i.second.second);
+                    }
+                    ) 
+                );
     }
     for(auto &j: th){
-	j.join();
+        j.join();
     }
 #else
     _hadamard_ComputeSection(HadamardOps::plus, B, C, 0, B.Dimension().first, 0, B.Dimension().second);
@@ -195,7 +195,7 @@ Matrix Matrix::operator-(Matrix &B)
     // matrix plus operation -: A-B = C
     if(B.Dimension() != this->Dimension()){
         std::cout<<"Error: Matrix not match in - ops."<<std::endl;
-	exit(0);
+        exit(0);
     }
 
     Matrix C(B.Dimension());
@@ -204,14 +204,14 @@ Matrix Matrix::operator-(Matrix &B)
     std::vector<std::thread> th;
     for(auto &i: jobs)
     {
-	th.push_back( std::thread( [this, &B, &C, &i](){
-		    _hadamard_ComputeSection(HadamardOps::subtract, B, C, i.first.first, i.first.second, i.second.first, i.second.second);
-		    }
-		    ) 
-		);
+        th.push_back( std::thread( [this, &B, &C, &i](){
+                    _hadamard_ComputeSection(HadamardOps::subtract, B, C, i.first.first, i.first.second, i.second.first, i.second.second);
+                    }
+                    ) 
+                );
     }
     for(auto &j: th){
-	j.join();
+        j.join();
     }
 #else
     _hadamard_ComputeSection(HadamardOps::subtract, B, C, 0, B.Dimension().first, 0, B.Dimension().second);
@@ -224,7 +224,7 @@ Matrix Matrix::operator^(Matrix &B)
     // matrix plus operation ^: A^B = C
     if(B.Dimension() != this->Dimension()){
         std::cout<<"Error: Matrix not match in ^ ops."<<std::endl;
-	exit(0);
+        exit(0);
     }
 
     Matrix C(B.Dimension());
@@ -233,14 +233,14 @@ Matrix Matrix::operator^(Matrix &B)
     std::vector<std::thread> th;
     for(auto &i: jobs)
     {
-	th.push_back( std::thread( [this, &B, &C, &i](){
-		    _hadamard_ComputeSection(HadamardOps::multiply, B, C, i.first.first, i.first.second, i.second.first, i.second.second);
-		    }
-		    ) 
-		);
+        th.push_back( std::thread( [this, &B, &C, &i](){
+                    _hadamard_ComputeSection(HadamardOps::multiply, B, C, i.first.first, i.first.second, i.second.first, i.second.second);
+                    }
+                    ) 
+                );
     }
     for(auto &j: th){
-	j.join();
+        j.join();
     }
 #else
     _hadamard_ComputeSection(HadamardOps::multiply, B, C, 0, B.Dimension().first, 0, B.Dimension().second);
@@ -253,7 +253,7 @@ Matrix Matrix::operator/(Matrix &B)
     // matrix plus operation /: A/B = C
     if(B.Dimension() != this->Dimension()){
         std::cout<<"Error: Matrix not match in / ops."<<std::endl;
-	exit(0);
+        exit(0);
     }
 
     Matrix C(B.Dimension());
@@ -262,14 +262,14 @@ Matrix Matrix::operator/(Matrix &B)
     std::vector<std::thread> th;
     for(auto &i: jobs)
     {
-	th.push_back( std::thread( [this, &B, &C, &i](){
-		    _hadamard_ComputeSection(HadamardOps::divide, B, C, i.first.first, i.first.second, i.second.first, i.second.second);
-		    }
-		    ) 
-		);
+        th.push_back( std::thread( [this, &B, &C, &i](){
+                    _hadamard_ComputeSection(HadamardOps::divide, B, C, i.first.first, i.first.second, i.second.first, i.second.second);
+                    }
+                    ) 
+                );
     }
     for(auto &j: th){
-	j.join();
+        j.join();
     }
 #else
     _hadamard_ComputeSection(HadamardOps::divide, B, C, 0, B.Dimension().first, 0, B.Dimension().second);
@@ -286,14 +286,14 @@ Matrix Matrix::operator+(double v)
     std::vector<std::thread> th;
     for(auto &i: jobs)
     {
-	th.push_back( std::thread( [this, v, &C, &i](){
-		    _scalar_ComputeSection(HadamardOps::plus, v, C, i.first.first, i.first.second, i.second.first, i.second.second);
-		    }
-		    ) 
-		);
+        th.push_back( std::thread( [this, v, &C, &i](){
+                    _scalar_ComputeSection(HadamardOps::plus, v, C, i.first.first, i.first.second, i.second.first, i.second.second);
+                    }
+                    ) 
+                );
     }
     for(auto &j: th){
-	j.join();
+        j.join();
     }
 #else
     _scalar_ComputeSection(HadamardOps::plus, v, C, 0, (*this).Dimension().first, 0, (*this).Dimension().second);
@@ -310,14 +310,14 @@ Matrix Matrix::operator-(double v)
     std::vector<std::thread> th;
     for(auto &i: jobs)
     {
-	th.push_back( std::thread( [this, v, &C, &i](){
-		    _scalar_ComputeSection(HadamardOps::subtract, v, C, i.first.first, i.first.second, i.second.first, i.second.second);
-		    }
-		    ) 
-		);
+        th.push_back( std::thread( [this, v, &C, &i](){
+                    _scalar_ComputeSection(HadamardOps::subtract, v, C, i.first.first, i.first.second, i.second.first, i.second.second);
+                    }
+                    ) 
+                );
     }
     for(auto &j: th){
-	j.join();
+        j.join();
     }
 #else
     _scalar_ComputeSection(HadamardOps::subtract, v, C, 0, (*this).Dimension().first, 0, (*this).Dimension().second);
@@ -334,14 +334,14 @@ Matrix Matrix::operator*(double v)
     std::vector<std::thread> th;
     for(auto &i: jobs)
     {
-	th.push_back( std::thread( [this, v, &C, &i](){
-		    _scalar_ComputeSection(HadamardOps::multiply, v, C, i.first.first, i.first.second, i.second.first, i.second.second);
-		    }
-		    ) 
-		);
+        th.push_back( std::thread( [this, v, &C, &i](){
+                    _scalar_ComputeSection(HadamardOps::multiply, v, C, i.first.first, i.first.second, i.second.first, i.second.second);
+                    }
+                    ) 
+                );
     }
     for(auto &j: th){
-	j.join();
+        j.join();
     }
 #else
     _scalar_ComputeSection(HadamardOps::multiply, v, C, 0, (*this).Dimension().first, 0, (*this).Dimension().second);
@@ -358,14 +358,14 @@ Matrix Matrix::operator/(double v)
     std::vector<std::thread> th;
     for(auto &i: jobs)
     {
-	th.push_back( std::thread( [this, v, &C, &i](){
-		    _scalar_ComputeSection(HadamardOps::divide, v, C, i.first.first, i.first.second, i.second.first, i.second.second);
-		    }
-		    ) 
-		);
+        th.push_back( std::thread( [this, v, &C, &i](){
+                    _scalar_ComputeSection(HadamardOps::divide, v, C, i.first.first, i.first.second, i.second.first, i.second.second);
+                    }
+                    ) 
+                );
     }
     for(auto &j: th){
-	j.join();
+        j.join();
     }
 #else
     _scalar_ComputeSection(HadamardOps::divide, v, C, 0, (*this).Dimension().first, 0, (*this).Dimension().second);
@@ -379,17 +379,17 @@ void Matrix::_hadamard_ComputeSection(HadamardOps op, Matrix &B, Matrix &C, size
     for(size_t i=r1; i<r2; i++)
     {
         for(size_t j=c1; j<c2; j++){
-	    if(op == HadamardOps::plus)
-		C[i][j] = (*this)[i][j] + B[i][j];
-	    else if (op == HadamardOps::subtract)
-		C[i][j] = (*this)[i][j] - B[i][j];
-	    else if (op == HadamardOps::multiply)
-		C[i][j] = (*this)[i][j] * B[i][j];
-	    else if (op == HadamardOps::divide)
-		C[i][j] = (*this)[i][j] / B[i][j];
-	    else
-	        std::cout<<"Error: not supported hadamard operation."<<std::endl;
-	}
+            if(op == HadamardOps::plus)
+                C[i][j] = (*this)[i][j] + B[i][j];
+            else if (op == HadamardOps::subtract)
+                C[i][j] = (*this)[i][j] - B[i][j];
+            else if (op == HadamardOps::multiply)
+                C[i][j] = (*this)[i][j] * B[i][j];
+            else if (op == HadamardOps::divide)
+                C[i][j] = (*this)[i][j] / B[i][j];
+            else
+                std::cout<<"Error: not supported hadamard operation."<<std::endl;
+        }
     }
 }
 
@@ -399,21 +399,21 @@ void Matrix::_scalar_ComputeSection(HadamardOps op, const double v, Matrix &C, s
     for(size_t i=r1; i<r2; i++)
     {
         for(size_t j=c1; j<c2; j++){
-	    if(op == HadamardOps::plus)
-		C[i][j] = (*this)[i][j] + v;
-	    else if (op == HadamardOps::subtract)
-		C[i][j] = (*this)[i][j] - v;
-	    else if (op == HadamardOps::multiply)
-		C[i][j] = (*this)[i][j] * v;
-	    else if (op == HadamardOps::divide)
-		if( v != 0)
-		    C[i][j] = (*this)[i][j] / v;
-		else {
-		    std::cout<<"Error: dividing a Matrix by 0"<<std::endl;
-		}
-	    else
-		std::cout<<"Error: not supported hadamard operation."<<std::endl;
-	}
+            if(op == HadamardOps::plus)
+                C[i][j] = (*this)[i][j] + v;
+            else if (op == HadamardOps::subtract)
+                C[i][j] = (*this)[i][j] - v;
+            else if (op == HadamardOps::multiply)
+                C[i][j] = (*this)[i][j] * v;
+            else if (op == HadamardOps::divide)
+                if( v != 0)
+                    C[i][j] = (*this)[i][j] / v;
+                else {
+                    std::cout<<"Error: dividing a Matrix by 0"<<std::endl;
+                }
+            else
+                std::cout<<"Error: not supported hadamard operation."<<std::endl;
+        }
     }
 }
 
@@ -439,24 +439,24 @@ void Matrix::_mul_Multiply(Matrix &B, Matrix &C)
 {
     // AxB = C; A is this matrix
     if(C.size() != this->size() || C[0].size() != B[0].size()) {
-	std::cout<<"Error: Matrix not match."<<std::endl;
-	exit(0);
+        std::cout<<"Error: Matrix not match."<<std::endl;
+        exit(0);
     }
 #ifdef MULTITHREAD_MATRIX
     auto jobs = DivideJobs(this->size(), B[0].size(), NCORES);
     std::vector<std::thread> th;
     for(auto &i: jobs)
     {
-	//std::cout<<"("<<i.first.first<<", "<<i.first.second<<"), ";
-	//std::cout<<"("<<i.second.first<<", "<<i.second.second<<"), "<<std::endl;
-	th.push_back( std::thread( [this, &B, &C, &i](){
-		    _mul_ComputeSection(B, C, i.first.first, i.first.second, i.second.first, i.second.second);
-		    }
-		    ) 
-		);
+        //std::cout<<"("<<i.first.first<<", "<<i.first.second<<"), ";
+        //std::cout<<"("<<i.second.first<<", "<<i.second.second<<"), "<<std::endl;
+        th.push_back( std::thread( [this, &B, &C, &i](){
+                    _mul_ComputeSection(B, C, i.first.first, i.first.second, i.second.first, i.second.second);
+                    }
+                    ) 
+                );
     }
     for(auto &j: th){
-	j.join();
+        j.join();
     }
 #else
     _mul_ComputeSection(B, C, 0, this->size(), 0, B[0].size());
@@ -467,21 +467,21 @@ void Matrix::_mul_ComputeSection(Matrix &B, Matrix &C, size_t r1, size_t r2, siz
 {
     // compute a section of C
     if(r1 >= r2 || c1 >= c2) {
-	return;
+        return;
     }
     if( (int)r1<0 || r2>this->size() || (int)c1<0 || c2>B[0].size()) {
-	std::cout<<"Error: matrix out of range."<<std::endl;
-	exit(0);
+        std::cout<<"Error: matrix out of range."<<std::endl;
+        exit(0);
     }
     if(C.size() != this->size() || C[0].size() != B[0].size() ) {
-	std::cout<<"Error: matrix not match."<<std::endl;
-	exit(0);
+        std::cout<<"Error: matrix not match."<<std::endl;
+        exit(0);
     }
 
     for(size_t i=r1; i<r2;i++){
-	for(size_t j=c1;j<c2;j++){
-	    C[i][j] = _mul_ComputeElement(B, i, j);
-	}
+        for(size_t j=c1;j<c2;j++){
+            C[i][j] = _mul_ComputeElement(B, i, j);
+        }
     }
 }
 
@@ -491,7 +491,7 @@ double Matrix::_mul_ComputeElement(Matrix &B, size_t r, size_t c)
     // B is multiplied to this matrix: AxB = C
     double s = 0;
     for(size_t i=0;i<(*this)[0].size();i++){
-	s += (*this)[r][i] * B[i][c];
+        s += (*this)[r][i] * B[i][c];
     }
     return s;
 }
@@ -509,7 +509,7 @@ std::ostream& operator<<(std::ostream &os, Matrix& A)
 {
     // overload cout for Matrix
     for(size_t i=0;i<A.size();i++){
-	os<<A[i];
+        os<<A[i];
     }
     return os;
 }
@@ -518,7 +518,7 @@ std::ostream& operator<<(std::ostream &os, std::vector<double>& A)
 {
     // overload cout for vector
     for(size_t i=0;i<A.size();i++){
-	os<<std::setfill(' ')<<std::setw(18)<<std::setprecision(6)<<A[i];
+        os<<std::setfill(' ')<<std::setw(18)<<std::setprecision(6)<<A[i];
     }
     os<<std::endl;
     return os;
@@ -537,9 +537,9 @@ void Matrix::Random()
     std::uniform_real_distribution<double> dist(0, 1.);
 
     for(size_t i=0;i<__M.size();i++){
-	for(size_t j=0;j<__M[0].size();j++){
-	    __M[i][j] = dist(mt);
-	}
+        for(size_t j=0;j<__M[0].size();j++){
+            __M[i][j] = dist(mt);
+        }
     }
     //std::cout<<"Fill finished."<<std::endl;
 }
@@ -557,9 +557,9 @@ void Matrix::Random(double min, double max)
     std::uniform_real_distribution<double> dist(min, max);
 
     for(size_t i=0;i<__M.size();i++){
-	for(size_t j=0;j<__M[0].size();j++){
-	    __M[i][j] = dist(mt);
-	}
+        for(size_t j=0;j<__M[0].size();j++){
+            __M[i][j] = dist(mt);
+        }
     }
     //std::cout<<"Fill finished."<<std::endl;
 }
@@ -578,9 +578,9 @@ void Matrix::RandomGaus(double mu, double sigma)
 
     std::normal_distribution<double> dist(mu, sigma);
     for(size_t i=0;i<__M.size();i++){
-	for(size_t j=0;j<__M[0].size();j++){
-	    __M[i][j] = dist(mt);
-	}
+        for(size_t j=0;j<__M[0].size();j++){
+            __M[i][j] = dist(mt);
+        }
     }
     //std::cout<<"Fill finished."<<std::endl;
 }
@@ -600,14 +600,14 @@ void Matrix::operator()(double(*functor)(double))
     std::vector<std::thread> th;
     for(auto &i: jobs)
     {
-	th.push_back(std::thread( [this, &i, &functor]() {
-		    (*this)(functor, i.first.first, i.first.second, i.second.first, i.second.second);
-		    }
-		    )
-		);
+        th.push_back(std::thread( [this, &i, &functor]() {
+                    (*this)(functor, i.first.first, i.first.second, i.second.first, i.second.second);
+                    }
+                    )
+                );
     }
     for(auto &i: th)
-	i.join();
+        i.join();
 #else
     (*this)(functor, 0, this->size(), 0, (*this)[0].size());
 #endif
@@ -617,14 +617,14 @@ void Matrix::operator()(double(*functor)(double), size_t r1, size_t r2, size_t c
 {
     // pass a functor, apply to a region of the matrix
     if( (int)r1<0 || r2>(*this).size() || r2 <= r1 || c2 <= c1
-	    || (int)c1<0 || c2 > (*this)[0].size()
+            || (int)c1<0 || c2 > (*this)[0].size()
       ) 
-	return;
+        return;
 
     for(size_t i=r1;i<r2;i++){
-	for(size_t j=c1;j<c2;j++){
-	    (*this)[i][j] = (*functor)( (*this)[i][j] );
-	}
+        for(size_t j=c1;j<c2;j++){
+            (*this)[i][j] = (*functor)( (*this)[i][j] );
+        }
     }
 }
 
@@ -635,10 +635,10 @@ bool Matrix::operator==(Matrix &m)
 
     for(size_t i=0;i<dim.first;i++)
         for(size_t j=0;j<dim.second;j++)
-	{
-	    //if(m[i][j] != (*this)[i][j]) return false;
-	    if(abs(m[i][j] - (*this)[i][j]) > 1.e-6) return false;
-	}
+        {
+            //if(m[i][j] != (*this)[i][j]) return false;
+            if(abs(m[i][j] - (*this)[i][j]) > 1.e-6) return false;
+        }
 
     return true;
 }
@@ -652,15 +652,15 @@ Matrix Matrix::Reshape(size_t m, size_t n) const
 
     if(m==0 || n==0 || p==0 || q==0 || T != m*n) {
         std::cout<<"Error: Reshape matrix dimension not match"<<std::endl;
-	exit(0);
+        exit(0);
     }
 
     Matrix res(m, n);
     for(size_t i=0;i<T;i++){
         size_t new_x = i/n, new_y = i%n;
-	size_t old_x = i/q, old_y = i%q;
+        size_t old_x = i/q, old_y = i%q;
 
-	res[new_x][new_y] = (*(const_cast<Matrix*>(this)))[old_x][old_y];
+        res[new_x][new_y] = (*(const_cast<Matrix*>(this)))[old_x][old_y];
     }
 
     return res;
@@ -679,47 +679,47 @@ Matrix Matrix::Normalization()
     double amp = max - min;
 
     if(amp > 0)
-	for(size_t i=0;i<dim.first;i++)
-	    for(size_t j=0;j<dim.second;j++)
-		m[i][j] = (*this)[i][j] / amp;
+        for(size_t i=0;i<dim.first;i++)
+            for(size_t j=0;j<dim.second;j++)
+                m[i][j] = (*this)[i][j] / amp;
 
     // step 2) cenering
     double average = 0;
     // find min, max, mean
     for(size_t i=0;i<dim.first;i++){
         for(size_t j=0;j<dim.second;j++)
-	{
-	    average += m[i][j];
-	}
+        {
+            average += m[i][j];
+        }
     }
     double N = dim.first * dim.second;
     average /= N;
     if(average != 0)
-	for(size_t i=0;i<dim.first;i++){
-	    for(size_t j=0;j<dim.second;j++)
-	    {
-		m[i][j] = m[i][j] - average;
-	    }
-	}
+        for(size_t i=0;i<dim.first;i++){
+            for(size_t j=0;j<dim.second;j++)
+            {
+                m[i][j] = m[i][j] - average;
+            }
+        }
 
     // step 3) standardization
     // find sigma
     double sigma = 0;
     for(size_t i=0;i<dim.first;i++){
         for(size_t j=0;j<dim.second;j++)
-	{
-	    double tmp = m[i][j];
-	    sigma += tmp*tmp;
-	}
+        {
+            double tmp = m[i][j];
+            sigma += tmp*tmp;
+        }
     }
     sigma = sqrt(sigma);
     if(sigma > 0)
-	for(size_t i=0;i<dim.first;i++){
-	    for(size_t j=0;j<dim.second;j++)
-	    {
-		m[i][j]/=sigma;
-	    }
-	}
+        for(size_t i=0;i<dim.first;i++){
+            for(size_t j=0;j<dim.second;j++)
+            {
+                m[i][j]/=sigma;
+            }
+        }
 
     return m;
 }
@@ -731,8 +731,8 @@ Matrix Matrix::Transpose()
     Matrix _m(d.second, d.first);
     for(size_t i=0;i<d.first;i++){
         for(size_t j=0;j<d.second;j++){
-	    _m[j][i] = __M[i][j];
-	}
+            _m[j][i] = __M[i][j];
+        }
     }
     return _m;
 }
@@ -758,7 +758,7 @@ void Matrix::FillElementByRow(size_t index, double v)
     size_t j = index%dim.second;
     if(i >= dim.first || j>= dim.second) {
         std::cout<<"Error: filling matrix exceeded range."<<std::endl;
-	exit(0);
+        exit(0);
     }
     __M[i][j] = v;
 }
@@ -771,7 +771,7 @@ void Matrix::FillElementByCollum(size_t index, double v)
     size_t j = index/dim.first;
     if(i >= dim.first || j>= dim.second) {
         std::cout<<"Error: filling matrix exceeded range."<<std::endl;
-	exit(0);
+        exit(0);
     }
     __M[i][j] = v;
 }
@@ -783,42 +783,42 @@ double Matrix::ElementSum()
     auto dim = Dimension();
     for(size_t i=0;i<dim.first;i++){
         for(size_t j=0;j<dim.second;j++){
-	    res += __M[i][j];
-	}
+            res += __M[i][j];
+        }
     }
     return res;
 }
 
 Matrix Matrix::GetSection(size_t r_s, size_t r_e, size_t c_s, size_t c_e, 
-	bool padding, double padding_value)
+        bool padding, double padding_value)
 {
     // get a section of this matrix
     auto dim = Dimension();
 
     if( c_e <= c_s || r_e <= r_s || (int)c_s<0 || (int)r_s<0 || r_s>=dim.first || c_s>=dim.second ) 
     {
-	std::cout<<"Error: wrong index provided in fetching matrix section."<<std::endl;
-	std::cout<<"       front close, back open."<<std::endl;
-	exit(0);
+        std::cout<<"Error: wrong index provided in fetching matrix section."<<std::endl;
+        std::cout<<"       front close, back open."<<std::endl;
+        exit(0);
     }
 
     if(!padding) {
-	if(r_e > dim.first || c_e > dim.second) {
-	    std::cout<<"Error: matrix fetching section exceeded range."<<std::endl;
-	    exit(0);
-	}
+        if(r_e > dim.first || c_e > dim.second) {
+            std::cout<<"Error: matrix fetching section exceeded range."<<std::endl;
+            exit(0);
+        }
     }
 
     Matrix _m(r_e - r_s, c_e - c_s);
     for(size_t i=0;i<(r_e-r_s);i++)
     {
-	for(size_t j=0;j<(c_e-c_s);j++){
-	    if( (r_s + i) < dim.first && (c_s + j) < dim.second ){
-		_m[i][j] = __M[r_s+i][c_s+j];
-	    } else {
-		_m[i][j] = padding_value;
-	    }
-	}
+        for(size_t j=0;j<(c_e-c_s);j++){
+            if( (r_s + i) < dim.first && (c_s + j) < dim.second ){
+                _m[i][j] = __M[r_s+i][c_s+j];
+            } else {
+                _m[i][j] = padding_value;
+            }
+        }
     }
     return _m;
 }
@@ -829,25 +829,25 @@ Matrix Matrix::Padding(size_t ROW, size_t COL, bool pad_front, double padding_va
     // only pad front not supported, b/c it's not useful reallistically
     auto dim = Dimension();
     if(ROW < dim.first || COL < dim.second) {
-	std::cout<<"Error: trying pad matrix to a smaller size, no padding needed."<<std::endl;
-	exit(0);
+        std::cout<<"Error: trying pad matrix to a smaller size, no padding needed."<<std::endl;
+        exit(0);
     }
 
     Matrix _m(ROW, COL, padding_value);
     if( ! pad_front){ // only pad back
-	for(size_t i=0;i<dim.first;i++){
-	    for(size_t j=0;j<dim.second;j++){
-		_m[i][j] = __M[i][j];
-	    }
-	}
+        for(size_t i=0;i<dim.first;i++){
+            for(size_t j=0;j<dim.second;j++){
+                _m[i][j] = __M[i][j];
+            }
+        }
     } else { // pad back and front
-	size_t extra_row = ROW - dim.first, extra_col = COL - dim.second;
-	size_t extra_front_row = extra_row/2, extra_front_col = extra_col/2;
-	for(size_t i=0;i<dim.first;i++){
-	    for(size_t j=0;j<dim.second;j++){
-		_m[extra_front_row+i][extra_front_col+j] = __M[i][j];
-	    }
-	}
+        size_t extra_row = ROW - dim.first, extra_col = COL - dim.second;
+        size_t extra_front_row = extra_row/2, extra_front_col = extra_col/2;
+        for(size_t i=0;i<dim.first;i++){
+            for(size_t j=0;j<dim.second;j++){
+                _m[extra_front_row+i][extra_front_col+j] = __M[i][j];
+            }
+        }
     }
 
     return _m;
@@ -861,23 +861,23 @@ Matrix Matrix::CombineMatrix(std::vector<Matrix> &vec, size_t R, size_t C)
     size_t N = vec.size();
     auto dim = vec[0].Dimension();
     if(R*C != N * dim.first * dim.second ) {
-	std::cout<<"Error: combining matrix dimension not match."<<std::endl;
-	exit(0);
+        std::cout<<"Error: combining matrix dimension not match."<<std::endl;
+        exit(0);
     }
 
     size_t index = 0;
     for(auto &m: vec){
-	for(size_t i=0;i<dim.first;i++){
-	    for(size_t j=0;j<dim.second;j++){
-		_m.FillElementByRow(index, m[i][j]);
-		index++;
-	    }
-	}
+        for(size_t i=0;i<dim.first;i++){
+            for(size_t j=0;j<dim.second;j++){
+                _m.FillElementByRow(index, m[i][j]);
+                index++;
+            }
+        }
     }
 
     if(index != R*C) {
-	std::cout<<"Error: combining matrix dimension not match."<<std::endl;
-	exit(0);
+        std::cout<<"Error: combining matrix dimension not match."<<std::endl;
+        exit(0);
     }
 
     return _m;
@@ -891,8 +891,8 @@ std::vector<Matrix> Matrix::DispatchMatrix(Matrix & M, size_t R, size_t C)
     std::vector<Matrix> res;
     auto dim = M.Dimension();
     if( (dim.first*dim.second) % (R*C) != 0) {
-	std::cout<<"Error: dispatch matrix dimension not match."<<std::endl;
-	exit(0);
+        std::cout<<"Error: dispatch matrix dimension not match."<<std::endl;
+        exit(0);
     }
 
     size_t index = 0;
@@ -900,14 +900,14 @@ std::vector<Matrix> Matrix::DispatchMatrix(Matrix & M, size_t R, size_t C)
 
     for(size_t i=0;i<dim.first;i++)
     {
-	for(size_t j=0;j<dim.second;j++){
-	    tmp.FillElementByRow(index, M[i][j]);
-	    index++;
-	    if(index == R*C) {
-		res.push_back(tmp);
-		index = 0;
-	    }
-	}
+        for(size_t j=0;j<dim.second;j++){
+            tmp.FillElementByRow(index, M[i][j]);
+            index++;
+            if(index == R*C) {
+                res.push_back(tmp);
+                index = 0;
+            }
+        }
     }
     return res;
 }
@@ -918,20 +918,20 @@ Matrix Matrix::ConcatenateMatrixByI(Matrix &A, Matrix &B)
     auto dimA = A.Dimension();
     auto dimB = B.Dimension();
     if(dimA.second != dimB.second){
-	std::cout<<"Error: place two matrix together vertically, dimension not match."<<std::endl;
-	exit(0);
+        std::cout<<"Error: place two matrix together vertically, dimension not match."<<std::endl;
+        exit(0);
     }
 
     Matrix C(dimA.first + dimB.first, dimA.second);
     for(size_t i=0;i<dimA.first;i++){
-	for(size_t j=0;j<dimA.second;j++){
-	    C[i][j] = A[i][j];
-	}
+        for(size_t j=0;j<dimA.second;j++){
+            C[i][j] = A[i][j];
+        }
     }
     for(size_t i=dimA.first;i<dimA.first+dimB.first;i++){
-	for(size_t j=0;j<dimB.second;j++){
-	    C[i][j] = B[i-dimA.first][j];
-	}
+        for(size_t j=0;j<dimB.second;j++){
+            C[i][j] = B[i-dimA.first][j];
+        }
     }
     return C;
 }
@@ -939,22 +939,63 @@ Matrix Matrix::ConcatenateMatrixByI(Matrix &A, Matrix &B)
 
 Matrix Matrix::ConcatenateMatrixByI(std::vector<Matrix> &A)
 {
-    // vertially place a vector of matrix together, 
-    Matrix C = A[0];
+    // vertically place a vector of matrix together, 
 
-    for(size_t i=1;i<A.size();i++)
+    // method 1: seems pretty slow
+    //Matrix C = A[0];
+
+    //for(size_t i=1;i<A.size();i++)
+    //{
+    //    auto dimAI = A[i].Dimension();
+    //    for(size_t ii=0;ii<dimAI.first;ii++)
+    //    {
+    //        auto dimC = C.Dimension();
+    //        assert(dimC.second == dimAI.second);
+    //        C.InsertRow(dimC.first, &A[i][ii]);
+    //    }
+    //}
+
+    // method 2
+    auto dim = A[0].Dimension();
+    size_t length = A.size();
+
+    Matrix C(dim.first*length, dim.second, 0);
+
+    for(size_t i=0;i<length;i++)
     {
-        auto dimAI = A[i].Dimension();
-        for(size_t ii=0;ii<dimAI.first;ii++)
-	{
-	    auto dimC = C.Dimension();
-	    assert(dimC.second == dimAI.second);
-	    C.InsertRow(dimC.first, &A[i][ii]);
-	}
+        assert(dim.second == A[i].Dimension().second);
+        assert(dim.first == A[i].Dimension().first);
+
+        for(size_t ii=0;ii<dim.first;ii++)
+            for(size_t jj=0;jj<dim.second;jj++)
+                C[i*dim.first + ii][jj] = (A[i])[ii][jj];
     }
 
     return C;
 }
+
+Matrix Matrix::ConcatenateMatrixByI(std::vector<Matrix> *A)
+{
+    // vertically place a vector of matrix together, 
+    // method 2
+    auto dim = (*A)[0].Dimension();
+    size_t length = A->size();
+
+    Matrix C(dim.first*length, dim.second, 0);
+
+    for(size_t i=0;i<length;i++)
+    {
+        assert(dim.second == (*A)[i].Dimension().second);
+        assert(dim.first == (*A)[i].Dimension().first);
+
+        for(size_t ii=0;ii<dim.first;ii++)
+            for(size_t jj=0;jj<dim.second;jj++)
+                C[i*dim.first + ii][jj] = ((*A)[i])[ii][jj];
+    }
+
+    return C;
+}
+
 
 
 Matrix Matrix::ConcatenateMatrixByJ(Matrix &A, Matrix &B)
@@ -963,20 +1004,20 @@ Matrix Matrix::ConcatenateMatrixByJ(Matrix &A, Matrix &B)
     auto dimA = A.Dimension();
     auto dimB = B.Dimension();
     if(dimA.first != dimB.first){
-	std::cout<<"Error: place two matrix together horizontally, dimension not match."<<std::endl;
-	exit(0);
+        std::cout<<"Error: place two matrix together horizontally, dimension not match."<<std::endl;
+        exit(0);
     }
 
     Matrix C(dimA.first, dimA.second + dimB.second);
     for(size_t j=0;j<dimA.second;j++){
-	for(size_t i=0;i<dimA.first;i++){
-	    C[i][j] = A[i][j];
-	}
+        for(size_t i=0;i<dimA.first;i++){
+            C[i][j] = A[i][j];
+        }
     }
     for(size_t j=dimA.second;j<dimA.second+dimB.second;j++){
-	for(size_t i=0;i<dimB.first;i++){
-	    C[i][j] = B[i][j-dimA.second];
-	}
+        for(size_t i=0;i<dimB.first;i++){
+            C[i][j] = B[i][j-dimA.second];
+        }
     }
     return C;
 }
@@ -999,15 +1040,15 @@ double Matrix::MinInSection(size_t i_start, size_t i_end, size_t j_start, size_t
     // and all counters start from 0
     auto dim = Dimension();
     if((int)i_start < 0 || (int)j_start < 0 || i_end <= i_start || j_end <= j_start || i_end > dim.first || j_end > dim.second){
-	std::cout<<"Error: Min in matrix section: exceeded range."<<std::endl;
-	exit(0);
+        std::cout<<"Error: Min in matrix section: exceeded range."<<std::endl;
+        exit(0);
     }
     double res = __M[i_start][j_start];
     for(size_t i=i_start;i<i_end;i++){
-	for(size_t j=j_start;j<j_end;j++){
-	    if(res > __M[i][j])
-		res = __M[i][j];
-	}
+        for(size_t j=j_start;j<j_end;j++){
+            if(res > __M[i][j])
+                res = __M[i][j];
+        }
     }
     return res;
 }
@@ -1020,15 +1061,15 @@ double Matrix::MaxInSection(size_t i_start, size_t i_end, size_t j_start, size_t
     // and all counters start from 0
     auto dim = Dimension();
     if((int)i_start < 0 || (int)j_start < 0 || i_end <= i_start || j_end <= j_start || i_end > dim.first || j_end > dim.second){
-	std::cout<<"Error: Max in matrix section: exceeded range."<<std::endl;
-	exit(0);
+        std::cout<<"Error: Max in matrix section: exceeded range."<<std::endl;
+        exit(0);
     }
     double res = __M[i_start][j_start];
     for(size_t i=i_start;i<i_end;i++){
-	for(size_t j=j_start;j<j_end;j++){
-	    if(res < __M[i][j])
-		res = __M[i][j];
-	}
+        for(size_t j=j_start;j<j_end;j++){
+            if(res < __M[i][j])
+                res = __M[i][j];
+        }
     }
     return res;
 }
@@ -1041,19 +1082,19 @@ double Matrix::MaxInSection(size_t i_start, size_t i_end, size_t j_start, size_t
     // and all counters start from 0
     auto dim = Dimension();
     if((int)i_start < 0 || (int)j_start < 0 || i_end <= i_start || j_end <= j_start || i_end > dim.first || j_end > dim.second){
-	std::cout<<"Error: Max in matrix section: exceeded range."<<std::endl;
-	exit(0);
+        std::cout<<"Error: Max in matrix section: exceeded range."<<std::endl;
+        exit(0);
     }
     double res = __M[i_start][j_start];
     for(size_t i=i_start;i<i_end;i++){
-	for(size_t j=j_start;j<j_end;j++)
-	{
-	    if(res < __M[i][j]){
-		res = __M[i][j];
-		coord.first = i;
-		coord.second = j;
-	    }
-	}
+        for(size_t j=j_start;j<j_end;j++)
+        {
+            if(res < __M[i][j]){
+                res = __M[i][j];
+                coord.first = i;
+                coord.second = j;
+            }
+        }
     }
     return res;
 }
@@ -1076,30 +1117,30 @@ double Matrix::MaxInSectionWithPadding(size_t i_start, size_t i_end, size_t j_st
     auto in_range = [&](size_t ii, size_t jj) -> bool
     {
         if((int)ii>=0 && ii<dim.first && (int)jj>=0 && jj<dim.second)
-	    return true;
-	return false;
+            return true;
+        return false;
     };
 
     double res = 0.;
     if(in_range(i_start, j_start))
-	res = __M[i_start][j_start];
+        res = __M[i_start][j_start];
     else
-	res = padding_value;
+        res = padding_value;
 
     for(size_t i=i_start;i<i_end;i++) {
-	for(size_t j=j_start;j<j_end;j++)
-	{
-	    if(! in_range(i, j)) continue;
-	    at_least_one_element_in_range = true;
+        for(size_t j=j_start;j<j_end;j++)
+        {
+            if(! in_range(i, j)) continue;
+            at_least_one_element_in_range = true;
 
-	    if(res < __M[i][j])
-		res = __M[i][j];
-	}
+            if(res < __M[i][j])
+                res = __M[i][j];
+        }
     }
     if(!at_least_one_element_in_range)
     {
-	std::cout<<__func__<<"() Error: all elements exceeded range."<<std::endl;
-	exit(0);
+        std::cout<<__func__<<"() Error: all elements exceeded range."<<std::endl;
+        exit(0);
     }
 
     return res;
@@ -1113,14 +1154,14 @@ double Matrix::SumInSection(size_t i_start, size_t i_end, size_t j_start, size_t
     // and all counters start from 0
     auto dim = Dimension();
     if((int)i_start < 0 || (int)j_start < 0 || i_end <= i_start || j_end <= j_start || i_end > dim.first || j_end > dim.second){
-	std::cout<<"Error: Sum in matrix section: exceeded range."<<std::endl;
-	exit(0);
+        std::cout<<"Error: Sum in matrix section: exceeded range."<<std::endl;
+        exit(0);
     }
     double res =  0;
     for(size_t i=i_start;i<i_end;i++){
-	for(size_t j=j_start;j<j_end;j++){
-	    res += __M[i][j];
-	}
+        for(size_t j=j_start;j<j_end;j++){
+            res += __M[i][j];
+        }
     }
 
     return res;
@@ -1140,25 +1181,25 @@ double Matrix::SumInSectionWithPadding(size_t i_start, size_t i_end, size_t j_st
     auto in_range = [&](size_t ii, size_t jj) -> bool
     {
         if((int)ii>=0 && ii<dim.first && (int)jj>=0 && jj<dim.second)
-	    return true;
-	return false;
+            return true;
+        return false;
     };
 
     double res =  0;
     for(size_t i=i_start;i<i_end;i++){
-	for(size_t j=j_start;j<j_end;j++)
-	{
-	    if(! in_range(i, j)) continue;
-	    one_hit = true;
+        for(size_t j=j_start;j<j_end;j++)
+        {
+            if(! in_range(i, j)) continue;
+            one_hit = true;
 
-	    res += __M[i][j];
-	}
+            res += __M[i][j];
+        }
     }
 
     if(!one_hit)
     {
-	std::cout<<"Error: Sum in matrix section with padding: all elements exceeded range."<<std::endl;
-	exit(0);
+        std::cout<<"Error: Sum in matrix section with padding: all elements exceeded range."<<std::endl;
+        exit(0);
     }
 
     return res;
@@ -1172,14 +1213,14 @@ double Matrix::AverageInSection(size_t i_start, size_t i_end, size_t j_start, si
     // and all counters start from 0
     auto dim = Dimension();
     if((int)i_start < 0 || (int)j_start < 0 || i_end <= i_start || j_end <= j_start || i_end > dim.first || j_end > dim.second){
-	std::cout<<"Error: Max in matrix section: exceeded range."<<std::endl;
-	exit(0);
+        std::cout<<"Error: Max in matrix section: exceeded range."<<std::endl;
+        exit(0);
     }
     double res =  0;
     for(size_t i=i_start;i<i_end;i++){
-	for(size_t j=j_start;j<j_end;j++){
-	    res += __M[i][j];
-	}
+        for(size_t j=j_start;j<j_end;j++){
+            res += __M[i][j];
+        }
     }
 
     res = res /(int)(i_end-i_start)/(int)(j_end - j_start); 
@@ -1201,8 +1242,8 @@ double Matrix::AverageInSectionWithPadding(size_t i_start, size_t i_end, size_t 
     auto in_range = [&](size_t ii, size_t jj) -> bool
     {
         if((int)ii>=0 && ii<dim.first && (int)jj>=0 && jj<dim.second)
-	    return true;
-	return false;
+            return true;
+        return false;
     };
 
     size_t x_range = i_end < dim.first ? i_end : dim.first;
@@ -1210,19 +1251,19 @@ double Matrix::AverageInSectionWithPadding(size_t i_start, size_t i_end, size_t 
 
     double res =  0;
     for(size_t i=i_start;i<x_range;i++){
-	for(size_t j=j_start;j<y_range;j++)
-	{
-	    if(!in_range(i, j)) continue;
-	    one_hit = true;
+        for(size_t j=j_start;j<y_range;j++)
+        {
+            if(!in_range(i, j)) continue;
+            one_hit = true;
 
-	    res += __M[i][j];
-	}
+            res += __M[i][j];
+        }
     }
 
     if(!one_hit)
     {
-	std::cout<<"Error: Average in matrix section with padding: all elements exceeded range."<<std::endl;
-	exit(0);
+        std::cout<<"Error: Average in matrix section with padding: all elements exceeded range."<<std::endl;
+        exit(0);
     }
 
 
@@ -1238,9 +1279,9 @@ Matrix Matrix::Rot_180()
     Matrix _m(dim);
 
     for(size_t i=0;i<dim.first;i++){
-	for(size_t j=0;j<dim.second;j++){
-	    _m[i][j] = (*this)[dim.first - i -1][dim.second - j-1];
-	}
+        for(size_t j=0;j<dim.second;j++){
+            _m[i][j] = (*this)[dim.first - i -1][dim.second - j-1];
+        }
     }
 
     return _m;
@@ -1253,8 +1294,8 @@ Matrix Matrix::Correlation(Matrix &T, size_t stride, bool pad_front, double padd
     auto r_dim = T.Dimension();
 
     if(l_dim.first < r_dim.first || l_dim.second < r_dim.second) {
-	std::cout<<"Error: matrix correlation dimension not match."<<std::endl;
-	exit(0);
+        std::cout<<"Error: matrix correlation dimension not match."<<std::endl;
+        exit(0);
     }
 
     Matrix M = (*this); // left operand
@@ -1263,25 +1304,25 @@ Matrix Matrix::Correlation(Matrix &T, size_t stride, bool pad_front, double padd
     col = (l_dim.second - r_dim.second + 1) / stride;
 
     if(stride > 1) { // check if padding needed
-	row += 1; col+=1;
-	size_t extra_row = row*stride - l_dim.first;
-	size_t extra_col = col*stride - l_dim.second;
+        row += 1; col+=1;
+        size_t extra_row = row*stride - l_dim.first;
+        size_t extra_col = col*stride - l_dim.second;
 
-	if( extra_row > 0  || extra_col > 0) {
-	    M = (*this).Padding(l_dim.first + extra_row, l_dim.second+extra_col, pad_front, padding_value);
-	}
+        if( extra_row > 0  || extra_col > 0) {
+            M = (*this).Padding(l_dim.first + extra_row, l_dim.second+extra_col, pad_front, padding_value);
+        }
     }
 
     l_dim = M.Dimension();
 
     Matrix res(row, col);
     for(size_t i=0;i<row;i++){
-	for(size_t j=0;j<col;j++){
-	    Matrix l = M.GetSection(i*stride, i*stride + r_dim.first, j*stride, j*stride + r_dim.second);
-	    Matrix _t = l^T;
-	    auto __D = _t.Dimension();
-	    res[i][j] = _t.SumInSection(0, __D.first, 0, __D.second);
-	}
+        for(size_t j=0;j<col;j++){
+            Matrix l = M.GetSection(i*stride, i*stride + r_dim.first, j*stride, j*stride + r_dim.second);
+            Matrix _t = l^T;
+            auto __D = _t.Dimension();
+            res[i][j] = _t.SumInSection(0, __D.first, 0, __D.second);
+        }
     }
     return res;
 }
@@ -1301,8 +1342,8 @@ double Matrix::GetCorrelationValue(Matrix &A, Matrix &B, size_t i, size_t j)
     // keep in mind this one does not care about matrix dimension, it will fill with 0 value
     // for non-exist matrix elements
     if( (int)i<0 || (int)j<0) {
-	std::cout<<"Error: wrong index in get correlation value."<<std::endl;
-	exit(0);
+        std::cout<<"Error: wrong index in get correlation value."<<std::endl;
+        exit(0);
     }
 
     auto dimA = A.Dimension();
@@ -1311,16 +1352,16 @@ double Matrix::GetCorrelationValue(Matrix &A, Matrix &B, size_t i, size_t j)
     double res = 0;
     for(size_t p = 0; p<dimB.first;p++)
     {
-	for(size_t q=0; q<dimB.second;q++){
-	    int index_i_A = (int)i + (int)p;
-	    int index_j_A = (int)j + (int)q;
+        for(size_t q=0; q<dimB.second;q++){
+            int index_i_A = (int)i + (int)p;
+            int index_j_A = (int)j + (int)q;
 
-	    if(index_i_A < 0 || index_i_A >= (int)dimA.first || index_j_A < 0 || index_j_A >= (int)dimA.second) {
-		res += 0.; // 0*B[p][q];
-	    } else {
-		res += A[index_i_A][index_j_A] * B[p][q];
-	    }
-	}
+            if(index_i_A < 0 || index_i_A >= (int)dimA.first || index_j_A < 0 || index_j_A >= (int)dimA.second) {
+                res += 0.; // 0*B[p][q];
+            } else {
+                res += A[index_i_A][index_j_A] * B[p][q];
+            }
+        }
     }
     return res;
 }
@@ -1331,8 +1372,8 @@ double Matrix::GetConvolutionValue(Matrix &A, Matrix &B, size_t i, size_t j)
     // keep in mind this one does not care about matrix dimension, it will fill with 0 value
     // for non-exist matrix elements
     if( (int)i<0 || (int)j<0) {
-	std::cout<<"Error: wrong index in get convolution value."<<std::endl;
-	exit(0);
+        std::cout<<"Error: wrong index in get convolution value."<<std::endl;
+        exit(0);
     }
 
     auto dimA = A.Dimension();
@@ -1341,16 +1382,16 @@ double Matrix::GetConvolutionValue(Matrix &A, Matrix &B, size_t i, size_t j)
     double res = 0;
     for(size_t p = 0; p<dimB.first;p++)
     {
-	for(size_t q=0; q<dimB.second;q++){
-	    int index_i_A = (int)i - (int)p;
-	    int index_j_A = (int)j - (int)q;
+        for(size_t q=0; q<dimB.second;q++){
+            int index_i_A = (int)i - (int)p;
+            int index_j_A = (int)j - (int)q;
 
-	    if(index_i_A < 0 || index_i_A >= (int)dimA.first || index_j_A < 0 || index_j_A >= (int)dimA.second) {
-		res += 0.; // 0*B[p][q];
-	    } else {
-		res += A[index_i_A][index_j_A] * B[p][q];
-	    }
-	}
+            if(index_i_A < 0 || index_i_A >= (int)dimA.first || index_j_A < 0 || index_j_A >= (int)dimA.second) {
+                res += 0.; // 0*B[p][q];
+            } else {
+                res += A[index_i_A][index_j_A] * B[p][q];
+            }
+        }
     }
     return res;
 }
@@ -1371,29 +1412,29 @@ void Matrix::BatchNormalization(std::vector<Matrix> &vM)
 
         mean = 0; sigma = 0;
         for(auto &m: _vM) {
-	    mean += m[i][j];
-	}
-	mean /= batchSize;
+            mean += m[i][j];
+        }
+        mean /= batchSize;
 
-	for(auto &m: _vM){
-	    sigma += (m[i][j] - mean) * (m[i][j] - mean);
-	}
-	sigma /= batchSize;
-	if(batchSize > 1.) sigma *= (batchSize/(batchSize - 1.)); // get the un-biased variate
-	sigma = sqrt(sigma);
-	sigma += epsilon; // avoid divide by zero error
+        for(auto &m: _vM){
+            sigma += (m[i][j] - mean) * (m[i][j] - mean);
+        }
+        sigma /= batchSize;
+        if(batchSize > 1.) sigma *= (batchSize/(batchSize - 1.)); // get the un-biased variate
+        sigma = sqrt(sigma);
+        sigma += epsilon; // avoid divide by zero error
     };
 
     // batch normalization
 #ifndef PARALLEL_NORMALIZATION
     for(size_t i=0;i<dim.first;i++){
-	for(size_t j=0;j<dim.second;j++)
-	{
-	    double mean = 0, sigma = 0;
-	    get_mean_and_sigma(vM, i, j, mean, sigma);
-	    for(auto &m: vM)
-		m[i][j] = (m[i][j] - mean)/sigma;
-	}
+        for(size_t j=0;j<dim.second;j++)
+        {
+            double mean = 0, sigma = 0;
+            get_mean_and_sigma(vM, i, j, mean, sigma);
+            for(auto &m: vM)
+                m[i][j] = (m[i][j] - mean)/sigma;
+        }
     }
 #else
     //int nElements = dim.first * dim.second;
@@ -1409,8 +1450,8 @@ void Matrix::DeleteRow(size_t i)
     // delete a row
     auto dim = Dimension();
     if(i>= dim.first || (int)i<0) {
-	std::cout<<"Warning: deleting matrix row, index out of range."<<std::endl;
-	return;
+        std::cout<<"Warning: deleting matrix row, index out of range."<<std::endl;
+        return;
     }
 
     __M.erase(__M.begin() + i);
@@ -1421,11 +1462,11 @@ void Matrix::DeleteCollum(size_t i)
     // delete a collum
     auto dim = Dimension();
     if((int)i<0 || i>= dim.second){
-	std::cout<<"Warning: deleting matrix collum, index out of range."<<std::endl;
-	return;
+        std::cout<<"Warning: deleting matrix collum, index out of range."<<std::endl;
+        return;
     }
     for(size_t j=0;j<dim.first;j++){
-	__M[j].erase(__M[j].begin()+i);
+        __M[j].erase(__M[j].begin()+i);
     }
 }
 
@@ -1434,18 +1475,18 @@ void Matrix::InsertRow(size_t i, std::vector<double>* vec)
     // insert vec to matrix at position i
     auto dim = Dimension();
     if(vec!=nullptr && vec->size() != dim.second){
-	std::cout<<"Error: inserting row to matrix, dimension not match."<<std::endl;
-	exit(0);
+        std::cout<<"Error: inserting row to matrix, dimension not match."<<std::endl;
+        exit(0);
     }
     if((int)i<0 || i>dim.first){
-	std::cout<<"Error: insert row to matrix, wrong position."<<std::endl;
-	exit(0);
+        std::cout<<"Error: insert row to matrix, wrong position."<<std::endl;
+        exit(0);
     }
     if(vec == nullptr){
-	std::vector<double> v(dim.second, 0);
-	__M.insert(__M.begin()+i, v);
+        std::vector<double> v(dim.second, 0);
+        __M.insert(__M.begin()+i, v);
     } else {
-	__M.insert(__M.begin()+i, (*vec));
+        __M.insert(__M.begin()+i, (*vec));
     }
 }
 
@@ -1454,18 +1495,18 @@ void Matrix::InsertCollum(size_t i, std::vector<double>* vec)
     // insert vec to matrix at position i
     auto dim=Dimension();
     if(vec!=nullptr && vec->size() != dim.first){
-	std::cout<<"Error: inserting col to matrix, dimension not match."<<std::endl;
-	exit(0);
+        std::cout<<"Error: inserting col to matrix, dimension not match."<<std::endl;
+        exit(0);
     }
     if((int)i<0 || i>dim.second){
-	std::cout<<"Error: insert col to matrix, wrong position."<<std::endl;
-	exit(0);
+        std::cout<<"Error: insert col to matrix, wrong position."<<std::endl;
+        exit(0);
     }
     for(size_t ii=0;ii<dim.first;ii++){
-	if(vec == nullptr){
-	    __M[ii].insert(__M[ii].begin() + i, 0);
-	} else {
-	    __M[ii].insert(__M[ii].begin() + i, (*vec)[ii]);
-	}
+        if(vec == nullptr){
+            __M[ii].insert(__M[ii].begin() + i, 0);
+        } else {
+            __M[ii].insert(__M[ii].begin() + i, (*vec)[ii]);
+        }
     }
 }

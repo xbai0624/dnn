@@ -126,129 +126,129 @@ struct Filter2D
     {
         // generate an opposite filter
         auto dim = Dimension();
-	Filter2D R(dim.first, dim.second);
-	for(size_t i=0;i<dim.first;i++)
-	    for(size_t j=0;j<dim.second;j++)
-	        R[i][j] = !__filter[i][j];
-	return R;
+        Filter2D R(dim.first, dim.second);
+        for(size_t i=0;i<dim.first;i++)
+            for(size_t j=0;j<dim.second;j++)
+                R[i][j] = !__filter[i][j];
+        return R;
     }
 
     int GetNumberOfTrueElements()
     {
         int count = 0;
         auto dim = Dimension();
-	for(size_t i=0;i<dim.first;i++)
-	    for(size_t j=0;j<dim.second;j++)
-	        if(__filter[i][j]) count++;
-	return count;
+        for(size_t i=0;i<dim.first;i++)
+            for(size_t j=0;j<dim.second;j++)
+                if(__filter[i][j]) count++;
+        return count;
     }
 
     std::vector<Filter2D> GenerateCompleteDropOutSet(size_t nBatches, double dropoutRatio)
     {
         // generate a complete set of drop out filters
-	// In this set, each element get acitvated at least once, this is to make sure during drop-out every neuron get trained
+        // In this set, each element get acitvated at least once, this is to make sure during drop-out every neuron get trained
         // Parameters:
         //     nBatches: number of drop-out branches
-	//     dropoutRatio: ratio of elements to drop out
-	// 1) basic check
-	auto dim = Dimension();
-        
-	assert(nBatches >= 1);
-	assert(dropoutRatio < 1.0); // one cannot drop all of them
-	int total_elements = (int)dim.first * (int)dim.second;
-	// make sure there's enough positions to accomodate all elements
-	assert(total_elements * (1.0-dropoutRatio) * (int)nBatches >= total_elements);
-	
-	// 2) setup a random engine
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	//std::uniform_int_distribution<> row(0, (int)dim.first-1);
-	//std::uniform_int_distribution<> col(0, (int)dim.second-1);
+        //     dropoutRatio: ratio of elements to drop out
+        // 1) basic check
+        auto dim = Dimension();
 
-	// 3) the result to be returned
-	std::vector<Filter2D> Ret;
-	for(size_t n=0;n<nBatches;n++)
-	{
-	    Ret.push_back(Filter2D(dim.first, dim.second, false));
-	}
+        assert(nBatches >= 1);
+        assert(dropoutRatio < 1.0); // one cannot drop all of them
+        int total_elements = (int)dim.first * (int)dim.second;
+        // make sure there's enough positions to accomodate all elements
+        assert(total_elements * (1.0-dropoutRatio) * (int)nBatches >= total_elements);
 
-	// 4) first save all coords
-	std::vector<std::pair<int, int>> all_coords;
-	for(size_t i=0;i<dim.first;i++)
-	{
-	    for(size_t j=0;j<dim.second;j++)
-		all_coords.push_back(std::pair<int, int>((int)i, (int)j));
-	}
+        // 2) setup a random engine
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        //std::uniform_int_distribution<> row(0, (int)dim.first-1);
+        //std::uniform_int_distribution<> col(0, (int)dim.second-1);
 
-	// 5) integer part
-	int average = total_elements / (int)nBatches;
-	for(auto &M: Ret)
-	{
-	    // for each Filter, set 'average' elements to true
-	    int True_elements = 0;
-	    while(True_elements<average && all_coords.size() > 0)
-	    {
-		std::uniform_int_distribution<int> index(0, (int)all_coords.size()-1);
-		int pos = index(gen);
-		M[all_coords[pos].first][all_coords[pos].second] = true;
-		True_elements++;
-		all_coords.erase(all_coords.begin()+pos);
-	    }
-	}
+        // 3) the result to be returned
+        std::vector<Filter2D> Ret;
+        for(size_t n=0;n<nBatches;n++)
+        {
+            Ret.push_back(Filter2D(dim.first, dim.second, false));
+        }
+
+        // 4) first save all coords
+        std::vector<std::pair<int, int>> all_coords;
+        for(size_t i=0;i<dim.first;i++)
+        {
+            for(size_t j=0;j<dim.second;j++)
+                all_coords.push_back(std::pair<int, int>((int)i, (int)j));
+        }
+
+        // 5) integer part
+        int average = total_elements / (int)nBatches;
+        for(auto &M: Ret)
+        {
+            // for each Filter, set 'average' elements to true
+            int True_elements = 0;
+            while(True_elements<average && all_coords.size() > 0)
+            {
+                std::uniform_int_distribution<int> index(0, (int)all_coords.size()-1);
+                int pos = index(gen);
+                M[all_coords[pos].first][all_coords[pos].second] = true;
+                True_elements++;
+                all_coords.erase(all_coords.begin()+pos);
+            }
+        }
 
         // 6) residue part
-	int mod = total_elements % (int)nBatches;
-	for(int i=0;i<mod;i++)
-	{
-	    // evenly distribute 'mod' elements to Filters
-	    int True_elements = 0;
-	    while(True_elements < 1 && all_coords.size() > 0)
-	    {
-	        std::uniform_int_distribution<int> index(0, (int)all_coords.size()-1);
-		int pos = index(gen);
-		(Ret[i])[all_coords[pos].first][all_coords[pos].second] = true;
-		True_elements++;
-		all_coords.erase(all_coords.begin()+pos);
-	    }
-	}
-	//assert(1 < 0);
-	
-	// 7) complete the rest elements
+        int mod = total_elements % (int)nBatches;
+        for(int i=0;i<mod;i++)
+        {
+            // evenly distribute 'mod' elements to Filters
+            int True_elements = 0;
+            while(True_elements < 1 && all_coords.size() > 0)
+            {
+                std::uniform_int_distribution<int> index(0, (int)all_coords.size()-1);
+                int pos = index(gen);
+                (Ret[i])[all_coords[pos].first][all_coords[pos].second] = true;
+                True_elements++;
+                all_coords.erase(all_coords.begin()+pos);
+            }
+        }
+        //assert(1 < 0);
+
+        // 7) complete the rest elements
         // a helper
         // complete missing elements
-	auto complete = [&](size_t required_active_elements, Filter2D& F)
-	{
-	    int actual_active_elements = F.GetNumberOfTrueElements();
-	    int residue = (int)required_active_elements - actual_active_elements;
-	    //assert(residue >= 0); // incorrect
-	    if(residue < 0) return; // correct, in case number of neurons is odd number
+        auto complete = [&](size_t required_active_elements, Filter2D& F)
+        {
+            int actual_active_elements = F.GetNumberOfTrueElements();
+            int residue = (int)required_active_elements - actual_active_elements;
+            //assert(residue >= 0); // incorrect
+            if(residue < 0) return; // correct, in case number of neurons is odd number
 
-	    // first save all inactive coords
-	    std::vector<std::pair<int, int>> tmp;
-	    auto dim = F.Dimension();
-	    for(size_t i=0;i<dim.first;i++)
-	    {
-		for(size_t j=0;j<dim.second;j++)
-		    if(!F[i][j]) tmp.push_back(std::pair<int, int>((int)i, (int)j));
-	    }
-	    int count = 0;
-	    while(count < residue && tmp.size() > 0)
-	    {
-	        std::uniform_int_distribution<int> index(0, (int)tmp.size()-1);
-		int pos = index(gen);
-		if(!F[tmp[pos].first][tmp[pos].second])
-		{
-		    F[tmp[pos].first][tmp[pos].second] = true;
-		    tmp.erase(tmp.begin() + pos);
-		    count++;
-		}
-	    }
-	};
+            // first save all inactive coords
+            std::vector<std::pair<int, int>> tmp;
+            auto dim = F.Dimension();
+            for(size_t i=0;i<dim.first;i++)
+            {
+                for(size_t j=0;j<dim.second;j++)
+                    if(!F[i][j]) tmp.push_back(std::pair<int, int>((int)i, (int)j));
+            }
+            int count = 0;
+            while(count < residue && tmp.size() > 0)
+            {
+                std::uniform_int_distribution<int> index(0, (int)tmp.size()-1);
+                int pos = index(gen);
+                if(!F[tmp[pos].first][tmp[pos].second])
+                {
+                    F[tmp[pos].first][tmp[pos].second] = true;
+                    tmp.erase(tmp.begin() + pos);
+                    count++;
+                }
+            }
+        };
 
-	for(auto &M: Ret)
-	    complete(total_elements*(1.-dropoutRatio), M);
+        for(auto &M: Ret)
+            complete(total_elements*(1.-dropoutRatio), M);
 
-	return Ret;
+        return Ret;
     }
 };
 std::ostream & operator<<(std::ostream &, const Filter2D &t);
@@ -294,11 +294,11 @@ struct NeuronCoord
     // this way it agrees with matrix: vector<vector<double>>
     size_t i, j, k;
     NeuronCoord(): 
-	i(0), j(0), k(0) 
+        i(0), j(0), k(0) 
     {}
 
     NeuronCoord(size_t _i, size_t _j, size_t _k)
-	: i(_i), j(_j), k(_k) 
+        : i(_i), j(_j), k(_k) 
     {}
 };
 std::ostream & operator<<(std::ostream&, const NeuronCoord &c);
@@ -325,56 +325,56 @@ struct Images
     Images ReshapeKernels(size_t I, size_t J) const
     {
         // reshape matrix from different kernels
-	assert(OutputImageFromKernel.size() > 0);
-	Images res;
+        assert(OutputImageFromKernel.size() > 0);
+        Images res;
         for(auto &i: OutputImageFromKernel)	
-	{
-	    auto dim = i.Dimension();
-	    assert(dim.first * dim.second == I * J);
-	    Matrix tmp = i.Reshape(I, J);
-	    res.OutputImageFromKernel.push_back(tmp);
-	}
-	return res;
+        {
+            auto dim = i.Dimension();
+            assert(dim.first * dim.second == I * J);
+            Matrix tmp = i.Reshape(I, J);
+            res.OutputImageFromKernel.push_back(tmp);
+        }
+        return res;
     }
 
     Images Vectorization() const
     {
         // combine outputs from all kernels into a one-collum matrix
-	// this is for feedforward from 2D layer to 1D layer 
-	//     (2D layer can have multiple kernels, 1D layer should only have 1 "kernel");
-	assert(OutputImageFromKernel.size() > 0);
+        // this is for feedforward from 2D layer to 1D layer 
+        //     (2D layer can have multiple kernels, 1D layer should only have 1 "kernel");
+        assert(OutputImageFromKernel.size() > 0);
         auto dim = OutputImageFromKernel[0].Dimension();
-	
-	Images tmp = ReshapeKernels(dim.first*dim.second, 1);
-	Matrix large_vector = Matrix::ConcatenateMatrixByI(tmp.OutputImageFromKernel);
 
-	tmp.OutputImageFromKernel.clear();
-	tmp.OutputImageFromKernel.push_back(large_vector);
-	return tmp;
+        Images tmp = ReshapeKernels(dim.first*dim.second, 1);
+        Matrix large_vector = Matrix::ConcatenateMatrixByI(tmp.OutputImageFromKernel);
+
+        tmp.OutputImageFromKernel.clear();
+        tmp.OutputImageFromKernel.push_back(large_vector);
+        return tmp;
     }
 
     Images Tensorization(size_t I, size_t J) const
     {
         // this is the inverse operation for vectorization
-	// used for backward propagation, 1D layer to 2D layer
-	//     [I J] is the dimension of tensorized kernel matrix
+        // used for backward propagation, 1D layer to 2D layer
+        //     [I J] is the dimension of tensorized kernel matrix
         assert(OutputImageFromKernel.size() == 1); // make sure this is from 1D layer (only one kernel)
-	Matrix tmp = OutputImageFromKernel[0];
-	auto dim = tmp.Dimension();
-	assert(dim.second == 1); // make sure it is a one-collumn matrix
-	size_t unit_quantity = I * J; //  number of elements in each tensorized kernel
-	assert(dim.first%unit_quantity == 0);
+        Matrix tmp = OutputImageFromKernel[0];
+        auto dim = tmp.Dimension();
+        assert(dim.second == 1); // make sure it is a one-collumn matrix
+        size_t unit_quantity = I * J; //  number of elements in each tensorized kernel
+        assert(dim.first%unit_quantity == 0);
 
-	int nKernels = dim.first/unit_quantity;
-	Images Ret;
-	for(size_t i=0;i<(size_t)nKernels;i++)
-	{
-	    Matrix _tmp = tmp.GetSection(i*unit_quantity, (i+1)*unit_quantity, 0, 1);
-	    Matrix _t = _tmp.Reshape(I, J);
-	    Ret.OutputImageFromKernel.push_back(_t);
-	}
-	//std::cout<<"before return: "<<&Ret<<std::endl;
-	return Ret;
+        int nKernels = dim.first/unit_quantity;
+        Images Ret;
+        for(size_t i=0;i<(size_t)nKernels;i++)
+        {
+            Matrix _tmp = tmp.GetSection(i*unit_quantity, (i+1)*unit_quantity, 0, 1);
+            Matrix _t = _tmp.Reshape(I, J);
+            Ret.OutputImageFromKernel.push_back(_t);
+        }
+        //std::cout<<"before return: "<<&Ret<<std::endl;
+        return Ret;
     }
 };
 std::ostream & operator<<(std::ostream &, const Images & );
@@ -414,21 +414,21 @@ struct LayerParameterList
 
     // default constructor
     LayerParameterList():
-	_gLayerType(LayerType::Undefined), _gLayerDimension(LayerDimension::Undefined), 
-	_pDataInterface(nullptr), _nNeuronsFC(0), _nKernels(0), _gDimKernel(std::pair<size_t, size_t>(0, 0)),
-	_gLearningRate(0), _gUseDropout(false), _gdropoutBranches(0), _gDropoutFactor(0), _gRegularization(Regularization::Undefined),
-	_gRegularizationParameter(0), _gActuationFuncType(ActuationFuncType::Sigmoid), _gTrainingType(TrainingType::NewTraining), _gUseBatchNormalization(false)
+        _gLayerType(LayerType::Undefined), _gLayerDimension(LayerDimension::Undefined), 
+        _pDataInterface(nullptr), _nNeuronsFC(0), _nKernels(0), _gDimKernel(std::pair<size_t, size_t>(0, 0)),
+        _gLearningRate(0), _gUseDropout(false), _gdropoutBranches(0), _gDropoutFactor(0), _gRegularization(Regularization::Undefined),
+        _gRegularizationParameter(0), _gActuationFuncType(ActuationFuncType::Sigmoid), _gTrainingType(TrainingType::NewTraining), _gUseBatchNormalization(false)
     {
     }
 
     LayerParameterList(LayerType layer_type, LayerDimension layer_dimension, DataInterface *data_interface, 
-	    size_t n_neurons, size_t n_kernels, std::pair<size_t, size_t> dimension_kernel, double learning_rate,
-	    bool use_dropout, int dropout_branches, double dropout_factor, Regularization regu, double regu_parameter, 
-	    ActuationFuncType neuron_act_f_type, TrainingType training_type, bool batch_normalization):
-	_gLayerType(layer_type), _gLayerDimension(layer_dimension), 
-	_pDataInterface(data_interface), _nNeuronsFC(n_neurons), _nKernels(n_kernels), _gDimKernel(dimension_kernel),
-	_gLearningRate(learning_rate), _gUseDropout(use_dropout), _gdropoutBranches(dropout_branches), _gDropoutFactor(dropout_factor), _gRegularization(regu),
-	_gRegularizationParameter(regu_parameter), _gActuationFuncType(neuron_act_f_type), _gTrainingType(training_type), _gUseBatchNormalization(batch_normalization)
+            size_t n_neurons, size_t n_kernels, std::pair<size_t, size_t> dimension_kernel, double learning_rate,
+            bool use_dropout, int dropout_branches, double dropout_factor, Regularization regu, double regu_parameter, 
+            ActuationFuncType neuron_act_f_type, TrainingType training_type, bool batch_normalization):
+        _gLayerType(layer_type), _gLayerDimension(layer_dimension), 
+        _pDataInterface(data_interface), _nNeuronsFC(n_neurons), _nKernels(n_kernels), _gDimKernel(dimension_kernel),
+        _gLearningRate(learning_rate), _gUseDropout(use_dropout), _gdropoutBranches(dropout_branches), _gDropoutFactor(dropout_factor), _gRegularization(regu),
+        _gRegularizationParameter(regu_parameter), _gActuationFuncType(neuron_act_f_type), _gTrainingType(training_type), _gUseBatchNormalization(batch_normalization)
     {
     }
 };

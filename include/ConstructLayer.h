@@ -330,7 +330,7 @@ private:
     int __cnnStride = 1; 
     PoolingMethod __poolingMethod = PoolingMethod::Max;
     CostFuncType __cost_func_type = CostFuncType::cross_entropy;
- 
+
     // 8):
     Layer* __prevLayer = nullptr;
     Layer* __nextLayer = nullptr;

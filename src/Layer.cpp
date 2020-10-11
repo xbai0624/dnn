@@ -11,11 +11,11 @@ std::ostream & operator<<(std::ostream &os, const LayerType &t)
         os<<"____layer_type=cnn____";
     else if(t == LayerType::pooling)
         os<<"____layer_type=pooling____";
-     else if(t == LayerType::input)
+    else if(t == LayerType::input)
         os<<"____layer_type=input____";
-     else if(t == LayerType::output)
+    else if(t == LayerType::output)
         os<<"____layer_type=output____";
-     else if(t == LayerType::Undefined)
+    else if(t == LayerType::Undefined)
         os<<"____layer_type=undefined____";
     return os;
 }
@@ -62,9 +62,9 @@ std::ostream & operator<<(std::ostream &os, const Filter2D &t)
 std::ostream & operator<<(std::ostream& os, const NeuronCoord &c)
 {
     os<<std::setfill(' ')<<std::setw(4)<<c.i
-	<<std::setfill(' ')<<std::setw(4)<<c.j
-	<<std::setfill(' ')<<std::setw(4)<<c.k
-	<<std::endl;
+        <<std::setfill(' ')<<std::setw(4)<<c.j
+        <<std::setfill(' ')<<std::setw(4)<<c.k
+        <<std::endl;
     return os;
 }
 
@@ -74,8 +74,8 @@ std::ostream & operator<<(std::ostream &os, const Images & images)
     for(size_t i=0;i<images.OutputImageFromKernel.size();i++)
     {
         os<<"kernel: "<<i<<std::endl;
-	Matrix m = (images.OutputImageFromKernel)[i];
-	os<<m<<std::endl;
+        Matrix m = (images.OutputImageFromKernel)[i];
+        os<<m<<std::endl;
     }
     return os;
 }

@@ -911,7 +911,7 @@ void ConstructLayer::ForwardPropagateForBatch()
 #endif
 
     // progress
-    std::cout<<"forward propagate for batch finished. Layer: "<<GetID()<<std::endl;
+    //std::cout<<"forward propagate for batch finished. Layer: "<<GetID()<<std::endl;
 }
 
 
@@ -992,7 +992,7 @@ void ConstructLayer::BackwardPropagateForBatch()
     }
 
     // progress
-    std::cout<<"backward propagate for batch finished. Layer: "<<GetID()<<std::endl;
+    //std::cout<<"backward propagate for batch finished. Layer: "<<GetID()<<std::endl;
 }
 
 
